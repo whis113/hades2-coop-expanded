@@ -4,15 +4,18 @@
 --
 
 -- Load menu and add gamemode button
-ModRequire "CoopMenu.lua"
+--ModRequire "CoopMenu.lua"
 
 -- Get current gamemode
-local _, data = GetTempRuntimeData("Gamemode")
-if data ~= "Coop" then
-    return
-end
+-- local _, data = GetTempRuntimeData("Gamemode")
+-- if data ~= "Coop" then
+--     return
+-- end
 
 -- Disable the gamemode for the next run
-SetTempRuntimeData("Gamemode", nil)
+--SetTempRuntimeData("Gamemode", nil)
+
 -- Load gamemode hooks
+
+DebugPrint({ Text = "In init"  })
 ModRequire "GamemodeInit.lua"

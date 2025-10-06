@@ -74,7 +74,7 @@ OnAnyLoad {
     function(triggerArgs)
         local mapName = triggerArgs.name
 
-        if mapName == "RoomPreRun" then
+        if mapName == "Hub_PreRun" then
             HookUtils.onPostFunctionOnce("DeathAreaRoomTransition", function()
                 if not HeroContext.GetDefaultHero() then
                     HeroContext.InitRunHook()

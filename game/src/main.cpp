@@ -14,7 +14,7 @@ HADES_MOD_API bool _cdecl HadesModInit(const IModApi *modApi) {
     if (modApi->version < MOD_API_VERSION)
         return false;
 
-    HookTable::Instance().Init(modApi->GetSymbolAddress);
+    HookTable::Instance().Init(*modApi->GetHookTable());
 
     return true;
 };
