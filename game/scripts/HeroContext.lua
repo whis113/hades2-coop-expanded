@@ -20,14 +20,13 @@ local RunMT = {
     end;
 }
 
-local coroutine_create = coroutine.create
-coroutine.create = function(...)
-    local hero = HeroContext.GetCurrentHeroContext()
-
-    local co = coroutine_create(...)
-    CorontinueToHero[co] = hero
-
-    return co
+local coroutine_yield = coroutine.yield
+---@diagnostic disable-next-line: duplicate-set-field
+coroutine.yield = function(params)
+    if params == "task done" then
+        CorontinueToHero[coroutine.running()] = nil
+    end
+    return coroutine_yield(params)
 end
 
 function HeroContext.InitRunHook()
@@ -69,19 +68,16 @@ end
 ---@param fun function
 ---@param ... unknown params
 function HeroContext.RunWithHeroContext(hero, fun, ...)
-    local args = {...}
-    local co = coroutine_create(function()
-        fun(table.unpack(args))
-    end)
-    CorontinueToHero[co] = hero
-    --coroutine.resume(co, ...)
-    resume(co, _threads)
+    thread(function(...)
+        CorontinueToHero[coroutine.running()] = hero
+        fun(...)
+    end, ...)
 end
 
 ---@param hero table Hero info
 ---@param fun function
 ---@param ... unknown params
----@return unknown
+---@return ...
 function HeroContext.RunWithHeroContextReturn(hero, fun, ...)
     local out = {}
     HeroContext.RunWithHeroContext(hero, function(...)
@@ -99,15 +95,16 @@ local awaitableThreadId = 0
 function HeroContext.RunWithHeroContextAwait(hero, fun, ...)
     awaitableThreadId = awaitableThreadId + 1
     local notifyName = "RunWithHeroContextAwait" .. awaitableThreadId
+    local done = false
 
-    local args = { ... }
-    local co = coroutine_create(function()
-        fun(table.unpack(args))
+    thread(function(...)
+        CorontinueToHero[coroutine.running()] = hero
+        fun(...)
         notifyExistingWaiters(notifyName)
-    end)
-    CorontinueToHero[co] = hero
+        done = true
+    end, ...)
 
-    if resume(co, _threads) ~= "done" then
+    if not done then
         waitUntil(notifyName)
     end
 end
