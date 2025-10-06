@@ -66,7 +66,7 @@ size_t CoopContext::CreatePlayerUnit(size_t playerIndex) {
     Vectormath::Vector2 location = baseUnit->GetLocation();
 
     sgg::PlayerUnit *playerUnit =
-        reinterpret_cast<sgg::PlayerUnit *>(sgg::World::Instance()->CreateThing(mapThingBase, mapThing, true));
+        reinterpret_cast<sgg::PlayerUnit *>(sgg::World::Instance()->CreateThing(mapThing, true, true));
 
     playerUnit->SetPlayer(newPlayer);
     newPlayer->SetUnit(playerUnit);

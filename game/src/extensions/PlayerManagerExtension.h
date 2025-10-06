@@ -26,8 +26,11 @@ class PlayerManagerExtension {
 
     sgg::Player *CreatePlayer(size_t index);
     sgg::Player *GetPlayer(size_t index);
-
+    
     sgg::InputHandler *GetInput(size_t index);
 
     size_t GetPlayersCount() const noexcept;
+
+private:
+    sgg::Player *AddPlayer(size_t index);
 };

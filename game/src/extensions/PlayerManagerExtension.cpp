@@ -84,10 +84,20 @@ sgg::Player *PlayerManagerExtension::CreatePlayer(size_t index) {
 
     uint8_t controller = 1;
 
-    auto player = instance->AddPlayer(index);
-
+    auto player = AddPlayer(index);
     AssignController(player, controller);
 
+    return player;
+}
+
+sgg::Player* PlayerManagerExtension::AddPlayer(size_t index) {
+    auto *player = static_cast<sgg::Player*>(_aligned_malloc(sizeof(sgg::Player), std::alignment_of<sgg::Player>::value));
+
+    uint8_t controllerIndex = 1;
+    sgg::Player::internal_constructor(player, index, &controllerIndex);
+
+    auto *instance = sgg::PlayerManager::Instance();
+    instance->m_palyers[index] = player;
     return player;
 }
 
