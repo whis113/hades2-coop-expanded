@@ -42,7 +42,7 @@ local Config = {
         ShadowBlur = 0,
         OutlineThickness = 3,
         OutlineColor = { 0, 0, 0, 1 },
-        Font = "AlegreyaSansSCRegular",
+        Font = "LatoMedium",
         Justification = "Center"
     },
     Debug = {

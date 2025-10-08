@@ -29,6 +29,21 @@ coroutine.yield = function(params)
     return coroutine_yield(params)
 end
 
+function HeroContext.InitHooks()
+    local _thread = thread
+    thread = function(fun, ...)
+        local heroContext = CorontinueToHero[coroutine.running()]
+        if heroContext then
+            _thread(function(...)
+                CorontinueToHero[coroutine.running()] = heroContext
+                fun(...)
+            end, ...)
+        else
+            _thread(fun, ...)
+        end
+    end
+end
+
 function HeroContext.InitRunHook()
     if not CurrentRun.Hero then
         error("Current run has no hero")

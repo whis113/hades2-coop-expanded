@@ -6,6 +6,8 @@
 ---@class CoopControl
 local CoopControl = {}
 
+local UNUSED_GAMEPAD_INDEX = 5
+
 ---@alias ControlSchema "Current" | "Default" | "UserDefined"
 -- Default - mod default values
 -- UserDefined - User values
@@ -15,7 +17,7 @@ CoopControl.Schemas = {
     Default = {
         {
             Device = "Keyboard",
-            ControllerId = -1,
+            ControllerId = UNUSED_GAMEPAD_INDEX,
         };
         {
             Device = "Gamepad",
@@ -55,7 +57,7 @@ function CoopControl.SwitchControlForMenu(playerId)
 
     CoopSetPlayerGamepad(1, controllerId)
     for playerId = 2, #CoopControl.Schemas.Current do
-        CoopSetPlayerGamepad(playerId, -1)
+        CoopSetPlayerGamepad(playerId, UNUSED_GAMEPAD_INDEX)
     end
 end
 

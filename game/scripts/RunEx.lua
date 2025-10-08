@@ -8,9 +8,9 @@ local RunEx = {}
 
 ---@return boolean
 function RunEx.IsRunEnded()
-    -- The game sets EndingMoney in state after death
+    -- The game sets RunResult when the run ends
     -- So we can use this value to check if the run was finished
-    return CurrentRun.EndingMoney and true
+    return CurrentRun.RunResult and true
 end
 
 ---@return boolean

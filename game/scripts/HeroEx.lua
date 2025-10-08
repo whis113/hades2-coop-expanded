@@ -97,13 +97,12 @@ function HeroEx.CreateFreshHero(args)
 
     HeroContext.RunWithHeroContext(hero, function()
         EquipKeepsake(hero, args.keepsake, { SkipNewTraitHighlight = true })
-        EquipAssist(hero, args.assist, { SkipNewTraitHighlight = true })
 
         EquipWeaponUpgrade(hero, { SkipTraitHighlight = true })
         InitHeroLastStands(hero)
 
-        hero.MaxHealth = hero.MaxHealth +
-        GetNumMetaUpgrades("HealthMetaUpgrade") * MetaUpgradeData.HealthMetaUpgrade.ChangeValue
+        -- hero.MaxHealth = hero.MaxHealth +
+        -- GetNumMetaUpgrades("HealthMetaUpgrade") * MetaUpgradeData.HealthMetaUpgrade.ChangeValue
         hero.Health = hero.MaxHealth
     end)
 
@@ -122,11 +121,11 @@ end
 ---@param hero table
 function HeroEx.HideHero(hero)
     local weaponsToHide = { "RangedWeapon" }
-    for _, weaponName in ipairs(WeaponSets.HeroMeleeWeapons) do
-        if hero.Weapons[weaponName] then
-            table.insert(weaponsToHide, weaponName)
-        end
-    end
+    -- for _, weaponName in ipairs(WeaponSets.HeroMeleeWeapons) do
+    --     if hero.Weapons[weaponName] then
+    --         table.insert(weaponsToHide, weaponName)
+    --     end
+    -- end
 
     UnequipWeapon { DestinationId = hero.ObjectId, Names = weaponsToHide, UnloadPackages = false }
     SetColor { Id = hero.ObjectId, Color = { 255, 255, 255, 0 } }

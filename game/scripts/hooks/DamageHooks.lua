@@ -44,7 +44,7 @@ function OnHit(args)
             triggerArgs.DamageAmount = 10000
         end
 
-        if isAttackerPlayer then
+        if isAttackerPlayer and victim then
             -- Save last attacker to run OnEffectApply with the right hero context
             victim.CoopLastAttacker = attacker
         end
@@ -100,6 +100,10 @@ HeroContextWrapper.WrapTriggerHero("OnWeaponFailedToFire", "TriggeredByTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponCharging", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponChargeCanceled", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnPerfectChargeWindowEntered", "OwnerTable")
+HeroContextWrapper.WrapTriggerHero("OnBlinkFinished", "OwnerTable")
+HeroContextWrapper.WrapTriggerHero("OnWeaponTriggerRelease", "OwnerTable")
+--HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker") -- TODO check
+
 
 HookUtils.wrap("OnEffectApply", function(baseFunc, args)
     local originalHandler = args[1]

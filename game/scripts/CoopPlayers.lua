@@ -96,9 +96,9 @@ function CoopPlayers.InitCoopPlayer()
     local playerId = 2
 
     if not CoopHasPlayer(playerId) then
-        playerId = CoopCreatePlayer(playerId)
-        CoopControl.InitControlSchemas()
+        playerId = CoopCreatePlayer()
     end
+    CoopControl.InitControlSchemas()
 
     return playerId
 end
@@ -173,7 +173,7 @@ function CoopPlayers.InitCoopUnit(playerId)
         hero = HeroEx.CreateFreshHero{
             keepsake = GameState.LastAwardTrait;
             assist = GameState.LastAssistTrait;
-            weaponName = WeaponSets.HeroMeleeWeapons[1];
+            weaponName = WeaponSets.HeroPrimaryWeapons[1];
             weaponVariant = 1;
         }
     end
@@ -192,6 +192,8 @@ function CoopPlayers.InitCoopUnit(playerId)
     -- Disables bow arrow bounces
     SetUnitProperty { DestinationId = unit, Property = "FriendlyToPlayer", Value = true }
 
+    Teleport { Id = hero.ObjectId, DestinationId = CoopPlayers.GetMainHero().ObjectId }
+
     return hero
 end
 
@@ -202,7 +204,7 @@ function CoopPlayers.RecreateFreshHeroWithCurrentMeta(playerId)
     local keepsake, assist = HeroEx.GetGiftAndAssist(hero)
     local weaponName, weaponIndex = HeroEx.GetHeroWeaponFull(hero)
 
-    weaponName = weaponName or WeaponSets.HeroMeleeWeapons[1]
+    weaponName = weaponName or WeaponSets.HeroPrimaryWeapons[1]
     weaponIndex = weaponIndex or 1
 
     hero = HeroEx.CreateFreshHero{
@@ -246,7 +248,7 @@ function CoopPlayers.CoopInit()
             CoopPlayers.CoopHeroes[playerId] = HeroEx.CreateFreshHero {
                 keepsake = GameState.LastAwardTrait,
                 assist = GameState.LastAssistTrait,
-                weaponName = WeaponSets.HeroMeleeWeapons[1],
+                weaponName = WeaponSets.HeroPrimaryWeapons[1],
                 weaponVariant = 1,
             }
         end
