@@ -22,7 +22,7 @@ CoopCamera.IgnoreHeroes = {}
 function CoopCamera.InitHooks()
     HookUtils.wrap("CreateRoom", CoopCamera.CreateRoomWrapHook)
     HookUtils.onPostFunction("draw", CoopCamera.Update)
-    HookUtils.onPostFunction("ExitNPCPresentation", CoopCamera.OnExitNPCPresentation)
+    --HookUtils.onPostFunction("ExitNPCPresentation", CoopCamera.OnExitNPCPresentation)
     HookUtils.onPostFunction("PanCamera", CoopCamera.PanCameraPostHook)
     CoopCamera.LockCameraOrig = LockCamera
     LockCamera = CoopCamera.LockCameraHook
@@ -73,7 +73,6 @@ function CoopCamera.Update()
         return
     end
 
-    UnlockCamera()
     CoopCamera.LockCameraOrig { Ids = units, Duration = 0.0 }
 end
 
