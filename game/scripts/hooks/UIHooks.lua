@@ -41,6 +41,34 @@ end
 
 ---@private
 ---@param funcName string
+function UIHooks.CallForEveryHero(funcName)
+    HookUtils.wrap(funcName, function(base, ...)
+        local mainHero = CoopPlayers.GetMainHero()
+        HeroContext.RunWithHeroContext(mainHero, base, ...)
+        local secondHero = CoopPlayers.GetHero(2)
+        if secondHero then
+            HeroContext.RunWithHeroContext(secondHero, base, ...)
+        end
+    end)
+end
+
+---@private
+---@param funcName string
+function UIHooks.CallForEveryVisibleHero(funcName)
+    HookUtils.wrap(funcName, function(base, ...)
+        local mainHero = CoopPlayers.GetMainHero()
+        if UIHooks.ShouldBeUiVisibleFor(mainHero) then
+            HeroContext.RunWithHeroContext(mainHero, base, ...)
+        end
+        local secondHero = CoopPlayers.GetHero(2)
+        if UIHooks.ShouldBeUiVisibleFor(secondHero) then
+            HeroContext.RunWithHeroContext(secondHero, base, ...)
+        end
+    end)
+end
+
+---@private
+---@param funcName string
 function UIHooks.SimpleHookWithVisibilityCheck(funcName)
     local orig = _G[funcName]
     _G[funcName] = function(...)
@@ -63,6 +91,41 @@ function UIHooks.SimpleCurrentTraitWrapper(funcName)
 end
 
 function UIHooks.InitHooks()
+    HookUtils.onPreFunction("CreateScreenFromData", function(screen, componentData)
+        if screen ~= HUDScreen then
+            return
+        end
+        SecondPlayerUi.RegisterComponents(componentData)
+
+        local allComponents = {}
+        screen.Components = setmetatable({ }, {
+            __index = function (self, key)
+                local currentHero = HeroContext.GetCurrentHeroContext()
+                local mainHero = CoopPlayers.GetMainHero()
+                if currentHero == mainHero then
+                    return allComponents[key]
+                else
+                    local alternativeKey = key .. "Player2"
+                    return allComponents[alternativeKey] or allComponents[key]
+                end
+            end,
+            __newindex = function(self, key, value)
+                allComponents[key] = value
+            end
+        })
+    end)
+
+    -- Health
+    UIHooks.CallForEveryVisibleHero("ShowHealthUI")
+    UIHooks.CallForEveryHero("UpdateHealthUI")
+    UIHooks.CallForEveryHero("HideHealthUI")
+
+    -- Mana
+    UIHooks.CallForEveryVisibleHero("ShowManaMeter")
+    UIHooks.CallForEveryHero("UpdateManaMeterUIReal")
+    UIHooks.CallForEveryHero("HideManaMeter")
+
+
     -- Etc
     local _PulseText = PulseText
     PulseText = function(args)
