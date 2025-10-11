@@ -92,17 +92,6 @@ function CoopPlayers.GetUnits()
     return out
 end
 
-function CoopPlayers.InitCoopPlayer()
-    local playerId = 2
-
-    if not CoopHasPlayer(playerId) then
-        playerId = CoopCreatePlayer()
-    end
-    CoopControl.InitControlSchemas()
-
-    return playerId
-end
-
 ---@return boolean
 function CoopPlayers.HasAlivePlayers()
     for _, hero in CoopPlayers.PlayersIterator() do
@@ -234,7 +223,7 @@ function CoopPlayers.UpdateMainHero()
 end
 
 function CoopPlayers.CoopInit()
-    CoopPlayers.InitCoopPlayer()
+    CoopControl.InitControlSchemas()
 
     if RunEx.WasTheFirstRunStarted() then
         return
