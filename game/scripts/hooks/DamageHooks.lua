@@ -16,11 +16,10 @@ local HookUtils = ModRequire "../HookUtils.lua"
 ---@type CoopModConfig
 local Config = ModRequire "../config.lua"
 
-local _OnHit = OnHit
-function OnHit(args)
+HookUtils.wrap("OnHit", function(baseFun, args)
     -- Only one usage
     local fun = args[1]
-    _OnHit { function(triggerArgs)
+    baseFun { function(triggerArgs)
         local attacker = triggerArgs.AttackerTable
         local victim = triggerArgs.TriggeredByTable
 
@@ -65,7 +64,7 @@ function OnHit(args)
             end
         end
     end }
-end
+end)
 
 local _OnProjectileDeath = OnProjectileDeath
 function OnProjectileDeath(args)
@@ -103,25 +102,3 @@ HeroContextWrapper.WrapTriggerHero("OnPerfectChargeWindowEntered", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnBlinkFinished", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponTriggerRelease", "OwnerTable")
 --HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker") -- TODO check
-
-
-HookUtils.wrap("OnEffectApply", function(baseFunc, args)
-    local originalHandler = args[1]
-
-    baseFunc{
-        function(triggerArgs)
-            local target = triggerArgs.TriggeredByTable
-            if CoopPlayers.IsPlayerHero(target) then
-                HeroContext.RunWithHeroContext(target, originalHandler, triggerArgs)
-            elseif target and target.CoopLastAttacker then
-                HeroContext.RunWithHeroContext(target.CoopLastAttacker, originalHandler, triggerArgs)
-            else
-                originalHandler(triggerArgs)
-            end
-        end
-    }
-end)
-
-HeroContextWrapper.WrapTriggerHero("OnEffectCleared", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnEffectStackDecrease", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnEffectDelayedKnockbackForce", "TriggeredByTable")

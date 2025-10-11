@@ -66,7 +66,7 @@ end
 
 ---@param heroesCount number
 function LootShared.Reset(heroesCount)
-    HeroContextProxyStore.GetOrCreate("LootTypeHistory"):Reset()
+    HeroContextProxyStore.GetOrCreate(CurrentRun, "LootTypeHistory"):Reset()
     LootQuery.Reset(heroesCount)
 end
 

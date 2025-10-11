@@ -17,5 +17,19 @@
 
 -- Load gamemode hooks
 
-DebugPrint({ Text = "In init"  })
+SetTempRuntimeData("TN_Coop:control", {
+    {
+        Device = "Keyboard",
+        ControllerId = 4,
+    },
+    {
+        Device = "Gamepad",
+        ControllerId = 0,
+    },
+})
+
+if not CoopHasPlayer(2) then
+    CoopCreatePlayer()
+end
+
 ModRequire "GamemodeInit.lua"

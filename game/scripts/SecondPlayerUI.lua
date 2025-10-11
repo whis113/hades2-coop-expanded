@@ -11,6 +11,10 @@ local ScreenAnchorsSecondPlayer = {}
 
 SecondPlayerUi.ScreenAnchors = ScreenAnchorsSecondPlayer
 
+function SecondPlayerUi.UpdateHealthUI()
+
+end
+
 function SecondPlayerUi.Refresh()
 
 end

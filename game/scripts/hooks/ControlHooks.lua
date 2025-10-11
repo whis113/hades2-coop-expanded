@@ -10,13 +10,12 @@ local HeroContext = ModRequire "../HeroContext.lua"
 ---@type HookUtils
 local HookUtils = ModRequire "../HookUtils.lua"
 
-local _OnControlPressed = OnControlPressed
-OnControlPressed = function(args)
+HookUtils.wrap("OnControlPressed", function(baseFun, args)
     -- if args[1] == "AdvancedTooltip" then
     --     -- override control here
     --     args[2] = GameModifed.AdvancedTooltipModifedHandler
     -- end
-    _OnControlPressed {
+    baseFun {
         args[1],
         function(triggerArgs)
             local hero = CoopPlayers.GetHero(triggerArgs.mPlayerIndex)
@@ -25,7 +24,7 @@ OnControlPressed = function(args)
             end
         end
     }
-end
+end)
 
 HookUtils.wrap("AddInputBlock", function(baseFun, argumenst)
     if argumenst.PlayerIndex then

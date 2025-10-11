@@ -24,17 +24,27 @@ function HeroContextProxyStore.Get(key)
     return store[key]
 end
 
+---@param target table
 ---@param key string
 ---@return HeroContextProxy
-function HeroContextProxyStore.GetOrCreate(key)
+function HeroContextProxyStore.GetOrCreate(target, key)
     local proxy = store[key]
     if proxy then
         return proxy
     else
-        proxy = HeroContextProxy.New(CurrentRun, key)
-        HeroContextProxyStore.Set(key, proxy)
+        proxy = HeroContextProxy.New(target, key)
+        store[key] = proxy
         return proxy
     end
+end
+
+---@param target table
+---@param key string
+---@return HeroContextProxy
+function HeroContextProxyStore.Recreate(target, key)
+    local proxy = HeroContextProxy.New(target, key)
+    store[key] = proxy
+    return proxy
 end
 
 ---@return fun(store: table<string, HeroContextProxy>, index?: string): string, HeroContextProxy
