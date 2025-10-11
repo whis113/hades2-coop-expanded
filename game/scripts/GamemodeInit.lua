@@ -37,6 +37,8 @@ local ResourceLoadingHooks = ModRequire "hooks/ResourceLoadingHooks.lua"
 local LootDelivery = ModRequire "loot/LootInterface.lua"
 ---@type MapStateHooks
 local MapStateHooks = ModRequire "hooks/MapStateHooks.lua"
+---@type PlayerVisibilityHooks
+local PlayerVisibilityHooks = ModRequire "hooks/PlayerVisibilityHooks.lua"
 
 ModRequire "hooks/DamageHooks.lua"
 ModRequire "hooks/UseHooks.lua"
@@ -71,6 +73,7 @@ local function TryInstalBasicHooks()
     ResourceLoadingHooks.InitHooks()
     LootDelivery.InitHooks()
     MapStateHooks.InitHooks()
+    PlayerVisibilityHooks.InitHooks()
 end
 
 OnPreThingCreation

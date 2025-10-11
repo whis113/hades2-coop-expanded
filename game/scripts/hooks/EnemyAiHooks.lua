@@ -22,7 +22,6 @@ function EnemyAiHooks.InitHooks()
     HookUtils.wrap("GetTargetId", EnemyAiHooks.GetTargetIdHook)
     HookUtils.wrap("IsAIActive", EnemyAiHooks.IsAIActiveHook)
     HookUtils.onPreFunction("Harpy3MapTransition", EnemyAiHooks.Harpy3MapTransitionPreHook)
-    HookUtils.replace("SelectTheseusGod", EnemyAiHooks.SelectTheseusGodHook)
 end
 
 ---@private
@@ -109,32 +108,6 @@ function EnemyAiHooks.IsAIActiveHook(baseFun, ...)
     else
         return baseFun(...)
     end
-end
-
-function EnemyAiHooks.SelectTheseusGodHook(enemy)
-    local allUsedGods
-
-    local LootTypeHistoryProxy = HeroContextProxyStore.Get("LootTypeHistory")
-    if LootTypeHistoryProxy then
-        allUsedGods = {}
-        for playerId = 1, CoopPlayers.GetPlayersCount() do
-            TableUtils.copyTo(allUsedGods, LootTypeHistoryProxy:GetPlayerData(playerId))
-        end
-    else
-        allUsedGods = CurrentRun.LootTypeHistory
-    end
-
-    local unusedGods = {}
-    for name, lootData in pairs(LootData) do
-        if lootData.GodLoot and not lootData.DebugOnly and not allUsedGods[name] and IsGameStateEligible(CurrentRun, lootData) then
-            table.insert(unusedGods, name)
-        end
-    end
-
-    local godName = GetRandomValue(unusedGods) or "ArtemisUpgrade"
-
-    enemy.TheseusGodName = godName
-	LoadPackages{ Names = godName }
 end
 
 -- Teleport all players to the center to prevent softlocks
