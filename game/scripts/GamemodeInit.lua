@@ -39,6 +39,8 @@ local LootDelivery = ModRequire "loot/LootInterface.lua"
 local MapStateHooks = ModRequire "hooks/MapStateHooks.lua"
 ---@type PlayerVisibilityHooks
 local PlayerVisibilityHooks = ModRequire "hooks/PlayerVisibilityHooks.lua"
+---@type PlayerVisibilityHelper
+local PlayerVisibilityHelper = ModRequire "PlayerVisibilityHelper.lua"
 
 ModRequire "hooks/DamageHooks.lua"
 ModRequire "hooks/UseHooks.lua"
@@ -93,6 +95,7 @@ OnAnyLoad {
                 CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
                 CoopPlayers.UpdateMainHero()
                 CoopPlayers.InitCoopUnit(2)
+                PlayerVisibilityHelper.TriggerOutline(1, CurrentRun.Hero)
                 SecondPlayerUi.Refresh()
             end)
         end
