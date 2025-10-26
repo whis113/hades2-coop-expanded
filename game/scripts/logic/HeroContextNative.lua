@@ -11,7 +11,7 @@ local HeroContextNative = {}
 
 function HeroContextNative.RunWithNativeHeroContextFromHero(fun, ...)
     local playerIndex = CoopPlayers.GetPlayerByHero(CurrentRun.Hero) or 1
-    HeroContextNative.RunWithNativeHeroContext(playerIndex, fun, ...)
+    return HeroContextNative.RunWithNativeHeroContext(playerIndex, fun, ...)
 end
 
 function HeroContextNative.RunWithNativeHeroContext(playerIndex, fun, ...)

@@ -47,8 +47,9 @@ function HookUtils.onPostFunction(funcName, handler)
     end
 
     _G[funcName] = function(...)
-        original(...)
+        local result = original(...)
         handler(...)
+        return result
     end
 end
 

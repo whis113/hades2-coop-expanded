@@ -33,6 +33,7 @@ AddHooks "hooks/ResourceLoadingHooks.lua"
 AddHooks "logic/loot/LootInterface.lua"
 AddHooks "hooks/MapStateHooks.lua"
 AddHooks "hooks/PlayerVisibilityHooks.lua"
+AddHooks "hooks/CameraZoomFactionHook.lua"
 
 AddHooks "hooks/DamageHooks.lua"
 AddHooks "hooks/UseHooks.lua"

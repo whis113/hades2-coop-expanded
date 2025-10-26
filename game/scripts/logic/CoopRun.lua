@@ -33,7 +33,6 @@ end
 
 ---@private
 function CoopRun.OnRunStarted(run)
-    HeroContext.InitRunHook()
     CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
 
     if not RunEx.IsFirstRun(run) then

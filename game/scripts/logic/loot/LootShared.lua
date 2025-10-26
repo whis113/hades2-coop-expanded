@@ -67,10 +67,9 @@ function LootShared.SpawnRoomReward(baseFun, eventSource, args)
     HeroContext.RunWithHeroContextAwait(hero, baseFun, eventSource, args)
 end
 
----@param heroesCount number
-function LootShared.Reset(heroesCount)
+function LootShared.Reset()
     HeroContextProxyStore.GetOrCreate(CurrentRun, "LootTypeHistory"):Reset()
-    LootQuery.Reset(heroesCount)
+    LootQuery.Reset(CoopPlayers.GetPlayersCount())
 end
 
 ---@param baseFun fun(args: table): table

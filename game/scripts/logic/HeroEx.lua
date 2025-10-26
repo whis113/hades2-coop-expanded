@@ -63,17 +63,9 @@ function HeroEx.GetHeroWeaponFull(hero)
     -- See #46
     -- Player 2 doesn't have a trait if weapon aspects aren't unlocked
     -- Use the first weapon aspect by default
-    local weaponIndex = 1
+    local weaponIndex = GetWeaponUpgradeLevel(WeaponData[weaponName].DummyTraitName)
 
-    for index in pairs(WeaponUpgradeData[weaponName]) do
-        local weaponData = WeaponUpgradeData[weaponName][index]
-        local trait = hero.TraitDictionary[weaponData.TraitName or weaponData.RequiredInvestmentTraitName]
-        if trait then
-            ---@diagnostic disable-next-line: cast-local-type
-            weaponIndex = index
-            break
-        end
-    end
+    DebugPrint{ Text = "Hero has weapon level " .. tostring(weaponIndex) }
 
     return weaponName, weaponIndex
 end
@@ -132,12 +124,12 @@ function HeroEx.HideHero(hero)
     Teleport { Id = hero.ObjectId, DestinationId = hero.ObjectId, OffsetX = -10000 }
 end
 
-function HeroEx.SetupAdditional(currentRun, applyLuaUpgrades, hero, ObjectId)
+function HeroEx.SetupAdditional(currentRoom, applyLuaUpgrades, hero, ObjectId)
     HookUtils.wrapOnce("GetIdsByType", function()
         return { ObjectId }
     end)
     hero.ObjectId = nil
-    HeroContext.RunWithHeroContext(hero, HeroEx.SetupHeroObject, currentRun, applyLuaUpgrades)
+    HeroContext.RunWithHeroContext(hero, HeroEx.SetupHeroObject, currentRoom, applyLuaUpgrades)
 end
 
 return HeroEx

@@ -34,7 +34,6 @@ function RunHooks.InitHooks()
     HookUtils.onPreFunction("DeathAreaRoomTransition", RunHooks.DeathAreaRoomTransitionPreHook)
     HookUtils.onPreFunction("OnAllEnemiesDead", RunHooks.OnAllEnemiesDeadPreHook)
     HookUtils.wrap("EndEarlyAccessPresentation", RunHooks.EndEarlyAccessPresentationWrapHook)
-    HookUtils.onPostFunction("StartNewRun", RunHooks.StartNewRunPostHook)
     HookUtils.wrap("StartRoom", RunHooks.StartRoomWrapHook)
     HookUtils.wrap("KillHero", RunHooks.KillHeroHook)
     HookUtils.wrap("CheckRoomExitsReady", RunHooks.CheckRoomExitsReadyHook)
@@ -44,6 +43,7 @@ function RunHooks.InitHooks()
     HookUtils.wrap("StartEncounterEffects", RunHooks.StartEncounterEffectsWrapHook)
     HookUtils.onPostFunction("RestoreUnlockRoomExits", RunHooks.RestoreUnlockRoomExitsHook)
     HookUtils.onPostFunction("StartRoomPresentation", RunHooks.StartRoomPresentationPostHook)
+    HookUtils.onPostFunction("StartNewRun", RunHooks.StartNewRunPostHook)
 end
 
 ---@private

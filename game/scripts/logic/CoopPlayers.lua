@@ -175,7 +175,7 @@ function CoopPlayers.InitCoopUnit(playerId)
 
     PlayerVisibilityHelper.AddPlayerMarkers(playerId, unit)
 
-    HeroEx.SetupAdditional(CurrentRun, nil, hero, unit)
+    HeroEx.SetupAdditional(CurrentRun.CurrentRoom, nil, hero, unit)
 
     SetUntargetable { Id = hero.ObjectId }
     -- Disables bow arrow bounces

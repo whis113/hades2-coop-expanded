@@ -30,8 +30,8 @@ class PlayerManagerExtension {
 
     size_t GetPlayersCount() const noexcept;
 
-    void SetCurrentMainHero(size_t index);
-    void ResetCurrentMainHero();
+    void SetCurrentMainPlayer(size_t index);
+    void ResetCurrentMainPlayer();
 
   private:
     sgg::Player *AddPlayer(size_t index);

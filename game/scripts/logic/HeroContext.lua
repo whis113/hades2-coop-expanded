@@ -5,6 +5,8 @@
 
 ---@type Events
 local Events = ModRequire "Events.lua"
+---@type TableUtils
+local TableUtils = ModRequire "../utils/TableUtils.lua"
 
 ---@class HeroContext
 local HeroContext = {}
@@ -53,11 +55,13 @@ function HeroContext.InitHooks()
 end
 
 function HeroContext.InitRunHook()
-    if not CurrentRun.Hero then
+    TableUtils.clean(CorontinueToHero)
+    local hero = rawget(CurrentRun, "Hero")
+    if not hero then
         error("Current run has no hero")
     end
 
-    defaultHero = CurrentRun.Hero
+    defaultHero = hero
     CurrentRun.Hero = nil
     setmetatable(CurrentRun, RunMT)
 end
