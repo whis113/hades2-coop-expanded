@@ -41,8 +41,8 @@ end
 
 ---@param hero table
 ---@return string?
-function HeroEx.GetWeapon(hero)
-    for _, name in pairs(WeaponSets.HeroMeleeWeapons) do
+function HeroEx.GetMainWeapon(hero)
+    for _, name in pairs(WeaponSets.HeroPrimaryWeapons) do
         if hero.Weapons[name] then
             return name
         end
@@ -53,7 +53,7 @@ end
 ---@return string?
 ---@return number?
 function HeroEx.GetHeroWeaponFull(hero)
-    local weaponName = HeroEx.GetWeapon(hero)
+    local weaponName = HeroEx.GetMainWeapon(hero)
 
     if not weaponName then
         DebugPrint { Text = "The player has no weapon!!!!" }
@@ -136,6 +136,7 @@ function HeroEx.SetupAdditional(currentRun, applyLuaUpgrades, hero, ObjectId)
     HookUtils.wrapOnce("GetIdsByType", function()
         return { ObjectId }
     end)
+    hero.ObjectId = nil
     HeroContext.RunWithHeroContext(hero, HeroEx.SetupHeroObject, currentRun, applyLuaUpgrades)
 end
 

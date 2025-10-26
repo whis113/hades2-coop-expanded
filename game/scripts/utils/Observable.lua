@@ -35,13 +35,23 @@ end
 ---@vararg any
 function Observable:trigger(eventName, ...)
     local handlers = self.handlers[eventName]
+
     if not handlers then
         return
     end
 
-    for _, handler in ipairs(handlers) do
-        handler(...)
+    local i = 1
+    local handler = handlers[1]
+    while handler do
+        handler.fun(...)
+        if handler.once then
+            table.remove(handlers, i)
+        else
+            i = i + 1
+        end
+        handler = handlers[i]
     end
+
 end
 
 ---@param eventName string

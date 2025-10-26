@@ -225,8 +225,8 @@ function RunHooks.StartEncounterEffectsWrapHook(baseFun, run)
     end
 end
 
-function RunHooks.StartRoomPresentationPostHook()
-    Events.run:trigger("roomPresentationFinished")
+function RunHooks.StartRoomPresentationPostHook(run, room)
+    Events.run:trigger("roomPresentationFinished", run, room)
 end
 
 function RunHooks.OnAllEnemiesDeadPreHook()

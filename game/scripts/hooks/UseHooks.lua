@@ -43,42 +43,6 @@ OnUsed = function(args)
                     return
                 end
 
-                if item.AddAmmo then
-                    -- Do not let a player get the red crystal
-                    -- when the player has full ammo
-                    local current = GetWeaponProperty {
-                        Id = triggerArgs.UserId,
-                        WeaponName = "RangedWeapon",
-                        Property = "Ammo"
-                    } or 0
-                    local max = GetWeaponMaxAmmo {
-                        Id = triggerArgs.UserId,
-                        WeaponName = "RangedWeapon"
-                    } or 0
-
-                    if current >= max then
-                        if not item.coopDisableMagneto then
-                            SetObstacleProperty({
-                                Property = "Magnetism",
-                                Value = 0,
-                                DestinationId =
-                                    item.ObjectId
-                            })
-                            item.coopDisableMagneto = true
-                            thread(function()
-                                wait(1.0)
-                                SetObstacleProperty({
-                                    Property = "Magnetism",
-                                    Value = 3000,
-                                    DestinationId = item.ObjectId
-                                })
-                                item.coopDisableMagneto = false
-                            end)
-                        end
-                        return
-                    end
-                end
-
                 HeroContext.RunWithHeroContext(
                     hero,
                     args[2],

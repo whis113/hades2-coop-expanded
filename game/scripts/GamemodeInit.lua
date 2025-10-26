@@ -5,8 +5,8 @@
 
 ---@type HeroEx
 local HeroEx = ModRequire "logic/HeroEx.lua"
----@type CoopPlayers
-local CoopPlayers = ModRequire "logic/CoopPlayers.lua"
+---@type CoopGame
+local CoopGame = ModRequire "logic/CoopGame.lua"
 
 ---@type Events
 local Events = ModRequire "logic/Events.lua"
@@ -47,15 +47,15 @@ local function TryInstalBasicHooks()
     end
 
     hooksInited = true
-
     Events.engine:trigger("hooksPreInicialized")
 
     HeroEx.Init()
-    CoopPlayers.CoopInit()
 
     for _, hook in ipairs(hooks) do
         hook.InitHooks()
     end
+
+    CoopGame.Init()
 
     Events.engine:trigger("hooksInicialized")
 end

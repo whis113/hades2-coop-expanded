@@ -57,6 +57,10 @@ function RunEx.RemoveDoorReward(door)
     return false
 end
 
+function RunEx.IsHubRoom(name)
+    return name == "Hub_Main" or name == "Hub_PreRun"
+end
+
 function RunEx.RemoveRewardFromAllDefaultDoors()
     for _, door in pairs(OfferedExitDoors) do
         if door.IsDefaultDoor then

@@ -17,13 +17,11 @@ local SecondPlayerUi = ModRequire "SecondPlayerUI.lua"
 local PlayerVisibilityHelper = ModRequire "PlayerVisibilityHelper.lua"
 ---@type CoopCamera
 local CoopCamera = ModRequire "CoopCamera.lua"
+---@type CoopControl
+local CoopControl = ModRequire "CoopControl.lua"
 
 ---@class CoopRun
 local CoopRun = {}
-
-local HUB_ROOMS = {
-    ["Hub_PreRun"] = true,
-}
 
 function CoopRun.Init()
     Events.run:on("newRunStarted", CoopRun.OnRunStarted)
@@ -45,7 +43,8 @@ end
 
 ---@private
 function CoopRun.OnMapLoaded(mapName)
-    if HUB_ROOMS[mapName] then
+    DebugPrint{ Text = "Coop map starter: " .. tostring(mapName)}
+    if RunEx.IsHubRoom(mapName) then
         CoopPlayers.HealAllAdditionalPlayers()
     end
 end
@@ -85,7 +84,7 @@ function CoopRun.OnRoomPreLeave(currentRun, door)
 end
 
 ---@private
-function CoopRun.OnRoomPresentationFinished()
+function CoopRun.OnRoomPresentationFinished(run, currentRoom)
     for playerId = 2, CoopPlayers.GetPlayersCount() do
         local hero = CoopPlayers.GetHero(playerId)
         if not hero or (hero and not hero.IsDead) then
@@ -104,15 +103,15 @@ function CoopRun.OnRoomPresentationFinished()
         SetAlpha { Id = mainHero.ObjectId, Fraction = 1.0, Duration = 1.0 }
     end
 
-    local currentRoom = CurrentRun.Room
-    if currentRoom.HeroEndPoint then
-        for playerId = 2, CoopPlayers.GetPlayersCount() do
-            local hero = CoopPlayers.GetHero(playerId)
-            if not hero.IsDead then
-                Teleport({ Id = hero.ObjectId, DestinationId = currentRoom.HeroEndPoint })
-                if isMainPlayerDead then
-                    RemoveInputBlock { PlayerIndex = playerId, Name = "MoveHeroToRoomPosition" }
-                end
+    local teleportPoint = currentRoom.HeroEndPoint or mainHero.ObjectId
+
+    for playerId = 2, CoopPlayers.GetPlayersCount() do
+        local hero = CoopPlayers.GetHero(playerId)
+        if not hero.IsDead then
+            Teleport({ Id = hero.ObjectId, DestinationId = teleportPoint })
+            --CoopControl.Reset(playerId)
+            if isMainPlayerDead then
+                RemoveInputBlock { PlayerIndex = playerId, Name = "MoveHeroToRoomPosition" }
             end
         end
     end
