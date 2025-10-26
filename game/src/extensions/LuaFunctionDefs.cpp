@@ -154,19 +154,19 @@ static int CoopUseItem(lua_State* L) {
     return 1;
 }
 
-static int CoopSetMainHero(lua_State *L) {
+static int CoopSetCurrentMainPlayer(lua_State *L) {
     if (!lua_isnumber(L, 1)) {
         return luaL_error(L, "Argument 1 must be a number");
     }
 
     size_t playerIndex = static_cast<size_t>(lua_tonumber(L, 1)) - 1;
 
-    CoopContext::GetInstance()->GetPlayerManager().SetCurrentMainHero(playerIndex);
+    CoopContext::GetInstance()->GetPlayerManager().SetCurrentMainPlayer(playerIndex);
     return 0;
 }
 
-static int CoopResetCurrentMainHero(lua_State *L) {
-    CoopContext::GetInstance()->GetPlayerManager().ResetCurrentMainHero();
+static int CoopResetCurrentMainPlayer(lua_State *L) {
+    CoopContext::GetInstance()->GetPlayerManager().ResetCurrentMainPlayer();
     return 0;
 }
 
@@ -186,8 +186,8 @@ void LuaFunctionDefs::Load(lua_State* L) {
     REGISTER(CoopRemovePlayerUnit);
     REGISTER(CoopUseItem);
 
-    REGISTER(CoopSetMainHero);
-    REGISTER(CoopResetCurrentMainHero);
+    REGISTER(CoopSetCurrentMainPlayer);
+    REGISTER(CoopResetCurrentMainPlayer);
 
     #undef REGISTER
 }

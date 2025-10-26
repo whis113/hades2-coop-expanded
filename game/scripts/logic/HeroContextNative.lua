@@ -15,9 +15,9 @@ function HeroContextNative.RunWithNativeHeroContextFromHero(fun, ...)
 end
 
 function HeroContextNative.RunWithNativeHeroContext(playerIndex, fun, ...)
-    CoopSetMainHero(playerIndex)
+    CoopSetCurrentMainPlayer(playerIndex)
     local result = fun(...)
-    CoopResetCurrentMainHero()
+    CoopResetCurrentMainPlayer()
     return result
 end
 

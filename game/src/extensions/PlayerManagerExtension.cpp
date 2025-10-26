@@ -90,8 +90,9 @@ sgg::Player *PlayerManagerExtension::CreatePlayer(size_t index) {
     return player;
 }
 
-sgg::Player* PlayerManagerExtension::AddPlayer(size_t index) {
-    auto *player = static_cast<sgg::Player*>(_aligned_malloc(sizeof(sgg::Player), std::alignment_of<sgg::Player>::value));
+sgg::Player *PlayerManagerExtension::AddPlayer(size_t index) {
+    auto *player =
+        static_cast<sgg::Player *>(_aligned_malloc(sizeof(sgg::Player), std::alignment_of<sgg::Player>::value));
 
     uint8_t controllerIndex = 1;
     sgg::Player::internal_constructor(player, index, &controllerIndex);
@@ -117,7 +118,7 @@ size_t PlayerManagerExtension::GetPlayersCount() const noexcept {
     return size;
 }
 
-void PlayerManagerExtension::SetCurrentMainHero(size_t index) {
+void PlayerManagerExtension::SetCurrentMainPlayer(size_t index) {
     if (!mainPlayer) {
         mainPlayer = GetPlayer(0);
     }
@@ -128,7 +129,8 @@ void PlayerManagerExtension::SetCurrentMainHero(size_t index) {
     instance->m_palyers[0] = newMainPlayer;
 }
 
-void PlayerManagerExtension::ResetCurrentMainHero() { auto *instance = sgg::PlayerManager::Instance();
+void PlayerManagerExtension::ResetCurrentMainPlayer() {
+    auto *instance = sgg::PlayerManager::Instance();
     instance->m_palyers[0] = mainPlayer;
     // Reset indexes to fix engine checks
     for (size_t index = 0; index < instance->m_palyers.size(); index++) {
