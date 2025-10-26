@@ -116,3 +116,22 @@ size_t PlayerManagerExtension::GetPlayersCount() const noexcept {
 
     return size;
 }
+
+void PlayerManagerExtension::SetCurrentMainHero(size_t index) {
+    if (!mainPlayer) {
+        mainPlayer = GetPlayer(0);
+    }
+
+    auto *instance = sgg::PlayerManager::Instance();
+    auto *newMainPlayer = GetPlayer(index);
+    newMainPlayer->SetIndex(0);
+    instance->m_palyers[0] = newMainPlayer;
+}
+
+void PlayerManagerExtension::ResetCurrentMainHero() { auto *instance = sgg::PlayerManager::Instance();
+    instance->m_palyers[0] = mainPlayer;
+    // Reset indexes to fix engine checks
+    for (size_t index = 0; index < instance->m_palyers.size(); index++) {
+        GetPlayer(index)->SetIndex(index);
+    }
+}

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <hades2/Player.h>
 #include <hades2/InputHandler.h>
+#include <hades2/Player.h>
 
 constexpr size_t MAX_PLAYERS = 2;
 
@@ -14,7 +14,6 @@ class PlayerManagerExtension {
   public:
     PlayerManagerExtension() = default;
     ~PlayerManagerExtension() = default;
-
 
     bool AssignGamepad(size_t playerIndex, uint8_t gamepad);
     uint8_t GetGamepad(size_t playerIndex);
@@ -26,11 +25,17 @@ class PlayerManagerExtension {
 
     sgg::Player *CreatePlayer(size_t index);
     sgg::Player *GetPlayer(size_t index);
-    
+
     sgg::InputHandler *GetInput(size_t index);
 
     size_t GetPlayersCount() const noexcept;
 
-private:
+    void SetCurrentMainHero(size_t index);
+    void ResetCurrentMainHero();
+
+  private:
     sgg::Player *AddPlayer(size_t index);
+
+  private:
+    sgg::Player *mainPlayer{};
 };

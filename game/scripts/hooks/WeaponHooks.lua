@@ -7,6 +7,8 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HookUtils
 local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type HeroContextNative
+local HeroContextNative = ModRequire "../logic/HeroContextNative.lua"
 
 -- Fixes crashes when the game unload weapons that is currently equipped by another player
 HookUtils.wrap("UnequipWeapon", function (baseFunc, args)
@@ -38,6 +40,10 @@ HookUtils.wrap("UnequipWeapon", function (baseFunc, args)
     args.UnloadPackages = false
 
     return baseFunc(args)
+end)
+
+HookUtils.wrap("GetWeaponChargeFraction", function(baseFun, args)
+    return HeroContextNative.RunWithNativeHeroContextFromHero(baseFun, args)
 end)
 
 HookUtils.wrap("PreLoadBinks", function(baseFun, args)
