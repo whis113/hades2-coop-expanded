@@ -13,7 +13,7 @@
 ---@field CanUseHeroLoot fun(loot: table, hero: table): boolean
 
 ---@type CoopModConfig
-local Config = ModRequire "../config.lua"
+local Config = ModRequire "../../config.lua"
 
 local DELIVERY_TYPE_TO_HANDLER = {
     Shared = "LootShared.lua";

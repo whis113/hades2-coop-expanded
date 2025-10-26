@@ -3,50 +3,42 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
----@type HookUtils
-local HookUtils = ModRequire "HookUtils.lua"
 ---@type HeroEx
-local HeroEx = ModRequire "HeroEx.lua"
+local HeroEx = ModRequire "logic/HeroEx.lua"
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "CoopPlayers.lua"
----@type SecondPlayerUi
-local SecondPlayerUi = ModRequire "SecondPlayerUI.lua"
----@type HeroContext
-local HeroContext = ModRequire "HeroContext.lua"
----@type CoopCamera
-local CoopCamera = ModRequire "CoopCamera.lua"
----@type FreezeHooks
-local FreezeHooks = ModRequire "hooks/FreezeHooks.lua"
----@type RunHooks
-local RunHooks = ModRequire "hooks/RunHooks.lua"
----@type MenuHooks
-local MenuHooks = ModRequire "hooks/MenuHooks.lua"
----@type SaveHooks
-local SaveHooks = ModRequire "hooks/SaveHooks.lua"
----@type EnemyAiHooks
-local EnemyAiHooks = ModRequire "hooks/EnemyAiHooks.lua"
----@type LootHooks
-local LootHooks = ModRequire "hooks/LootHooks.lua"
----@type UIHooks
-local UIHooks = ModRequire "hooks/UIHooks.lua"
----@type VulnerabilityHooks
-local VulnerabilityHooks = ModRequire "hooks/VulnerabilityHooks.lua"
----@type ResourceLoadingHooks
-local ResourceLoadingHooks = ModRequire "hooks/ResourceLoadingHooks.lua"
----@type ILootDelivery
-local LootDelivery = ModRequire "loot/LootInterface.lua"
----@type MapStateHooks
-local MapStateHooks = ModRequire "hooks/MapStateHooks.lua"
----@type PlayerVisibilityHooks
-local PlayerVisibilityHooks = ModRequire "hooks/PlayerVisibilityHooks.lua"
----@type PlayerVisibilityHelper
-local PlayerVisibilityHelper = ModRequire "PlayerVisibilityHelper.lua"
+local CoopPlayers = ModRequire "logic/CoopPlayers.lua"
 
-ModRequire "hooks/DamageHooks.lua"
-ModRequire "hooks/UseHooks.lua"
-ModRequire "hooks/ControlHooks.lua"
-ModRequire "hooks/WeaponHooks.lua"
-ModRequire "hooks/EffectHooks.lua"
+---@type Events
+local Events = ModRequire "logic/Events.lua"
+
+local hooks = {}
+local function AddHooks(path)
+    local hook = ModRequire(path)
+    if hook and hook ~= true and hook.InitHooks then
+        table.insert(hooks, hook)
+    end
+end
+
+AddHooks "logic/CoopCamera.lua"
+AddHooks "logic/HeroContext.lua"
+AddHooks "hooks/FreezeHooks.lua"
+AddHooks "hooks/RunHooks.lua"
+AddHooks "hooks/MenuHooks.lua"
+AddHooks "hooks/SaveHooks.lua"
+AddHooks "hooks/EnemyAiHooks.lua"
+AddHooks "hooks/LootHooks.lua"
+AddHooks "hooks/UIHooks.lua"
+AddHooks "hooks/VulnerabilityHooks.lua"
+AddHooks "hooks/ResourceLoadingHooks.lua"
+AddHooks "logic/loot/LootInterface.lua"
+AddHooks "hooks/MapStateHooks.lua"
+AddHooks "hooks/PlayerVisibilityHooks.lua"
+
+AddHooks "hooks/DamageHooks.lua"
+AddHooks "hooks/UseHooks.lua"
+AddHooks "hooks/ControlHooks.lua"
+AddHooks "hooks/WeaponHooks.lua"
+AddHooks "hooks/EffectHooks.lua"
 
 local hooksInited = false
 local function TryInstalBasicHooks()
@@ -56,26 +48,16 @@ local function TryInstalBasicHooks()
 
     hooksInited = true
 
-    -- Fixes crash on loading when the game truing add last stand to a second player
-    ScreenAnchors = {}
+    Events.engine:trigger("hooksPreInicialized")
 
-    HeroContext.InitHooks()
     HeroEx.Init()
-    EnemyAiHooks.InitHooks()
-    SaveHooks.InitHooks()
-    CoopCamera.InitHooks()
-    FreezeHooks.InitHooks()
-    RunHooks.InitHooks()
-    MenuHooks.InitHooks()
-    --PactDoorFix.InitHooks()
-    UIHooks.InitHooks()
     CoopPlayers.CoopInit()
-    LootHooks.InitHooks()
-    VulnerabilityHooks.InitHooks()
-    ResourceLoadingHooks.InitHooks()
-    LootDelivery.InitHooks()
-    MapStateHooks.InitHooks()
-    PlayerVisibilityHooks.InitHooks()
+
+    for _, hook in ipairs(hooks) do
+        hook.InitHooks()
+    end
+
+    Events.engine:trigger("hooksInicialized")
 end
 
 OnPreThingCreation
@@ -85,20 +67,7 @@ OnPreThingCreation
 
 OnAnyLoad {
     function(triggerArgs)
-        local mapName = triggerArgs.name
-
-        if mapName == "Hub_PreRun" then
-            HookUtils.onPostFunctionOnce("DeathAreaRoomTransition", function()
-                if not HeroContext.GetDefaultHero() then
-                    HeroContext.InitRunHook()
-                end
-                CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
-                CoopPlayers.UpdateMainHero()
-                CoopPlayers.InitCoopUnit(2)
-                PlayerVisibilityHelper.TriggerOutline(1, CurrentRun.Hero)
-                SecondPlayerUi.Refresh()
-            end)
-        end
+        Events.run:trigger("mapLoaded", triggerArgs.name)
     end
 }
 

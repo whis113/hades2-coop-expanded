@@ -4,11 +4,11 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type HeroContextProxyStore
-local HeroContextProxyStore = ModRequire "../HeroContextProxyStore.lua"
+local HeroContextProxyStore = ModRequire "../logic/HeroContextProxyStore.lua"
 
 ---@class SaveHooks
 local SaveHooks = {}

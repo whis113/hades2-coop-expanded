@@ -6,7 +6,7 @@
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "CoopPlayers.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type RunEx
 local RunEx = ModRequire "RunEx.lua"
 
@@ -20,7 +20,6 @@ CoopCamera.isFocusEnabled = true
 CoopCamera.IgnoreHeroes = {}
 
 function CoopCamera.InitHooks()
-    HookUtils.wrap("CreateRoom", CoopCamera.CreateRoomWrapHook)
     HookUtils.onPostFunction("draw", CoopCamera.Update)
     --HookUtils.onPostFunction("ExitNPCPresentation", CoopCamera.OnExitNPCPresentation)
     HookUtils.onPostFunction("PanCamera", CoopCamera.PanCameraPostHook)
@@ -74,17 +73,6 @@ function CoopCamera.Update()
     end
 
     CoopCamera.LockCameraOrig { Ids = units, Duration = 0.0 }
-end
-
----@private
-function CoopCamera.CreateRoomWrapHook(baseFunc, ...)
-    local room = baseFunc(...)
-    if not room.ZoomFraction then
-        room.ZoomFraction = 0.6
-    elseif room.ZoomFraction > 0.5 then
-        room.ZoomFraction = room.ZoomFraction * 0.6
-    end
-    return room
 end
 
 ---@private

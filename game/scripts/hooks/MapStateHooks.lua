@@ -4,16 +4,15 @@
 --
 
 ---@type HeroContextProxyStore
-local HeroContextProxyStore = ModRequire "../HeroContextProxyStore.lua"
-
+local HeroContextProxyStore = ModRequire "../logic/HeroContextProxyStore.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 
 ---@class MapStateHooks
 local MapStateHooks = {}
 
 function MapStateHooks.InitHooks()
-    HookUtils.onPostFunctionOnce("MapStateInit", MapStateHooks.ApplyProxies)
+    HookUtils.onPostFunction("MapStateInit", MapStateHooks.ApplyProxies)
     if MapState then
         MapStateHooks.ApplyProxies()
     end

@@ -4,9 +4,9 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 
 ---@class FreezeHooks
 local FreezeHooks = {}

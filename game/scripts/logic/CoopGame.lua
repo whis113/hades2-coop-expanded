@@ -3,9 +3,11 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
----@class GameFlags
-local GameFlags = {
-    LeaveRoomHandlesOnce = true;
-}
+---@class CoopGame
+local CoopGame = {}
 
-return GameFlags
+function CoopGame.Save()
+
+end
+
+return CoopGame

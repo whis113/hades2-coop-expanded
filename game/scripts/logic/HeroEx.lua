@@ -6,7 +6,7 @@
 ---@type HeroContext
 local HeroContext = ModRequire "HeroContext.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 
 ---@class HeroEx
 local HeroEx = {}

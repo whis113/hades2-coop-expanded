@@ -8,7 +8,7 @@ local HeroContext = ModRequire "HeroContext.lua"
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "CoopPlayers.lua"
 ---@type TableUtils
-local TableUtils = ModRequire "TableUtils.lua"
+local TableUtils = ModRequire "../utils/TableUtils.lua"
 
 ---@class HeroContextProxy
 ---@field private separatedData table[]

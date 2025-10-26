@@ -4,25 +4,23 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type CoopControl
-local CoopControl = ModRequire "../CoopControl.lua"
+local CoopControl = ModRequire "../logic/CoopControl.lua"
 ---@type HeroEx
-local HeroEx = ModRequire "../HeroEx.lua"
+local HeroEx = ModRequire "../logic/HeroEx.lua"
 
 ---@class MenuHooks
 local MenuHooks = {}
 
 function MenuHooks.InitHooks()
-    MenuHooks.HookUiControl("ShowWeaponUpgradeScreen")
-    MenuHooks.HookUiControl("ShowAwardMenu")
+    MenuHooks.HookUiControl("ShowAwardMenu") -- Wrong name
     MenuHooks.HookUiControl("PlayTextLines")
     MenuHooks.HookUiControl("OpenUpgradeChoiceMenu")
-    MenuHooks.HookUiControl("ShowAdvancedTooltip")
     MenuHooks.HookUiControl("ShowStoreScreen")
     MenuHooks.HookUiControl("OpenSellTraitMenu")
 

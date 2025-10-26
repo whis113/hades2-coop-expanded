@@ -222,6 +222,16 @@ function CoopPlayers.UpdateMainHero()
     SetUntargetable { Id = hero.ObjectId }
 end
 
+function CoopPlayers.HealAllAdditionalPlayers()
+    for playerIndex = 2, CoopPlayers.GetPlayersCount() do
+        local hero = CoopPlayers.CoopHeroes[playerIndex]
+        if hero then
+            hero.IsDead = nil
+            hero.Health = hero.MaxHealth
+        end
+    end
+end
+
 function CoopPlayers.CoopInit()
     CoopControl.InitControlSchemas()
 

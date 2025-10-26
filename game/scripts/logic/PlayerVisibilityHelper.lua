@@ -4,7 +4,7 @@
 --
 
 ---@type CoopModConfig
-local Config = ModRequire "config.lua"
+local Config = ModRequire "../config.lua"
 
 ---@class PlayerVisibilityHelper
 local PlayerVisibilityHelper = {}

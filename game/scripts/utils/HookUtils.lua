@@ -105,3 +105,4 @@ function HookUtils.replace(funcName, handler)
 end
 
 return HookUtils
+

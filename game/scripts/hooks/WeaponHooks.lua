@@ -4,9 +4,9 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 
 -- Fixes crashes when the game unload weapons that is currently equipped by another player
 HookUtils.wrap("UnequipWeapon", function (baseFunc, args)

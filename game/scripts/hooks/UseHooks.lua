@@ -4,11 +4,11 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type ILootDelivery
-local LootDelivery = ModRequire "../loot/LootInterface.lua"
+local LootDelivery = ModRequire "../logic/loot/LootInterface.lua"
 
 local _OnUsed = OnUsed
 OnUsed = function(args)

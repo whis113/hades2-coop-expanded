@@ -46,7 +46,6 @@ function CombinedTraitsUI.RemoveHeroTrait(hero)
     for _, trait in pairs(hero.Traits) do
         TraitUIRemove(trait)
     end
-    UpdateNumHiddenTraits()
 end
 
 ---@private
@@ -67,35 +66,6 @@ function CombinedTraitsUI.AddHeroTraits(hero)
         for i, traitData in pairs(traitDatas) do
             TraitUIAdd(traitData, true)
         end
-    end
-
-    if CurrentRun.EnemyUpgrades then
-        for k, upgradeName in pairs(CurrentRun.EnemyUpgrades) do
-            local upgradeData = EnemyUpgradeData[upgradeName]
-            TraitUIAdd(upgradeData, true)
-        end
-    end
-
-    local numHidden = GetNumHiddenTraits()
-    if numHidden > 0 then
-        UpdateAdditionalTraitHint(numHidden)
-        FadeObstacleIn {
-            Id = ScreenAnchors.AdditionalTraitHint,
-            IncludeText = true,
-            Duration = CombatUI.FadeInDuration,
-            Distance =
-                CombatUI.FadeDistance.Trait,
-            Direction = 0
-        }
-    else
-        HideObstacle {
-            Id = ScreenAnchors.AdditionalTraitHint,
-            IncludeText = true,
-            Distance = CombatUI.FadeDistance.Trait,
-            Angle = 180,
-            Duration = CombatUI.TraitFadeDuration,
-            SmoothStep = true
-        }
     end
 end
 

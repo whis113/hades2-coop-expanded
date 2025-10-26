@@ -4,31 +4,27 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type CoopCamera
-local CoopCamera = ModRequire "../CoopCamera.lua"
+local CoopCamera = ModRequire "../logic/CoopCamera.lua"
 ---@type EnemyAiHooks
 local EnemyAiHooks = ModRequire "EnemyAiHooks.lua"
----@type LootHooks
-local LootHooks = ModRequire "LootHooks.lua"
----@type ILootDelivery
-local LootDelivery = ModRequire "../loot/LootInterface.lua"
 ---@type SecondPlayerUi
-local SecondPlayerUi = ModRequire "../SecondPlayerUI.lua"
+local SecondPlayerUi = ModRequire "../logic/SecondPlayerUI.lua"
 ---@type RunEx
-local RunEx = ModRequire "../RunEx.lua"
+local RunEx = ModRequire "../logic/RunEx.lua"
 ---@type PlayerVisibilityHelper
-local PlayerVisibilityHelper = ModRequire "../PlayerVisibilityHelper.lua"
+local PlayerVisibilityHelper = ModRequire "../logic/PlayerVisibilityHelper.lua"
 ---@type HeroEx
-local HeroEx = ModRequire "../HeroEx.lua"
+local HeroEx = ModRequire "../logic/HeroEx.lua"
 ---@type CoopControl
-local CoopControl = ModRequire "../CoopControl.lua"
----@type GameFlags
-local GameFlags = ModRequire "../GameFlags.lua"
+local CoopControl = ModRequire "../logic/CoopControl.lua"
+---@type Events
+local Events = ModRequire "../logic/Events.lua"
 
 ---@class RunHooks
 local RunHooks = {}
@@ -36,8 +32,9 @@ local RunHooks = {}
 function RunHooks.InitHooks()
     HookUtils.onPreFunction("LeaveRoom", RunHooks.LeaveRoomHook)
     HookUtils.onPreFunction("DeathAreaRoomTransition", RunHooks.DeathAreaRoomTransitionPreHook)
+    HookUtils.onPreFunction("OnAllEnemiesDead", RunHooks.OnAllEnemiesDeadPreHook)
     HookUtils.wrap("EndEarlyAccessPresentation", RunHooks.EndEarlyAccessPresentationWrapHook)
-    HookUtils.wrap("StartNewRun", RunHooks.StartNewRunWrapHook)
+    HookUtils.onPostFunction("StartNewRun", RunHooks.StartNewRunPostHook)
     HookUtils.wrap("StartRoom", RunHooks.StartRoomWrapHook)
     HookUtils.wrap("KillHero", RunHooks.KillHeroHook)
     HookUtils.wrap("CheckRoomExitsReady", RunHooks.CheckRoomExitsReadyHook)
@@ -45,9 +42,8 @@ function RunHooks.InitHooks()
     HookUtils.wrap("CheckDistanceTrigger", RunHooks.CheckDistanceTriggerWrapHook)
     HookUtils.wrap("EndEncounterEffects", RunHooks.EndEncounterEffectsWrapHook)
     HookUtils.wrap("StartEncounterEffects", RunHooks.StartEncounterEffectsWrapHook)
-    HookUtils.onPostFunction("StartNewGame", RunHooks.StartNewGameHook)
-    HookUtils.onPostFunction("CheckForAllEnemiesDead", RunHooks.CheckForAllEnemiesDeadPostHook)
     HookUtils.onPostFunction("RestoreUnlockRoomExits", RunHooks.RestoreUnlockRoomExitsHook)
+    HookUtils.onPostFunction("StartRoomPresentation", RunHooks.StartRoomPresentationPostHook)
 end
 
 ---@private
@@ -60,7 +56,7 @@ end
 ---@private
 function RunHooks.CheckDistanceTriggerWrapHook(CheckDistanceTriggerFun, ...)
     -- TODO
-    -- This hack fixes crashes like #21 when the player 1 is dead.
+    -- This hack fixes crashes like Hades 1 #21 when the player 1 is dead.
     -- The crash is caused by invalid reference to the second player.
     -- The game cannot find a player unit and triggers NotifyWithinDistance instantly without result
     HeroContext.RunWithHeroContext(CoopPlayers.GetMainHero(), CheckDistanceTriggerFun, ...)
@@ -101,54 +97,6 @@ end
 
 ---@private
 function RunHooks.HandleGenericRoom(StartRoomFun, run, currentRoom)
-    local overrides = currentRoom.EncounterSpecificDataOverwrites and
-    currentRoom.EncounterSpecificDataOverwrites[currentRoom.Encounter.Name]
-
-    local prevRoom = GetPreviousRoom(CurrentRun)
-    local roomEntranceFunctionName = (overrides and overrides.EntranceFunctionName)
-        or currentRoom.EntranceFunctionName
-        or "RoomEntranceStandard"
-
-    if prevRoom ~= nil and prevRoom.NextRoomEntranceFunctionName ~= nil then
-        roomEntranceFunctionName = prevRoom.NextRoomEntranceFunctionName
-    end
-    local args = currentRoom.EntranceFunctionArgs
-
-    HookUtils.onPostFunctionOnce(roomEntranceFunctionName, function()
-        local entranceFunction = _G[roomEntranceFunctionName]
-        --entranceFunction(currentRun, currentRoom, args)
-        -- TODO ADD ENTER Animation
-        for playerId = 2, CoopPlayers.GetPlayersCount() do
-            local hero = CoopPlayers.GetHero(playerId)
-            if not hero or (hero and not hero.IsDead) then
-                CoopCamera.ForceFocus(true)
-                CoopPlayers.InitCoopUnit(playerId)
-            end
-        end
-        SecondPlayerUi.Refresh()
-
-        CoopPlayers.UpdateMainHero()
-
-        local mainHero = CoopPlayers.GetMainHero()
-        local isMainPlayerDead = mainHero and mainHero.IsDead
-        if not isMainPlayerDead then
-            -- For some strange reason RoomEntrancePortal keeps the main player invisible
-            SetAlpha{ Id = mainHero.ObjectId, Fraction = 1.0, Duration = 1.0 }
-        end
-
-        if currentRoom.HeroEndPoint then
-            for playerId = 2, CoopPlayers.GetPlayersCount() do
-                local hero = CoopPlayers.GetHero(playerId)
-                if not hero.IsDead then
-                    Teleport({ Id = hero.ObjectId, DestinationId = currentRoom.HeroEndPoint })
-                    if isMainPlayerDead then
-                        RemoveInputBlock{ PlayerIndex = playerId, Name = "MoveHeroToRoomPosition" }
-                    end
-                end
-            end
-        end
-    end)
-
     HookUtils.onPostFunctionOnce("SwitchActiveUnit", function()
         SwitchActiveUnit { PlayerIndex = 1, Id = CoopPlayers.GetMainHero().ObjectId }
     end)
@@ -179,19 +127,8 @@ function RunHooks.HandleSurfaceRoom(StartRoomFun, run, currentRoom)
 end
 
 ---@private
-function RunHooks.StartNewRunWrapHook(StartNewRunFun, prevRun, args)
-    local isNewGame = RunEx.WasTheFirstRunStarted()
-    local newRun = StartNewRunFun(prevRun, args)
-    HeroContext.InitRunHook()
-    LootHooks.InitRunHooks()
-    LootDelivery.Reset(CoopPlayers.GetPlayersCount())
-    CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
-
-    if not isNewGame then
-        CoopPlayers.RecreateAllAdditionalPlayers()
-    end
-
-    return newRun
+function RunHooks.StartNewRunPostHook()
+    Events.run:trigger("newRunStarted", CurrentRun)
 end
 
 --- Bypass IsAlive check with this hook
@@ -250,60 +187,7 @@ end
 
 ---@private
 function RunHooks.LeaveRoomHook(currentRun, door)
-    -- Disables an extit door after use
-    door.ReadyToUse = false
-
-    if not GameFlags.LeaveRoomHandlesOnce then
-        return
-    end
-
-    -- Updates traits and health
-    local nextRoom = door.Room
-    local currentHero = CurrentRun.Hero
-    for _, hero in CoopPlayers.PlayersIterator() do
-        if hero ~= currentHero and not hero.IsDead then
-            ClearEffect({ Id = hero.ObjectId, All = true, BlockAll = true, })
-            StopCurrentStatusAnimation(hero)
-            hero.BlockStatusAnimations = true
-
-            if not nextRoom.BlockDoorHealFromPrevious then
-                HeroContext.RunWithHeroContext(hero, CheckDoorHealTrait, currentRun)
-            end
-
-            local removedTraits = {}
-            for _, trait in pairs(hero.Traits) do
-                if trait.RemainingUses ~= nil and trait.UsesAsRooms ~= nil and trait.UsesAsRooms then
-                    UseTraitData(hero, trait)
-                    if trait.RemainingUses ~= nil and trait.RemainingUses <= 0 then
-                        table.insert(removedTraits, trait)
-                    end
-                end
-            end
-            for _, trait in pairs(removedTraits) do
-                RemoveTraitData(hero, trait)
-            end
-        end
-    end
-end
-
--- Clrears poison effects
----@private
-function RunHooks.CheckForAllEnemiesDeadPostHook()
-    for playerID = 2, CoopPlayers.GetPlayersCount() do
-        local hero = CoopPlayers.GetHero(playerID)
-        if hero and not hero.IsDead and hero.ObjectId then
-            ClearEffect({ Id = hero.ObjectId, Name = "StyxPoison" })
-            ClearEffect({ Id = hero.ObjectId, Name = "DamageOverTime" })
-        end
-    end
-end
-
----@private
-function RunHooks.StartNewGameHook()
-    if not HeroContext.GetDefaultHero() then
-        HeroContext.InitRunHook()
-    end
-    CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
+    Events.run:trigger("roomPreLeave", currentRun, door)
 end
 
 ---@private
@@ -339,6 +223,14 @@ function RunHooks.StartEncounterEffectsWrapHook(baseFun, run)
     for _, hero in ipairs(CoopPlayers.GetAliveHeroes()) do
         HeroContext.RunWithHeroContextAwait(hero, baseFun, run)
     end
+end
+
+function RunHooks.StartRoomPresentationPostHook()
+    Events.run:trigger("roomPresentationFinished")
+end
+
+function RunHooks.OnAllEnemiesDeadPreHook()
+    Events.run:trigger("allEnemiesDead")
 end
 
 return RunHooks

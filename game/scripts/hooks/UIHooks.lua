@@ -4,17 +4,17 @@
 --
 
 ---@type SecondPlayerUi
-local SecondPlayerUi = ModRequire "../SecondPlayerUI.lua"
+local SecondPlayerUi = ModRequire "../logic/SecondPlayerUI.lua"
 ---@type CombinedTraitsUI
-local CombinedTraitsUI = ModRequire "../CombinedTraitsUI.lua"
+local CombinedTraitsUI = ModRequire "../logic/CombinedTraitsUI.lua"
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type RunEx
-local RunEx = ModRequire "../RunEx.lua"
+local RunEx = ModRequire "../logic/RunEx.lua"
 
 ---@class UIHooks
 local UIHooks = {}

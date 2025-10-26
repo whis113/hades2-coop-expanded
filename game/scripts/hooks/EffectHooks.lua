@@ -1,11 +1,11 @@
 ---@type HeroContextWrapper
-local HeroContextWrapper = ModRequire "../HeroContextWrapper.lua"
+local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 
 HookUtils.wrap("OnEffectApply", function(baseFunc, args)
     local originalHandler = args[1]

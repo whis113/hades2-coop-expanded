@@ -3,6 +3,9 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
+---@type Events
+local Events = ModRequire "Events.lua"
+
 ---@class HeroContext
 local HeroContext = {}
 
@@ -41,6 +44,11 @@ function HeroContext.InitHooks()
         else
             _thread(fun, ...)
         end
+    end
+
+    Events.run:on("newRunStarted", HeroContext.InitRunHook)
+    if CurrentRun then
+        HeroContext.InitRunHook()
     end
 end
 

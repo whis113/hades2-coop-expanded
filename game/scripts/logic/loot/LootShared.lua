@@ -9,6 +9,8 @@ local HeroContext = ModRequire "../HeroContext.lua"
 local CoopPlayers = ModRequire "../CoopPlayers.lua"
 ---@type HeroContextProxyStore
 local HeroContextProxyStore = ModRequire "../HeroContextProxyStore.lua"
+---@type Events
+local Events = ModRequire "../Events.lua"
 ---@type LootQuery
 local LootQuery = ModRequire "LootQuery.lua"
 
@@ -16,6 +18,7 @@ local LootQuery = ModRequire "LootQuery.lua"
 local LootShared = {}
 
 function LootShared.InitHooks()
+    Events.run:on("newRunStarted", LootShared.Reset)
 end
 
 ---@param baseFun fun(run: table, room: table)

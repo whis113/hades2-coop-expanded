@@ -1,0 +1,133 @@
+--
+-- Copyright (c) Uladzislau Nikalayevich <thenormalnij@gmail.com>. All rights reserved.
+-- Licensed under the MIT license. See LICENSE file in the project root for details.
+--
+
+---@type Events
+local Events = ModRequire "Events.lua"
+---@type RunEx
+local RunEx = ModRequire "RunEx.lua"
+---@type HeroContext
+local HeroContext = ModRequire "HeroContext.lua"
+---@type CoopPlayers
+local CoopPlayers = ModRequire "CoopPlayers.lua"
+---@type SecondPlayerUi
+local SecondPlayerUi = ModRequire "SecondPlayerUI.lua"
+---@type PlayerVisibilityHelper
+local PlayerVisibilityHelper = ModRequire "PlayerVisibilityHelper.lua"
+---@type CoopCamera
+local CoopCamera = ModRequire "CoopCamera.lua"
+
+---@class CoopRun
+local CoopRun = {}
+
+local HUB_ROOMS = {
+    ["Hub_PreRun"] = true,
+}
+
+function CoopRun.Init()
+    Events.run:on("newRunStarted", CoopRun.OnRunStarted)
+    Events.run:on("mapLoaded", CoopRun.OnMapLoaded)
+    Events.run:on("roomPresentationFinished", CoopRun.OnRoomPresentationFinished)
+    Events.run:on("roomPreLeave", CoopRun.OnRoomPreLeave)
+    Events.run:on("allEnemiesDead", CoopRun.OnAllEnemiesDead)
+end
+
+---@private
+function CoopRun.OnRunStarted(run)
+    HeroContext.InitRunHook()
+    CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
+
+    if not RunEx.IsFirstRun(run) then
+        CoopPlayers.RecreateAllAdditionalPlayers()
+    end
+end
+
+---@private
+function CoopRun.OnMapLoaded(mapName)
+    if HUB_ROOMS[mapName] then
+        CoopPlayers.HealAllAdditionalPlayers()
+    end
+end
+
+---@private
+function CoopRun.OnRoomPreLeave(currentRun, door)
+    -- Disables the exit door after use
+    door.ReadyToUse = false
+
+    -- Updates traits and health
+    local nextRoom = door.Room
+    local currentHero = CurrentRun.Hero
+    for _, hero in CoopPlayers.PlayersIterator() do
+        if hero ~= currentHero and not hero.IsDead then
+            ClearEffect({ Id = hero.ObjectId, All = true, BlockAll = true, })
+            StopCurrentStatusAnimation(hero)
+            hero.BlockStatusAnimations = true
+
+            if not nextRoom.BlockDoorHealFromPrevious then
+                HeroContext.RunWithHeroContext(hero, CheckDoorHealTrait, currentRun)
+            end
+
+            local removedTraits = {}
+            for _, trait in pairs(hero.Traits) do
+                if trait.RemainingUses ~= nil and trait.UsesAsRooms ~= nil and trait.UsesAsRooms then
+                    UseTraitData(hero, trait)
+                    if trait.RemainingUses ~= nil and trait.RemainingUses <= 0 then
+                        table.insert(removedTraits, trait)
+                    end
+                end
+            end
+            for _, trait in pairs(removedTraits) do
+                RemoveTraitData(hero, trait)
+            end
+        end
+    end
+end
+
+---@private
+function CoopRun.OnRoomPresentationFinished()
+    for playerId = 2, CoopPlayers.GetPlayersCount() do
+        local hero = CoopPlayers.GetHero(playerId)
+        if not hero or (hero and not hero.IsDead) then
+            CoopPlayers.InitCoopUnit(playerId)
+        end
+    end
+    SecondPlayerUi.Refresh()
+    CoopCamera.ForceFocus(true)
+
+    CoopPlayers.UpdateMainHero()
+
+    local mainHero = CoopPlayers.GetMainHero()
+    local isMainPlayerDead = mainHero and mainHero.IsDead
+    if not isMainPlayerDead then
+        -- For some strange reason RoomEntrancePortal keeps the main player invisible
+        SetAlpha { Id = mainHero.ObjectId, Fraction = 1.0, Duration = 1.0 }
+    end
+
+    local currentRoom = CurrentRun.Room
+    if currentRoom.HeroEndPoint then
+        for playerId = 2, CoopPlayers.GetPlayersCount() do
+            local hero = CoopPlayers.GetHero(playerId)
+            if not hero.IsDead then
+                Teleport({ Id = hero.ObjectId, DestinationId = currentRoom.HeroEndPoint })
+                if isMainPlayerDead then
+                    RemoveInputBlock { PlayerIndex = playerId, Name = "MoveHeroToRoomPosition" }
+                end
+            end
+        end
+    end
+end
+
+---@private
+function CoopRun.OnAllEnemiesDead()
+    for playerID = 2, CoopPlayers.GetPlayersCount() do
+        local hero = CoopPlayers.GetHero(playerID)
+        if hero and not hero.IsDead and hero.ObjectId then
+            ClearEffect{ Id = hero.ObjectId, Name = "StyxPoison" }
+            ClearEffect{ Id = hero.ObjectId, Name = "DamageOverTime" }
+            ClearEffect{ Id = hero.ObjectId, Name = "Inked" }
+        end
+    end
+end
+
+return CoopRun

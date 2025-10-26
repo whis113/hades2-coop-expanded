@@ -4,15 +4,15 @@
 --
 
 ---@type CoopPlayers
-local CoopPlayers = ModRequire "../CoopPlayers.lua"
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
-local HeroContext = ModRequire "../HeroContext.lua"
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type SecondPlayerUi
-local SecondPlayerUi = ModRequire "../SecondPlayerUI.lua"
+local SecondPlayerUi = ModRequire "../logic/SecondPlayerUI.lua"
 ---@type HeroContextWrapper
-local HeroContextWrapper = ModRequire "../HeroContextWrapper.lua"
+local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type CoopModConfig
 local Config = ModRequire "../config.lua"
 

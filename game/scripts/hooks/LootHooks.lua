@@ -4,14 +4,16 @@
 --
 
 ---@type HookUtils
-local HookUtils = ModRequire "../HookUtils.lua"
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type HeroContextProxy
-local HeroContextProxy = ModRequire "../HeroContextProxy.lua"
+local HeroContextProxy = ModRequire "../logic/HeroContextProxy.lua"
 ---@type HeroContextProxyStore
-local HeroContextProxyStore = ModRequire "../HeroContextProxyStore.lua"
+local HeroContextProxyStore = ModRequire "../logic/HeroContextProxyStore.lua"
+---@type Events
+local Events = ModRequire "../logic/Events.lua"
 
 ---@type ILootDelivery
-local LootDelivery = ModRequire "../loot/LootInterface.lua"
+local LootDelivery = ModRequire "../logic/loot/LootInterface.lua"
 
 ---@class LootHooks
 local LootHooks = {}
@@ -43,10 +45,8 @@ function LootHooks.InitHooks()
     -- Spawns room reward for a player selected by room
     HookUtils.wrap("SpawnRoomReward", LootHooks.SpawnRoomRewardHook)
 
-    LootHooks.InitRunHooks()
-end
+    Events.run:on("newRunStarted", LootHooks.InitLootHistoryProxy)
 
-function LootHooks.InitRunHooks()
     if CurrentRun then
         LootHooks.InitLootHistoryProxy()
     end
