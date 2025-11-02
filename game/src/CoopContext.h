@@ -4,6 +4,7 @@
 //
 
 #include "extensions/PlayerManagerExtension.h"
+#include "PlayerAnimationSwap.h"
 #include <memory>
 #include <vector>
 
@@ -37,7 +38,10 @@ class CoopContext {
 
     bool UseItem(size_t playerUnit, size_t useUnit);
 
+    PlayerAnimationSwap &GetAnimationSwap(size_t playerIndex) { return animationSwaps[playerIndex]; }
+
   private:
     PlayerManagerExtension playerManager;
+    PlayerAnimationSwap animationSwaps[MAX_PLAYERS]{};
     static std::unique_ptr<CoopContext> instance;
 };

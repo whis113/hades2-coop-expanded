@@ -62,7 +62,7 @@ function RunEx.IsHubRoom(name)
 end
 
 function RunEx.RemoveRewardFromAllDefaultDoors()
-    for _, door in pairs(OfferedExitDoors) do
+    for _, door in pairs(MapState.OfferedExitDoors) do
         if door.IsDefaultDoor then
             RunEx.RemoveDoorReward(door)
         end

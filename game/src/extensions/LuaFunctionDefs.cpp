@@ -7,8 +7,7 @@
 #include "LuaFunctionDefs.h"
 #include "CoopContext.h"
 #include "lua.hpp"
-
-#include <windows.h>
+#include <hades2/HashGuid.h>
 
 // bool CoopSetPlayerGamepad(number playerIndex, number controllerIndex)
 static int CoopSetPlayerGamepad(lua_State *L) {
@@ -170,6 +169,65 @@ static int CoopResetCurrentMainPlayer(lua_State *L) {
     return 0;
 }
 
+static int CoopSetAnimationSwap(lua_State *L) {
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Argument 1 must be a number");
+    }
+
+    if (!lua_isstring(L, 2)) {
+        return luaL_error(L, "Argument 2 must be a sting");
+    }
+
+    size_t playerIndex = static_cast<size_t>(lua_tonumber(L, 1)) - 1;
+    if (playerIndex >= MAX_PLAYERS) {
+        return luaL_error(L, "Player index out of range");
+    }
+
+    const char *fromAnimationStr = lua_tostring(L, 2);
+
+    sgg::HashGuid fromAnimHash = sgg::HashGuid::StringIntern(fromAnimationStr, 0);
+    if (!fromAnimHash.GetId()) {
+        return luaL_error(L, "Invalid animation name");
+    }
+
+    const char *toAnimationStr = lua_tostring(L, 3);
+
+    sgg::HashGuid toAnimHash = sgg::HashGuid::StringIntern(toAnimationStr, 0);
+    if (!toAnimHash.GetId()) {
+        return luaL_error(L, "Invalid animation name");
+    }
+
+    CoopContext::GetInstance()->GetAnimationSwap(playerIndex).SetSwap(fromAnimHash, toAnimHash);
+
+    return 0;
+}
+
+static int CoopRemoveAnimationSwap(lua_State *L) { 
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Argument 1 must be a number");
+    }
+
+    if (!lua_isstring(L, 2)) {
+        return luaL_error(L, "Argument 2 must be a sting");
+    }
+
+    size_t playerIndex = static_cast<size_t>(lua_tonumber(L, 1)) - 1;
+    if (playerIndex >= MAX_PLAYERS) {
+        return luaL_error(L, "Player index out of range");
+    }
+
+    const char *fromAnimationStr = lua_tostring(L, 2);
+
+    sgg::HashGuid animNameHash = sgg::HashGuid::StringIntern(fromAnimationStr, 0);
+    if (!animNameHash.GetId()) {
+        return luaL_error(L, "Invalid animation name");
+    }
+
+    CoopContext::GetInstance()->GetAnimationSwap(playerIndex).RemoveSwap(animNameHash);
+
+    return 0;
+}
+
 void LuaFunctionDefs::Load(lua_State* L) {
     #define REGISTER(fun) lua_register(L, #fun, fun)
 
@@ -188,6 +246,9 @@ void LuaFunctionDefs::Load(lua_State* L) {
 
     REGISTER(CoopSetCurrentMainPlayer);
     REGISTER(CoopResetCurrentMainPlayer);
+
+    REGISTER(CoopSetAnimationSwap);
+    REGISTER(CoopRemoveAnimationSwap);
 
     #undef REGISTER
 }

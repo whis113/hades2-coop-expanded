@@ -40,6 +40,7 @@ AddHooks "hooks/UseHooks.lua"
 AddHooks "hooks/ControlHooks.lua"
 AddHooks "hooks/WeaponHooks.lua"
 AddHooks "hooks/EffectHooks.lua"
+AddHooks "hooks/AnaimationSwapHook.lua"
 
 local hooksInited = false
 local function TryInstalBasicHooks()

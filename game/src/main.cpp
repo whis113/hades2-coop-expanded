@@ -7,6 +7,7 @@
 
 #include "../include/HadesModApi.h"
 #include "CoopContext.h"
+#include "hooks/AnimSwapHook.h"
 
 HADES_MOD_API void _cdecl HadesModLuaCreated(lua_State *luaState) {CoopContext::GetInstance()->InitLua(luaState); };
 
@@ -14,6 +15,7 @@ HADES_MOD_API bool _cdecl HadesModInit(const IModApi *modApi) {
     if (modApi->version < MOD_API_VERSION)
         return false;
 
+    AnimSpawnHook::Install(modApi->GetSymbolAddress);
     HookTable::Instance().Init(*modApi->GetHookTable());
 
     return true;

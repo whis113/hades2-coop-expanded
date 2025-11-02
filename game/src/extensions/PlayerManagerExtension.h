@@ -7,6 +7,7 @@
 
 #include <hades2/InputHandler.h>
 #include <hades2/Player.h>
+#include <hades2/Thing.h>
 
 constexpr size_t MAX_PLAYERS = 2;
 
@@ -25,6 +26,7 @@ class PlayerManagerExtension {
 
     sgg::Player *CreatePlayer(size_t index);
     sgg::Player *GetPlayer(size_t index);
+    sgg::Player *GetByUnit(sgg::Thing* unit);
 
     sgg::InputHandler *GetInput(size_t index);
 

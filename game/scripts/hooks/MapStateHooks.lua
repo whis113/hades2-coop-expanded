@@ -11,6 +11,7 @@ local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@class MapStateHooks
 local MapStateHooks = {}
 
+---@public
 function MapStateHooks.InitHooks()
     HookUtils.onPostFunction("MapStateInit", MapStateHooks.ApplyProxies)
     if MapState then
@@ -18,6 +19,7 @@ function MapStateHooks.InitHooks()
     end
 end
 
+---@private
 function MapStateHooks.ApplyProxies()
     -- Fixes dark Melinoë after dash
     --HeroContextProxyStore.Recreate(MapState, "LastBlinkTimeUnmodified")
@@ -25,6 +27,12 @@ function MapStateHooks.ApplyProxies()
     HeroContextProxyStore.Recreate(MapState, "PlayerAlphaFlags")
     MapState.HeroNotStopsProjectile = MapState.HeroNotStopsProjectile or {}
     HeroContextProxyStore.Recreate(MapState, "HeroNotStopsProjectile")
+
+    -- Fixes wapons logic
+    MapState.EquippedWeapons = MapState.EquippedWeapons or {}
+    HeroContextProxyStore.Recreate(MapState, "EquippedWeapons")
+    MapState.WeaponCharge = MapState.WeaponCharge or {}
+    HeroContextProxyStore.Recreate(MapState, "WeaponCharge")
 end
 
 return MapStateHooks
