@@ -67,20 +67,6 @@ void AnimSpawnHook::Install(IModApi::GetSymbolAddress_t GetSymbolAddress) {
     static CoopContext *coopContext = CoopContext::GetInstance();
 
     // Setters
-    auto animationManager_CreateAndInitPos = GetSymbolAddress("sgg::AnimationManager::CreateAndInit");
-    if (!animationManager_CreateAndInitPos)
-        return;
-
-    //AnimationManager_CreateAndInit.Install(reinterpret_cast<void *>(animationManager_CreateAndInitPos), 12);
-    AnimationManager_CreateAndInit.onPreFunction = [](void *&ret, sgg::AnimationData *data,
-                                                      Vectormath::Vector2 location, void *manager, sgg::Thing *attachTo,
-                                                      bool isChild, bool suppressSounds, void *spawner) {
-        ApplyPlayerContextFromThing(attachTo);
-        return true;
-    };
-
-    //
-
     auto thingSetAnimationPos = GetSymbolAddress("?SetAnimation@Thing@sgg@@QEAAPEAVAnimation@2@UHashGuid@2@_N11U42@@Z");
     if (!thingSetAnimationPos)
         return;
