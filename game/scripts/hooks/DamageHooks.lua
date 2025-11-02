@@ -100,5 +100,17 @@ HeroContextWrapper.WrapTriggerHero("OnWeaponCharging", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponChargeCanceled", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnPerfectChargeWindowEntered", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnBlinkFinished", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnWeaponTriggerRelease", "OwnerTable")
---HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker") -- TODO check
+HeroContextWrapper.WrapTriggerHero("OnProjectileCreation", "TriggeredByTable")
+HeroContextWrapper.WrapTriggerHero("OnProjectileArm", "TriggeredByTable")
+HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker")
+HeroContextWrapper.WrapTriggerHero("OnDodge", "TriggeredByTable")
+HeroContextWrapper.WrapTriggerHero("OnProjectileReflect", "TriggeredByTable")
+HeroContextWrapper.WrapTriggerHero("OnWeaponClipEmpty", "OwnerTable")
+-- OnTouchdown -- TODO
+-- OnCollisionReaction
+-- OnAllegianceFlip
+-- OnObstacleCollision
+-- OnUnitCollision
+-- OnMovementReaction
+
+
