@@ -29,18 +29,6 @@ static FunctionHook<"sgg::AnimationManager::GetNameSwap(sgg::AnimationData*)", s
                     sgg::AnimationData *>
     GetNameSwapByAnim{};
 
-//sgg::Animation *__fastcall sgg::AnimationManager::CreateAndInit(
-        //sgg::AnimationData *data,
-        //Vectormath::Vector2 location,
-        //sgg::AnimationManager *manager,
-        //sgg::Thing *attachTo,
-        //bool isChild,
-        //bool suppressSounds,
-        //sgg::Animation *spawner)
-
-static FunctionHook<"sgg::AnimationManager::CreateAndInit", void*, sgg::AnimationData *, Vectormath::Vector2, void*, sgg::Thing*, bool, bool, void*>
-    AnimationManager_CreateAndInit{};
-
 //sgg::Animation *__fastcall sgg::Thing::SetAnimation(
 //        sgg::Thing *this,
 //        const sgg::HashGuid animName,
