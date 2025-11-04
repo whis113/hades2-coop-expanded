@@ -13,7 +13,7 @@ local CoopPlayers = ModRequire "CoopPlayers.lua"
 -- This class splits specific table keys for different heroes
 --
 -- Example:
--- HeroContextProxySpliter(MapState, { "lastCastTime" })
+-- HeroContextProxySpliter.New(MapState, { "lastCastTime" })
 -- In this case MapState.lastCastTime will return diffeent values for both players
 -- But MapState.globalTimer is still linked with one value
 
