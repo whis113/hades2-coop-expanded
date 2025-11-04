@@ -17,7 +17,8 @@ local CoopGame = {}
 
 ---@type ISaveHandler[]
 CoopGame.SaveHandlers = {
-    ModRequire "saveHandlers/HeroContextProxySaver.lua";
+    ModRequire "saveHandlers/HeroContextProxySaver.lua",
+    ModRequire "saveHandlers/HeroContextProxySpliterSaver.lua",
     ModRequire "saveHandlers/SinglePlayerHeroSaveHandler.lua",
 }
 

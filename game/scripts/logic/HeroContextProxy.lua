@@ -13,6 +13,7 @@ local TableUtils = ModRequire "../utils/TableUtils.lua"
 ---@class HeroContextProxy
 ---@field private separatedData table[]
 ---@field private target table
+---@field private key any
 local HeroContextProxy = {}
 
 ---@param owner table
@@ -24,19 +25,20 @@ function HeroContextProxy.New(owner, keyInOwner)
     local handler = {
         separatedData = {};
         target = target;
+        key = keyInOwner;
     }
     setmetatable(handler, { __index = HeroContextProxy })
 
-    local separatedData = handler.separatedData
-
-    for playerId = 1, CoopPlayers.GetPlayersCount() do
-        local playerKey = keyInOwner .. "CoopPlayer" .. playerId
-        local data = owner[playerKey]  or {}
-        separatedData[playerId] = data
-        owner[playerKey] = data
-    end
-
+    handler:CreateContextForAllPlayers()
     handler:MoveDataToContext(1)
+    handler:HookTable()
+
+    return handler
+end
+
+---@private
+function HeroContextProxy:HookTable()
+    local separatedData = self.separatedData
 
     local function getTableForCurrentHero()
         local hero = HeroContext.GetCurrentHeroContext()
@@ -66,9 +68,21 @@ function HeroContextProxy.New(owner, keyInOwner)
         end
     }
 
-    setmetatable(target, contextMt)
+    setmetatable(self.target, contextMt)
+end
 
-    return handler
+---@private
+function HeroContextProxy:CreateContextForAllPlayers()
+    local separatedData = self.separatedData
+    local owner = self.target
+    local key = self.key
+
+    for playerId = 1, CoopPlayers.GetPlayersCount() do
+        local playerKey = key .. "CoopPlayer" .. playerId
+        local data = owner[playerKey] or {}
+        separatedData[playerId] = data
+        owner[playerKey] = data
+    end
 end
 
 ---@private

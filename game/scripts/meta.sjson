@@ -5,6 +5,6 @@
 	Version = "0.0.0"
 	Author = "Uladzislau 'TheNormalnij' Nikalayevich"
 	Localization = [
-		"Localizations/Localization.sjson"
+		"localizations/Localization.sjson"
 	]
 }

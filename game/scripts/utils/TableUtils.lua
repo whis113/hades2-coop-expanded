@@ -17,6 +17,24 @@ function TableUtils.find(t, value)
     end
 end
 
+---@generic V
+---@param t V
+---@return V
+function TableUtils.copyDeep(t)
+    if type(t) ~=  "table" then
+        return t
+    end
+
+    local copy = {}
+
+    local copyTable = TableUtils.copyDeep
+    for k, v in pairs(t) do
+        copy[k] = copyTable(v)
+    end
+
+    return copy
+end
+
 ---@param dest table
 ---@param from table
 ---@return table
@@ -71,6 +89,39 @@ function TableUtils.after(t, v)
     return nil
 end
 
+---@generic V
+---@param t V[]
+---@return table<V, true>
+function TableUtils.toHashmap(t)
+    local o = {}
+    for i = 1, #t do
+        o[t[i]] = true
+    end
+    return o
+end
+
+---@param t table
+---@param keys any[]
+function TableUtils.removeKeys(t, keys)
+    for i = 1, #keys do
+        t[keys[i]] = nil
+    end
+end
+
+---@param from table
+---@param to table
+---@param keys any[]
+function TableUtils.copyKeysDeep(from, to, keys)
+    for i = 1, #keys do
+        local key = keys[i]
+        local v = from[key]
+        if type(v) == "table" then
+            to[key] = TableUtils.copyDeep(v)
+        else
+            to[key] = v
+        end
+    end
+end
 
 ---@generic FunctionName
 ---@param t { [FunctionName]: fun(...) }[]
