@@ -71,4 +71,22 @@ function TableUtils.after(t, v)
     return nil
 end
 
+
+---@generic FunctionName
+---@param t { [FunctionName]: fun(...) }[]
+---@param key FunctionName
+function TableUtils.callEvery(t, key, ...)
+    for i = 1, #t do
+        t[i][key](...)
+    end
+end
+
+---@param t { [string]: fun(...) }[]
+---@param key string
+function TableUtils.callEveryReverse(t, key, ...)
+    for i = #t, 1, -1 do
+        t[i][key](...)
+    end
+end
+
 return TableUtils

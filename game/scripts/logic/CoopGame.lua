@@ -9,13 +9,40 @@ local CoopPlayers = ModRequire "CoopPlayers.lua"
 local CoopRun = ModRequire "CoopRun.lua"
 ---@type Events
 local Events = ModRequire "Events.lua"
+---@type TableUtils
+local TableUtils = ModRequire "../utils/TableUtils.lua"
 
 ---@class CoopGame
 local CoopGame = {}
 
+---@type ISaveHandler[]
+CoopGame.SaveHandlers = {
+    ModRequire "saveHandlers/HeroContextProxySaver.lua";
+    ModRequire "saveHandlers/SinglePlayerHeroSaveHandler.lua",
+}
+
 function CoopGame.Init()
     Events.run:once("mapLoaded", CoopPlayers.CoopInit)
+    Events.engine:on("presave", CoopGame.PreSave)
+    Events.engine:on("postsave", CoopGame.PostSave)
+
+    CoopGame.Load()
     CoopRun.Init()
+end
+
+---@private
+function CoopGame.Load()
+    TableUtils.callEvery(CoopGame.SaveHandlers, "Load")
+end
+
+---@private
+function CoopGame.PreSave()
+    TableUtils.callEvery(CoopGame.SaveHandlers, "PreSave")
+end
+
+---@private
+function CoopGame.PostSave()
+    TableUtils.callEveryReverse(CoopGame.SaveHandlers, "PostSave")
 end
 
 return CoopGame
