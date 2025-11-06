@@ -25,8 +25,8 @@ class PlayerManagerExtension {
     void RemovePlayer(size_t index);
 
     sgg::Player *CreatePlayer(size_t index);
-    sgg::Player *GetPlayer(size_t index);
-    sgg::Player *GetByUnit(sgg::Thing* unit);
+    sgg::Player *GetPlayer(size_t index) const noexcept;
+    sgg::Player *GetByUnitId(size_t unitId) const noexcept;
 
     sgg::InputHandler *GetInput(size_t index);
 

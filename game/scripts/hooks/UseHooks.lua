@@ -7,14 +7,23 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
----@type ILootDelivery
-local LootDelivery = ModRequire "../logic/loot/LootInterface.lua"
 
 local _OnUsed = OnUsed
 OnUsed = function(args)
     if type(args[1]) == "function" then
         _OnUsed { function(triggerArgs)
+            local item = triggerArgs.TriggeredByTable
+            if item == nil then
+                return
+            end
+
             local hero = CoopPlayers.GetHeroByUnit(triggerArgs.UserId)
+
+            if item.UsedByHero and item.UsedByHero ~= hero then
+                -- Don't collect LobAmmoPack for by wrong player
+                return
+            end
+
             local mainHero = HeroContext.GetDefaultHero()
 
             local functionName = triggerArgs.AttachedTable and triggerArgs.AttachedTable.OnUsedFunctionName
@@ -25,52 +34,13 @@ OnUsed = function(args)
                 return;
             else
                 HeroContext.RunWithHeroContext(
-                    CoopPlayers.GetHeroByUnit(triggerArgs.UserId),
+                    hero,
                     args[1],
                     triggerArgs
                 )
             end
         end
         }
-    elseif args[1] == "ConsumableItems" then
-        _OnUsed {
-            args[1],
-            function(triggerArgs)
-                local hero = CoopPlayers.GetHeroByUnit(triggerArgs.UserId)
-                local item = triggerArgs.AttachedTable
-
-                if not LootDelivery.CanUseHeroLoot(item, hero) then
-                    return
-                end
-
-                HeroContext.RunWithHeroContext(
-                    hero,
-                    args[2],
-                    triggerArgs
-                )
-            end
-        }
-    elseif args[1] == "Loot"  then
-        _OnUsed({
-            args[1],
-            function(triggerArgs)
-                local hero = CoopPlayers.GetHeroByUnit(triggerArgs.UserId)
-                if not LootDelivery.CanUseHeroLoot(triggerArgs.AttachedTable, hero) then
-                    return
-                end
-
-                -- Regenerate traits in loot
-                -- Pregenerated loot can contains unsupported loot
-                -- for a second hero
-                triggerArgs.AttachedTable.UpgradeOptions = nil
-
-                HeroContext.RunWithHeroContext(
-                    hero,
-                    args[2],
-                    triggerArgs
-                )
-            end
-        })
     else
         _OnUsed({
             args[1],

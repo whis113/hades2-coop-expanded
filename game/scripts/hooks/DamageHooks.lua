@@ -93,13 +93,16 @@ function OnProjectileDeath(args)
     end }
 end
 
+-- TODO check: HandleStoredProjectileDeath
+-- Lob weapon fucked in ChronosPhaseTransition
+-- WTF with LOB ChronosPhaseTransition
+
 HeroContextWrapper.WrapTriggerHero("OnWeaponFired", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponTriggerRelease", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponFailedToFire", "TriggeredByTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponCharging", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnWeaponChargeCanceled", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnPerfectChargeWindowEntered", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnBlinkFinished", "OwnerTable")
 HeroContextWrapper.WrapTriggerHero("OnProjectileCreation", "TriggeredByTable")
 HeroContextWrapper.WrapTriggerHero("OnProjectileArm", "TriggeredByTable")
 HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker")

@@ -5,6 +5,7 @@
 
 #include "PlayerManagerExtension.h"
 #include <hades2/PlayerManager.h>
+#include <hades2/PlayerUnit.h>
 
 bool PlayerManagerExtension::AssignGamepad(size_t playerIndex, uint8_t gamepadIndex) {
     if (GetPlayersCount() < playerIndex + 1)
@@ -102,9 +103,21 @@ sgg::Player *PlayerManagerExtension::AddPlayer(size_t index) {
     return player;
 }
 
-sgg::Player *PlayerManagerExtension::GetPlayer(size_t index) {
+sgg::Player *PlayerManagerExtension::GetPlayer(size_t index) const noexcept {
     return sgg::PlayerManager::Instance()->m_palyers[index];
 }
+
+sgg::Player *PlayerManagerExtension::GetByUnitId(size_t unitId) const noexcept { 
+    auto *instance = sgg::PlayerManager::Instance();
+
+    for (auto *player : instance->m_palyers) {
+        if (player && player->GetUnit() && player->GetUnit()->GetId() == unitId) {
+            return player;
+        }
+    }
+    return nullptr;
+}
+
 sgg::InputHandler *PlayerManagerExtension::GetInput(size_t index) {
     return sgg::PlayerManager::Instance()->m_inputMethods[index];
 };
@@ -130,10 +143,17 @@ void PlayerManagerExtension::SetCurrentMainPlayer(size_t index) {
 }
 
 void PlayerManagerExtension::ResetCurrentMainPlayer() {
+    if (!mainPlayer) {
+        return;
+    }
+
     auto *instance = sgg::PlayerManager::Instance();
     instance->m_palyers[0] = mainPlayer;
+
     // Reset indexes to fix engine checks
     for (size_t index = 0; index < instance->m_palyers.size(); index++) {
         GetPlayer(index)->SetIndex(index);
     }
+
+    mainPlayer = nullptr;
 }

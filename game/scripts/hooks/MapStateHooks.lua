@@ -13,14 +13,18 @@ local MapStateHooks = {}
 
 ---@public
 function MapStateHooks.InitHooks()
-    HookUtils.onPostFunction("MapStateInit", MapStateHooks.ApplyProxies)
+    HookUtils.onPostFunction("MapStateInit", MapStateHooks.ApplyMapStateProxy)
+    HookUtils.onPostFunction("SessionMapStateInit", MapStateHooks.ApplySessionMapStateProxy)
     if MapState then
-        MapStateHooks.ApplyProxies()
+        MapStateHooks.ApplyMapStateProxy()
+    end
+    if SessionMapState then
+        MapStateHooks.ApplySessionMapStateProxy()
     end
 end
 
 ---@private
-function MapStateHooks.ApplyProxies()
+function MapStateHooks.ApplyMapStateProxy()
     HeroContextProxySpliterStore.GetOrCreate("MapState", MapState, {
         "LastBlinkTimeUnmodified",
         "PlayerAlphaFlags",
@@ -28,6 +32,14 @@ function MapStateHooks.ApplyProxies()
         "EquippedWeapons",
         "WeaponCharge",
         "ManaChargeIndicatorIds",
+        "CastArmDisable",
+    })
+end
+
+---@private
+function MapStateHooks.ApplySessionMapStateProxy()
+    HeroContextProxySpliterStore.GetOrCreate("SessionMapState", SessionMapState, {
+        "MagnetismMultiplier",
     })
 end
 

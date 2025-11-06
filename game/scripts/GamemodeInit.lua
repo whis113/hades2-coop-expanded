@@ -39,6 +39,7 @@ AddHooks "hooks/DamageHooks.lua"
 AddHooks "hooks/UseHooks.lua"
 AddHooks "hooks/ControlHooks.lua"
 AddHooks "hooks/WeaponHooks.lua"
+AddHooks "hooks/WeaponLogicHooksLob.lua"
 AddHooks "hooks/EffectHooks.lua"
 AddHooks "hooks/AnaimationSwapHook.lua"
 

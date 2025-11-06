@@ -140,4 +140,18 @@ function TableUtils.callEveryReverse(t, key, ...)
     end
 end
 
+---@generic K, V
+---@param t table<K, V>
+---@param fun fun(value: V): boolean
+---@return table<K, V>
+function TableUtils.filter(t, fun)
+    local filtered = {}
+    for k, v in pairs(t) do
+        if fun(v) then
+            filtered[k] = v
+        end
+    end
+    return filtered
+end
+
 return TableUtils
