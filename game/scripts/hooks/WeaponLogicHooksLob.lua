@@ -11,6 +11,8 @@ local HookUtils = ModRequire "../utils/HookUtils.lua"
 local TableUtils = ModRequire "../utils/TableUtils.lua"
 ---@type HeroContextWrapper
 local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
+---@type Events
+local Events = ModRequire "../logic/Events.lua"
 
 ---@class WeaponLogicHooksLob
 local WeaponLogicHooksLob = {}
@@ -20,8 +22,11 @@ local LobAmmoPackToHero = {}
 function WeaponLogicHooksLob.InitHooks()
     HookUtils.wrap("RecordWeaponCharge", WeaponLogicHooksLob.RecordWeaponChargeWrapHook)
     HookUtils.onPostFunction("LeaveRoom", function()
-        -- TODO optimize to prevent memory leaks
         LobAmmoPackToHero = {}
+    end)
+
+    Events.game:on("comsumeAmmoItem", function (item)
+        LobAmmoPackToHero[item.ObjectId] = nil
     end)
 end
 

@@ -15,4 +15,7 @@ Events.engine = Observable.new()
 ---@type Observable<"newRunStarted" | "mapLoaded" | "roomPresentationFinished" | "roomPreLeave" | "allEnemiesDead">
 Events.run = Observable.new()
 
+---@type Observable<"comsumeAmmoItem">
+Events.game = Observable.new()
+
 return Events

@@ -7,6 +7,16 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
+---@type HookUtils
+local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type Events
+local Events = ModRequire "../logic/Events.lua"
+
+local InteractHooks = {}
+
+function InteractHooks.InitHooks()
+    HookUtils.onPostFunction("UseConsumableItem", InteractHooks.UseConsumableItemPostHook)
+end
 
 local _OnUsed = OnUsed
 OnUsed = function(args)
@@ -102,3 +112,11 @@ OnActiveUseTargetLost = function(args)
         _OnActiveUseTargetLost(args)
     end
 end
+
+function InteractHooks.UseConsumableItemPostHook(consumableItem, args, user)
+    if consumableItem.AddAmmo then
+        Events.game:trigger("comsumeAmmoItem", consumableItem)
+    end
+end
+
+return InteractHooks
