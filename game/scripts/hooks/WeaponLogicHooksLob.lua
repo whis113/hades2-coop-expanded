@@ -13,6 +13,8 @@ local TableUtils = ModRequire "../utils/TableUtils.lua"
 local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
 ---@type Events
 local Events = ModRequire "../logic/Events.lua"
+---@type CoopModConfig
+local Config = ModRequire "../config.lua"
 
 ---@class WeaponLogicHooksLob
 local WeaponLogicHooksLob = {}
@@ -44,15 +46,23 @@ end
 
 HookUtils.wrap("SpawnObstacle", function(baseFun, args)
     if args.Name == "LobAmmoPack" then
+        local hero = CurrentRun.Hero
+        local playerIndex = CoopPlayers.GetPlayerByHero(hero) or 1
+
+        -- Don't allow use the ammo pack for another player
+        args.AttachedTable.UsedByHero = hero
+
         -- We will use this in the c++ hook
         -- Index starts from 0 here
-        local hero = CurrentRun.Hero
-        args.AttachedTable.UsedByHero = hero
-        args.AttachedTable.PlayerIndexC = (CoopPlayers.GetPlayerByHero(hero) or 1) - 1
+        args.AttachedTable.PlayerIndexC = playerIndex - 1
 
         -- store id for another hooks
         local id = baseFun(args)
         LobAmmoPackToHero[id] = hero
+
+        local colorCfg = Config["Player" .. playerIndex .. "Outline"]
+
+        SetColor { Id = id, Color = { colorCfg.R, colorCfg.G, colorCfg.B, 255 } }
 
         return id
     else
