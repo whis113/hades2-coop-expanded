@@ -7,6 +7,8 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type SimpleHook
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
+---@type HookUtils
+local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type TableUtils
 local TableUtils = ModRequire "../utils/TableUtils.lua"
 ---@type HeroContextWrapper
