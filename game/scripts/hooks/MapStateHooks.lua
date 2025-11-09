@@ -7,6 +7,8 @@
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type HeroContextProxySpliterStore
 local HeroContextProxySpliterStore = ModRequire "../logic/HeroContextProxySpliterStore.lua"
+---@type CoopPlayers
+local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 
 ---@class MapStateHooks  : SimpleHook
 local MapStateHooks = SimpleHook.New()
@@ -23,7 +25,7 @@ end
 
 ---@private
 function MapStateHooks.ApplyMapStateProxy()
-    HeroContextProxySpliterStore.GetOrCreate("MapState", MapState, {
+    local hadnler = HeroContextProxySpliterStore.GetOrCreate("MapState", MapState, {
         "LastBlinkTimeUnmodified",
         "PlayerAlphaFlags",
         "HeroNotStopsProjectile",
@@ -32,6 +34,11 @@ function MapStateHooks.ApplyMapStateProxy()
         "ManaChargeIndicatorIds",
         "CastArmDisable",
     })
+
+    for playerId = 1, CoopPlayers.GetPlayersCount() do
+        local playerData = hadnler:GetPlayerData(playerId)
+        playerData.EquippedWeapons = playerData.EquippedWeapons or {}
+    end
 end
 
 ---@private
