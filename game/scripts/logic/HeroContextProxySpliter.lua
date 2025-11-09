@@ -110,4 +110,9 @@ function HeroContextProxySpliter:RemoveKeysFromTarget()
     TableUtils.removeKeys(self.target, self.keys)
 end
 
+---@param playerId number
+function HeroContextProxySpliter:GetPlayerData(playerId)
+    return self.data[playerId]
+end
+
 return HeroContextProxySpliter

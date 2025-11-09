@@ -17,6 +17,8 @@ local HookUtils = ModRequire "../utils/HookUtils.lua"
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type RunEx
 local RunEx = ModRequire "../logic/RunEx.lua"
+---@type HeroContextProxySpliterStore
+local HeroContextProxySpliterStore = ModRequire "../logic/HeroContextProxySpliterStore.lua"
 
 ---@class UIHooks : SimpleHook
 local UIHooks = SimpleHook.New()
@@ -102,12 +104,41 @@ function UIHooks:InitGameHooks()
     UIHooks.CallForEveryVisibleHero("ShowManaMeter")
     UIHooks.CallForEveryHero("UpdateManaMeterUIReal")
     UIHooks.CallForEveryHero("HideManaMeter")
+
+    -- Ammo
+    UIHooks.CallForEveryVisibleHero("ShowAmmoUI")
+    --UIHooks.CallForEveryHero("UpdateAmmoUI")
+    UIHooks.CallForEveryHero("HideAmmoUI")
+end
+
+function UIHooks.pre.SetupFormatContainers()
+    if ScreenAnchors.CoopWasAppliedProxy then
+        return
+    end
+
+    HeroContextProxySpliterStore.GetOrCreate("ScreenAnchors", ScreenAnchors, {
+        "AmmoIndicatorUI"
+    })
+
+
+    ScreenAnchors.CoopWasAppliedProxy = true
+end
+
+function UIHooks.ApplyScreenConfigProxy()
+    local handler = HeroContextProxySpliterStore.GetOrCreate("HUDScreen", HUDScreen, {
+        "AmmoX"
+    })
+
+    local secondHeroData = handler:GetPlayerData(2)
+    secondHeroData.AmmoX = 1190
 end
 
 function UIHooks.pre.CreateScreenFromData(screen, componentData)
     if screen ~= HUDScreen then
         return
     end
+    UIHooks.ApplyScreenConfigProxy()
+
     SecondPlayerUi.RegisterComponents(componentData)
 
     local allComponents = {}
@@ -126,17 +157,6 @@ function UIHooks.pre.CreateScreenFromData(screen, componentData)
             allComponents[key] = value
         end
     })
-end
-
-function UIHooks.wrap.PulseText(_PulseText, args)
-    if args.ScreenAnchorReference and HeroContext.GetCurrentHeroContext() == CoopPlayers.GetHero(2) then
-        local idOnSecond = SecondPlayerUi.ScreenAnchors[args.ScreenAnchorReference]
-        if idOnSecond then
-            args.Id = idOnSecond
-        end
-    end
-
-    _PulseText(args)
 end
 
 function UIHooks.post.ShowUseButton(objectId, useTarget)

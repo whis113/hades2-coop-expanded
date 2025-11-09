@@ -1,15 +1,10 @@
--- This files has modifed Super Giant Games code
--- Not licensed
-
----@type CoopPlayers
-local CoopPlayers = ModRequire "CoopPlayers.lua"
+--
+-- Copyright (c) Uladzislau Nikalayevich <thenormalnij@gmail.com>. All rights reserved.
+-- Licensed under the MIT license. See LICENSE file in the project root for details.
+--
 
 ---@class SecondPlayerUi
 local SecondPlayerUi = {}
-
-local ScreenAnchorsSecondPlayer = {}
-
-SecondPlayerUi.ScreenAnchors = ScreenAnchorsSecondPlayer
 
 -- Register UI elements for player 2 here
 function SecondPlayerUi.RegisterComponents(componentData)
