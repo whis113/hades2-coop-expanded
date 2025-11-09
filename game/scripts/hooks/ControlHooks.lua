@@ -7,10 +7,12 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 
-HookUtils.wrap("OnControlPressed", function(baseFun, args)
+local ControlHooks = SimpleHook.New()
+
+function ControlHooks.wrap.OnControlPressed(baseFun, args)
     -- if args[1] == "AdvancedTooltip" then
     --     -- override control here
     --     args[2] = GameModifed.AdvancedTooltipModifedHandler
@@ -24,9 +26,9 @@ HookUtils.wrap("OnControlPressed", function(baseFun, args)
             end
         end
     }
-end)
+end
 
-HookUtils.wrap("AddInputBlock", function(baseFun, argumenst)
+function ControlHooks.wrap.AddInputBlock(baseFun, argumenst)
     if argumenst.PlayerIndex then
         baseFun(argumenst)
     else
@@ -35,9 +37,9 @@ HookUtils.wrap("AddInputBlock", function(baseFun, argumenst)
             baseFun(argumenst)
         end
     end
-end)
+end
 
-HookUtils.wrap("RemoveInputBlock", function(baseFun, argumenst)
+function ControlHooks.wrap.RemoveInputBlock(baseFun, argumenst)
     if argumenst.PlayerIndex then
         baseFun(argumenst)
     else
@@ -46,9 +48,9 @@ HookUtils.wrap("RemoveInputBlock", function(baseFun, argumenst)
             baseFun(argumenst)
         end
     end
-end)
+end
 
-HookUtils.wrap("NotifyOnControlPressed", function(baseFun, argumenst)
+function ControlHooks.wrap.NotifyOnControlPressed(baseFun, argumenst)
     if argumenst.PlayerIndex then
         baseFun(argumenst)
     elseif argumenst.Notify == "FishingInput" then
@@ -58,4 +60,6 @@ HookUtils.wrap("NotifyOnControlPressed", function(baseFun, argumenst)
     else
         baseFun(argumenst)
     end
-end)
+end
+
+return ControlHooks

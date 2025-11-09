@@ -32,4 +32,5 @@ if not CoopHasPlayer(2) then
     CoopCreatePlayer()
 end
 
-ModRequire "GamemodeInit.lua"
+local gamemode = ModRequire "GamemodeInit.lua"
+gamemode.Start()

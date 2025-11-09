@@ -5,10 +5,10 @@
 
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "CoopPlayers.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@type RunEx
 local RunEx = ModRequire "RunEx.lua"
+---@type Events
+local Events = ModRequire "Events.lua"
 
 ---@class CoopCamera
 local CoopCamera = {}
@@ -20,9 +20,7 @@ CoopCamera.isFocusEnabled = true
 CoopCamera.IgnoreHeroes = {}
 
 function CoopCamera.InitHooks()
-    HookUtils.onPostFunction("draw", CoopCamera.Update)
-    --HookUtils.onPostFunction("ExitNPCPresentation", CoopCamera.OnExitNPCPresentation)
-    HookUtils.onPostFunction("PanCamera", CoopCamera.PanCameraPostHook)
+    Events.engine:on("tick", CoopCamera.Update)
     CoopCamera.LockCameraOrig = LockCamera
     LockCamera = CoopCamera.LockCameraHook
 end
@@ -73,14 +71,6 @@ function CoopCamera.Update()
     end
 
     CoopCamera.LockCameraOrig { Ids = units, Duration = 0.0 }
-end
-
----@private
-function CoopCamera.PanCameraPostHook(args)
-    local id = args.Id or args.Ids
-    if id then
-        CoopCamera.ForceFocus(CoopPlayers.IsPlayerUnit(id))
-    end
 end
 
 ---@public

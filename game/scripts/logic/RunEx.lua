@@ -69,4 +69,27 @@ function RunEx.RemoveRewardFromAllDefaultDoors()
     end
 end
 
+function RunEx.RefreshEnemyAI()
+    for _, enemy in pairs(ActiveEnemies) do
+        if not enemy.IsDead then
+            killTaggedThreads(enemy.AIThreadName)
+            killWaitUntilThreads(enemy.AINotifyName)
+            Stop({ Id = enemy.ObjectId })
+            StopAnimation({ DestinationId = enemy.ObjectId })
+
+            enemy.TargetId = nil
+            thread(function()
+                if enemy.AIStages ~= nil then
+                    thread(StagedAI, enemy, CurrentRun)
+                else
+                    local aiBehavior = enemy.AIBehavior
+                    if aiBehavior ~= nil then
+                        thread(SetAI, aiBehavior, enemy, CurrentRun)
+                    end
+                end
+            end)
+        end
+    end
+end
+
 return RunEx

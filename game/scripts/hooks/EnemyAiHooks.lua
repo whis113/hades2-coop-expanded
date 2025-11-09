@@ -5,20 +5,13 @@
 
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
 
----@class EnemyAiHooks
-local EnemyAiHooks = {}
-
-function EnemyAiHooks.InitHooks()
-    HookUtils.wrap("NotifyWithinDistance", EnemyAiHooks.NotifyWithinDistanceHook)
-    HookUtils.wrap("GetTargetId", EnemyAiHooks.GetTargetIdHook)
-    HookUtils.wrap("IsAIActive", EnemyAiHooks.IsAIActiveHook)
-    HookUtils.onPreFunction("Harpy3MapTransition", EnemyAiHooks.Harpy3MapTransitionPreHook)
-end
+---@class EnemyAiHooks : SimpleHook
+local EnemyAiHooks = SimpleHook.New()
 
 ---@private
 ---@param unitId integer
@@ -47,7 +40,7 @@ end
 ---@param enemy table
 ---@param weaponAiData table?
 ---@return integer
-function EnemyAiHooks.GetTargetIdHook(baseFun, enemy, weaponAiData)
+function EnemyAiHooks.wrap.GetTargetId(baseFun, enemy, weaponAiData)
     local hero = EnemyAiHooks.getNearestHero(enemy.ObjectId)
     return HeroContext.RunWithHeroContextReturn(hero, baseFun, enemy, weaponAiData)
 end
@@ -55,7 +48,7 @@ end
 ---@private
 ---@param baseFun function
 ---@param params table
-function EnemyAiHooks.NotifyWithinDistanceHook(baseFun, params)
+function EnemyAiHooks.wrap.NotifyWithinDistance(baseFun, params)
     if params.Notify == "ContractOpen" then
         -- Skip pact door
         baseFun(params)
@@ -73,58 +66,13 @@ function EnemyAiHooks.NotifyWithinDistanceHook(baseFun, params)
     end
 end
 
-function EnemyAiHooks.RefreshAI()
-    for _, enemy in pairs(ActiveEnemies) do
-        if not enemy.IsDead then
-            killTaggedThreads(enemy.AIThreadName)
-            killWaitUntilThreads(enemy.AINotifyName)
-            Stop({ Id = enemy.ObjectId })
-            StopAnimation({ DestinationId = enemy.ObjectId })
-
-            enemy.TargetId = nil
-            thread(function()
-                if enemy.AIStages ~= nil then
-                    thread(StagedAI, enemy, CurrentRun)
-                else
-                    local aiBehavior = enemy.AIBehavior
-                    if aiBehavior ~= nil then
-                        thread(SetAI, aiBehavior, enemy, CurrentRun)
-                    end
-                end
-            end)
-
-        end
-    end
-end
-
-function EnemyAiHooks.IsAIActiveHook(baseFun, ...)
+function EnemyAiHooks.wrap.IsAIActive(baseFun, ...)
     local alivePlayer = CoopPlayers.GetAliveHeroes()[1]
     if alivePlayer then
         return HeroContext.RunWithHeroContextReturn(alivePlayer, baseFun, ...)
     else
         return baseFun(...)
     end
-end
-
--- Teleport all players to the center to prevent softlocks
-function EnemyAiHooks.Harpy3MapTransitionPreHook()
-    if CurrentRun.CurrentRoom.Name ~= "A_Boss03" then
-        return
-    end
-
-    local mainHero = HeroContext.GetCurrentHeroContext()
-
-    HookUtils.wrap("Teleport", function(baseFun, args)
-        baseFun(args)
-        if args.DestinationId == 40012 and args.Id == mainHero.ObjectId then
-            Teleport = baseFun
-            for _, hero in CoopPlayers.PlayersIterator() do
-                if hero and not hero.IsDead and hero ~= mainHero then
-                    Teleport { Id = hero.ObjectId, DestinationId = args.DestinationId }
-                end
-            end
-        end
-    end)
 end
 
 return EnemyAiHooks

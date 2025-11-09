@@ -5,8 +5,8 @@
 
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type TableUtils
 local TableUtils = ModRequire "../utils/TableUtils.lua"
 ---@type HeroContextWrapper
@@ -16,23 +16,26 @@ local Events = ModRequire "../logic/Events.lua"
 ---@type CoopModConfig
 local Config = ModRequire "../config.lua"
 
----@class WeaponLogicHooksLob
-local WeaponLogicHooksLob = {}
+local WeaponLogicHooksLob = SimpleHook.New()
 
 local LobAmmoPackToHero = {}
 
-function WeaponLogicHooksLob.InitHooks()
-    HookUtils.wrap("RecordWeaponCharge", WeaponLogicHooksLob.RecordWeaponChargeWrapHook)
-    HookUtils.onPostFunction("LeaveRoom", function()
-        LobAmmoPackToHero = {}
-    end)
-
+function WeaponLogicHooksLob:InitGameHooks()
     Events.game:on("comsumeAmmoItem", function (item)
         LobAmmoPackToHero[item.ObjectId] = nil
     end)
 end
 
-function WeaponLogicHooksLob.RecordWeaponChargeWrapHook(baseFun, unit, weaponData, args, triggerArgs)
+function WeaponLogicHooksLob:InitEngineHooks()
+    HeroContextWrapper.WrapTriggerHero("OnBlinkFinished", "OwnerTable")
+end
+
+--- TODO replace with better variant
+function WeaponLogicHooksLob.post.LeaveRoom()
+    LobAmmoPackToHero = {}
+end
+
+function WeaponLogicHooksLob.wrap.RecordWeaponCharge(baseFun, unit, weaponData, args, triggerArgs)
     if weaponData.MagnetismMultiplier then
         local currentHero = CurrentRun.Hero
         HookUtils.wrapOnce("GetIdsByType", function(GetIdsByTypeOrig, args)
@@ -44,7 +47,7 @@ function WeaponLogicHooksLob.RecordWeaponChargeWrapHook(baseFun, unit, weaponDat
     baseFun(unit, weaponData, args, triggerArgs)
 end
 
-HookUtils.wrap("SpawnObstacle", function(baseFun, args)
+function WeaponLogicHooksLob.wrap.SpawnObstacle(baseFun, args)
     if args.Name == "LobAmmoPack" then
         local hero = CurrentRun.Hero
         local playerIndex = CoopPlayers.GetPlayerByHero(hero) or 1
@@ -68,8 +71,6 @@ HookUtils.wrap("SpawnObstacle", function(baseFun, args)
     else
         return baseFun(args)
     end
-end)
-
-HeroContextWrapper.WrapTriggerHero("OnBlinkFinished", "OwnerTable")
+end
 
 return WeaponLogicHooksLob

@@ -8,13 +8,10 @@ local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type Events
 local Events = ModRequire "../logic/Events.lua"
 
----@class SaveHooks : SimpleHook
-local SaveHooks = SimpleHook.New()
+local EngineHooks = SimpleHook.New()
 
-function SaveHooks.wrap.Save(baseFun)
-    Events.engine:trigger("presave")
-    baseFun()
-    Events.engine:trigger("postsave")
+function EngineHooks.post.draw()
+    Events.engine:trigger("tick")
 end
 
-return SaveHooks
+return EngineHooks

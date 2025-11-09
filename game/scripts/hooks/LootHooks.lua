@@ -3,8 +3,8 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type HeroContextProxy
 local HeroContextProxy = ModRequire "../logic/HeroContextProxy.lua"
 ---@type HeroContextProxyStore
@@ -15,36 +15,28 @@ local Events = ModRequire "../logic/Events.lua"
 ---@type ILootDelivery
 local LootDelivery = ModRequire "../logic/loot/LootInterface.lua"
 
----@class LootHooks
-local LootHooks = {}
+---@class LootHooks : SimpleHook
+local LootHooks = SimpleHook.New()
 
 ---@private
 ---@type table | nil
 LootHooks.BlindLootHero = nil
 
-function LootHooks.InitHooks()
-    -- Select hero for blind loot
-    HookUtils.onPreFunction("UnwrapRandomLoot", function()
-        LootHooks.BlindLootHero = CurrentRun.Hero
-    end)
+-- Select hero for blind loot
+function LootHooks.wrap.UnwrapRandomLoot(baseFun, ...)
+    LootHooks.BlindLootHero = CurrentRun.Hero
 
-    HookUtils.onPostFunction("UnwrapRandomLoot", function()
-        for lootId, lootData in pairs(LootObjects) do
-            if not lootData.Cost then
-                CoopUseItem(CurrentRun.Hero.ObjectId, lootId)
-                return
-            end
+    baseFun(...)
+
+    for lootId, lootData in pairs(LootObjects) do
+        if not lootData.Cost then
+            CoopUseItem(CurrentRun.Hero.ObjectId, lootId)
+            break
         end
-    end)
+    end
+end
 
-    HookUtils.wrap("GiveLoot", LootHooks.GiveLootHook)
-
-    -- Select a player for room reward
-    HookUtils.wrap("DoUnlockRoomExits", LootHooks.DoUnlockRoomExitsHook)
-
-    -- Spawns room reward for a player selected by room
-    HookUtils.wrap("SpawnRoomReward", LootHooks.SpawnRoomRewardHook)
-
+function LootHooks.InitEngineHooks()
     Events.run:on("newRunStarted", LootHooks.InitLootHistoryProxy)
 
     if CurrentRun then
@@ -59,7 +51,7 @@ function LootHooks.InitLootHistoryProxy()
 end
 
 ---@private
-function LootHooks.GiveLootHook(baseFun, args)
+function LootHooks.wrap.GiveLoot(baseFun, args)
     local hero = LootHooks.UseBlindLootHero()
     if hero then
         return LootDelivery.GiveBlindLoot(baseFun, hero, args)
@@ -70,15 +62,16 @@ end
 
 ---@private
 function LootHooks.UseBlindLootHero()
-    if LootHooks.BlindLootHero then
-        local hero = LootHooks.BlindLootHero
+    local hero = LootHooks.BlindLootHero
+    if hero then
         LootHooks.BlindLootHero = nil
         return hero
     end
 end
 
 ---@private
-function LootHooks.DoUnlockRoomExitsHook(baseFun, run, room)
+-- Select a player for room reward
+function LootHooks.wrap.DoUnlockRoomExits(baseFun, run, room)
     if not LootHooks.NeedsCurrentRoomExitRewards(run) then
         return baseFun(run, room)
     end
@@ -87,7 +80,7 @@ function LootHooks.DoUnlockRoomExitsHook(baseFun, run, room)
 end
 
 ---@private
-function LootHooks.SpawnRoomRewardHook(baseFun, ...)
+function LootHooks.wrap.SpawnRoomReward(baseFun, ...)
     -- Fix #16
     CurrentRun.CurrentRoom.DisableRewardMagnetisim = true
 

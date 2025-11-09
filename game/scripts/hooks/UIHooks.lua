@@ -13,11 +13,13 @@ local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type HookUtils
 local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type RunEx
 local RunEx = ModRequire "../logic/RunEx.lua"
 
----@class UIHooks
-local UIHooks = {}
+---@class UIHooks : SimpleHook
+local UIHooks = SimpleHook.New()
 
 ---@private
 ---@param hero table?
@@ -90,31 +92,7 @@ function UIHooks.SimpleCurrentTraitWrapper(funcName)
     end)
 end
 
-function UIHooks.InitHooks()
-    HookUtils.onPreFunction("CreateScreenFromData", function(screen, componentData)
-        if screen ~= HUDScreen then
-            return
-        end
-        SecondPlayerUi.RegisterComponents(componentData)
-
-        local allComponents = {}
-        screen.Components = setmetatable({ }, {
-            __index = function (self, key)
-                local currentHero = HeroContext.GetCurrentHeroContext()
-                local mainHero = CoopPlayers.GetMainHero()
-                if currentHero == mainHero then
-                    return allComponents[key]
-                else
-                    local alternativeKey = key .. "Player2"
-                    return allComponents[alternativeKey] or allComponents[key]
-                end
-            end,
-            __newindex = function(self, key, value)
-                allComponents[key] = value
-            end
-        })
-    end)
-
+function UIHooks:InitGameHooks()
     -- Health
     UIHooks.CallForEveryVisibleHero("ShowHealthUI")
     UIHooks.CallForEveryHero("UpdateHealthUI")
@@ -124,26 +102,47 @@ function UIHooks.InitHooks()
     UIHooks.CallForEveryVisibleHero("ShowManaMeter")
     UIHooks.CallForEveryHero("UpdateManaMeterUIReal")
     UIHooks.CallForEveryHero("HideManaMeter")
+end
 
+function UIHooks.pre.CreateScreenFromData(screen, componentData)
+    if screen ~= HUDScreen then
+        return
+    end
+    SecondPlayerUi.RegisterComponents(componentData)
 
-    -- Etc
-    local _PulseText = PulseText
-    PulseText = function(args)
-        if args.ScreenAnchorReference and HeroContext.GetCurrentHeroContext() == CoopPlayers.GetHero(2) then
-            local idOnSecond = SecondPlayerUi.ScreenAnchors[args.ScreenAnchorReference]
-            if idOnSecond then
-                args.Id = idOnSecond
+    local allComponents = {}
+    screen.Components = setmetatable({}, {
+        __index = function(self, key)
+            local currentHero = HeroContext.GetCurrentHeroContext()
+            local mainHero = CoopPlayers.GetMainHero()
+            if currentHero == mainHero then
+                return allComponents[key]
+            else
+                local alternativeKey = key .. "Player2"
+                return allComponents[alternativeKey] or allComponents[key]
             end
+        end,
+        __newindex = function(self, key, value)
+            allComponents[key] = value
         end
+    })
+end
 
-        _PulseText(args)
+function UIHooks.wrap.PulseText(_PulseText, args)
+    if args.ScreenAnchorReference and HeroContext.GetCurrentHeroContext() == CoopPlayers.GetHero(2) then
+        local idOnSecond = SecondPlayerUi.ScreenAnchors[args.ScreenAnchorReference]
+        if idOnSecond then
+            args.Id = idOnSecond
+        end
     end
 
-    HookUtils.onPostFunction("ShowUseButton", function(objectId, useTarget)
-        if HeroContext.GetDefaultHero() ~= HeroContext.GetCurrentHeroContext() then
-            Move({ Id = ScreenAnchors.UsePrompts[objectId], DestinationId = ScreenAnchors.UsePrompts[objectId], OffsetY = -50 })
-        end
-    end)
+    _PulseText(args)
+end
+
+function UIHooks.post.ShowUseButton(objectId, useTarget)
+    if HeroContext.GetDefaultHero() ~= HeroContext.GetCurrentHeroContext() then
+        Move({ Id = ScreenAnchors.UsePrompts[objectId], DestinationId = ScreenAnchors.UsePrompts[objectId], OffsetY = -50 })
+    end
 end
 
 return UIHooks

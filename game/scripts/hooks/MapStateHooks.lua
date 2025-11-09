@@ -3,18 +3,16 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type HeroContextProxySpliterStore
 local HeroContextProxySpliterStore = ModRequire "../logic/HeroContextProxySpliterStore.lua"
 
----@class MapStateHooks
-local MapStateHooks = {}
+---@class MapStateHooks  : SimpleHook
+local MapStateHooks = SimpleHook.New()
 
 ---@public
-function MapStateHooks.InitHooks()
-    HookUtils.onPostFunction("MapStateInit", MapStateHooks.ApplyMapStateProxy)
-    HookUtils.onPostFunction("SessionMapStateInit", MapStateHooks.ApplySessionMapStateProxy)
+function MapStateHooks:InitEngineHooks()
     if MapState then
         MapStateHooks.ApplyMapStateProxy()
     end
@@ -42,5 +40,8 @@ function MapStateHooks.ApplySessionMapStateProxy()
         "MagnetismMultiplier",
     })
 end
+
+MapStateHooks.post.MapStateInit = MapStateHooks.ApplyMapStateProxy
+MapStateHooks.post.SessionMapStateInit = MapStateHooks.ApplySessionMapStateProxy
 
 return MapStateHooks

@@ -1,13 +1,21 @@
 ---@type HeroContextWrapper
 local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 
-HookUtils.wrap("OnEffectApply", function(baseFunc, args)
+local hook = SimpleHook.New()
+
+function hook:InitEngineHooks()
+    HeroContextWrapper.WrapTriggerHero("OnEffectCleared", "Victim")
+    HeroContextWrapper.WrapTriggerHero("OnEffectStackDecrease", "Victim")
+    HeroContextWrapper.WrapTriggerHero("OnEffectDelayedKnockbackForce", "Victim")
+end
+
+function hook.wrap.OnEffectApply(baseFunc, args)
     local originalHandler = args[1]
 
     baseFunc {
@@ -22,8 +30,6 @@ HookUtils.wrap("OnEffectApply", function(baseFunc, args)
             end
         end
     }
-end)
+end
 
-HeroContextWrapper.WrapTriggerHero("OnEffectCleared", "Victim")
-HeroContextWrapper.WrapTriggerHero("OnEffectStackDecrease", "Victim")
-HeroContextWrapper.WrapTriggerHero("OnEffectDelayedKnockbackForce", "Victim")
+return hook

@@ -3,8 +3,8 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 
@@ -34,7 +34,9 @@ local ANIMATIONS_TO_SWAP = {
     ["MelinoeBoonPreInteract"] = true;
 }
 
-HookUtils.wrap("SwapAnimation", function(baseFun, args)
+local AnaimationSwapHook = SimpleHook.New()
+
+function AnaimationSwapHook.wrap.SwapAnimation(baseFun, args)
     if ANIMATIONS_TO_SWAP[args.Name] then
         local playerIndex = CoopPlayers.GetPlayerByHero(CurrentRun.Hero) or 1
         if args.Reverse then
@@ -45,4 +47,6 @@ HookUtils.wrap("SwapAnimation", function(baseFun, args)
     else
         baseFun(args)
     end
-end )
+end
+
+return AnaimationSwapHook

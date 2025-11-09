@@ -25,15 +25,6 @@ local RunMT = {
     end;
 }
 
-local coroutine_yield = coroutine.yield
----@diagnostic disable-next-line: duplicate-set-field
-coroutine.yield = function(params)
-    if params == "task done" then
-        CorontinueToHero[coroutine.running()] = nil
-    end
-    return coroutine_yield(params)
-end
-
 function HeroContext.InitHooks()
     local _thread = thread
     thread = function(fun, ...)
@@ -46,6 +37,15 @@ function HeroContext.InitHooks()
         else
             _thread(fun, ...)
         end
+    end
+
+    local coroutine_yield = coroutine.yield
+    ---@diagnostic disable-next-line: duplicate-set-field
+    coroutine.yield = function(params)
+        if params == "task done" then
+            CorontinueToHero[coroutine.running()] = nil
+        end
+        return coroutine_yield(params)
     end
 
     Events.run:on("newRunStarted", HeroContext.InitRunHook)

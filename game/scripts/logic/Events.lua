@@ -9,7 +9,7 @@ local Observable = ModRequire "../utils/Observable.lua"
 ---@class Events
 local Events = {}
 
----@type Observable<"hooksPreInicialized" | "hooksInicialized" | "presave" | "postsave">
+---@type Observable<"hooksPreInicialized" | "hooksInicialized" | "presave" | "postsave" | "tick">
 Events.engine = Observable.new()
 
 ---@type Observable<"newRunStarted" | "mapLoaded" | "roomPresentationFinished" | "roomPreLeave" | "allEnemiesDead">

@@ -11,8 +11,7 @@ local HookUtils = ModRequire "../utils/HookUtils.lua"
 ---@class HeroEx
 local HeroEx = {}
 
-function HeroEx.Init()
-    -- Save unhooked
+function HeroEx.SaveUnhookedFunctions()
     HeroEx.SetupHeroObject = SetupHeroObject
 end
 

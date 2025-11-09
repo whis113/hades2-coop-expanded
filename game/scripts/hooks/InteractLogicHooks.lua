@@ -7,19 +7,14 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type Events
 local Events = ModRequire "../logic/Events.lua"
 
-local InteractHooks = {}
+local InteractLogicHooks = SimpleHook.New()
 
-function InteractHooks.InitHooks()
-    HookUtils.onPostFunction("UseConsumableItem", InteractHooks.UseConsumableItemPostHook)
-end
-
-local _OnUsed = OnUsed
-OnUsed = function(args)
+function InteractLogicHooks.wrap.OnUsed(_OnUsed, args)
     if type(args[1]) == "function" then
         _OnUsed { function(triggerArgs)
             local item = triggerArgs.TriggeredByTable
@@ -65,34 +60,9 @@ OnUsed = function(args)
     end
 end
 
-local _OnActiveUseTarget = OnActiveUseTarget
-OnActiveUseTarget = function(args)
+function InteractLogicHooks.wrap.OnActiveUseTarget(baseFun, args)
     if type(args[1]) == "function" then
-        _OnActiveUseTarget{
-            function (triggerArgs)
-                local hero = CoopPlayers.GetHeroByUnit(triggerArgs.UserId)
-                local mainHero = HeroContext.GetDefaultHero()
-                local functionName = triggerArgs.AttachedTable and triggerArgs.AttachedTable.OnUsedFunctionName
-                if functionName == "UseEscapeDoor" and hero ~= mainHero then
-                    return;
-                end
-
-                HeroContext.RunWithHeroContext(
-                    hero,
-                    args[1],
-                    triggerArgs
-                )
-            end
-        }
-    else
-        _OnActiveUseTarget(args)
-    end
-end
-
-local _OnActiveUseTargetLost = OnActiveUseTargetLost
-OnActiveUseTargetLost = function(args)
-    if type(args[1]) == "function" then
-        _OnActiveUseTargetLost {
+        baseFun {
             function(triggerArgs)
                 local hero = CoopPlayers.GetHeroByUnit(triggerArgs.UserId)
                 local mainHero = HeroContext.GetDefaultHero()
@@ -109,14 +79,37 @@ OnActiveUseTargetLost = function(args)
             end
         }
     else
-        _OnActiveUseTargetLost(args)
+        baseFun(args)
     end
 end
 
-function InteractHooks.UseConsumableItemPostHook(consumableItem, args, user)
+function InteractLogicHooks.wrap.OnActiveUseTargetLost(baseFun, args)
+    if type(args[1]) == "function" then
+        baseFun {
+            function(triggerArgs)
+                local hero = CoopPlayers.GetHeroByUnit(triggerArgs.UserId)
+                local mainHero = HeroContext.GetDefaultHero()
+                local functionName = triggerArgs.AttachedTable and triggerArgs.AttachedTable.OnUsedFunctionName
+                if functionName == "UseEscapeDoor" and hero ~= mainHero then
+                    return;
+                end
+
+                HeroContext.RunWithHeroContext(
+                    hero,
+                    args[1],
+                    triggerArgs
+                )
+            end
+        }
+    else
+        baseFun(args)
+    end
+end
+
+function InteractLogicHooks.post.UseConsumableItem(consumableItem, args, user)
     if consumableItem.AddAmmo then
         Events.game:trigger("comsumeAmmoItem", consumableItem)
     end
 end
 
-return InteractHooks
+return InteractLogicHooks

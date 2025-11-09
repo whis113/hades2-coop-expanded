@@ -7,24 +7,21 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 
----@class FreezeHooks
-local FreezeHooks = {}
+---@class FreezeHooks : SimpleHook
+local FreezeHooks = SimpleHook.New()
 
-function FreezeHooks.InitHooks()
-    local _FreezePlayerUnit = FreezePlayerUnit
-    local _UnfreezePlayerUnit = UnfreezePlayerUnit
-
-    function FreezePlayerUnit(...)
-        for _, hero in CoopPlayers.PlayersIterator() do
-            HeroContext.RunWithHeroContext(hero, _FreezePlayerUnit, ...)
-        end
+function FreezeHooks.wrap.FreezePlayerUnit(_FreezePlayerUnit, ...)
+    for _, hero in CoopPlayers.PlayersIterator() do
+        HeroContext.RunWithHeroContext(hero, _FreezePlayerUnit, ...)
     end
+end
 
-    function UnfreezePlayerUnit(...)
-        for _, hero in CoopPlayers.PlayersIterator() do
-            HeroContext.RunWithHeroContext(hero, _UnfreezePlayerUnit, ...)
-        end
+function FreezeHooks.wrap.UnfreezePlayerUnit(_UnfreezePlayerUnit, ...)
+    for _, hero in CoopPlayers.PlayersIterator() do
+        HeroContext.RunWithHeroContext(hero, _UnfreezePlayerUnit, ...)
     end
 end
 

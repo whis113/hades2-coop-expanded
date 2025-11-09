@@ -3,8 +3,8 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
 ---@type CoopPlayers
@@ -12,15 +12,11 @@ local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type PlayerVisibilityHelper
 local PlayerVisibilityHelper = ModRequire "../logic/PlayerVisibilityHelper.lua"
 
----@class PlayerVisibilityHooks
-local PlayerVisibilityHooks = {}
-
-function PlayerVisibilityHooks.InitHooks()
-    HookUtils.onPostFunction("SetPlayerUnDarkside", PlayerVisibilityHooks.SetPlayerUnDarksidePostHook)
-end
+---@class PlayerVisibilityHooks : SimpleHook
+local PlayerVisibilityHooks = SimpleHook.New()
 
 ---@private
-function PlayerVisibilityHooks.SetPlayerUnDarksidePostHook()
+function PlayerVisibilityHooks.post.SetPlayerUnDarkside()
     if IsEmpty(SessionMapState.DarkSide) then
         local hero = HeroContext.GetCurrentHeroContext()
         PlayerVisibilityHelper.TriggerOutline(CoopPlayers.GetPlayerByHero(hero), hero.ObjectId)

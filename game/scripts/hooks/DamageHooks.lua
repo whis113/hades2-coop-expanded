@@ -11,12 +11,39 @@ local HeroContext = ModRequire "../logic/HeroContext.lua"
 local SecondPlayerUi = ModRequire "../logic/SecondPlayerUI.lua"
 ---@type HeroContextWrapper
 local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
----@type HookUtils
-local HookUtils = ModRequire "../utils/HookUtils.lua"
+---@type SimpleHook
+local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type CoopModConfig
 local Config = ModRequire "../config.lua"
 
-HookUtils.wrap("OnHit", function(baseFun, args)
+local DamageHooks = SimpleHook.New()
+
+function DamageHooks:InitEngineHooks()
+    -- TODO check: HandleStoredProjectileDeath
+    -- Lob weapon fucked in ChronosPhaseTransition
+    -- WTF with LOB ChronosPhaseTransition
+
+    HeroContextWrapper.WrapTriggerHero("OnWeaponFired", "OwnerTable")
+    HeroContextWrapper.WrapTriggerHero("OnWeaponTriggerRelease", "OwnerTable")
+    HeroContextWrapper.WrapTriggerHero("OnWeaponFailedToFire", "TriggeredByTable")
+    HeroContextWrapper.WrapTriggerHero("OnWeaponCharging", "OwnerTable")
+    HeroContextWrapper.WrapTriggerHero("OnWeaponChargeCanceled", "OwnerTable")
+    HeroContextWrapper.WrapTriggerHero("OnPerfectChargeWindowEntered", "OwnerTable")
+    HeroContextWrapper.WrapTriggerHero("OnProjectileCreation", "TriggeredByTable")
+    HeroContextWrapper.WrapTriggerHero("OnProjectileArm", "TriggeredByTable")
+    HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker")
+    HeroContextWrapper.WrapTriggerHero("OnDodge", "TriggeredByTable")
+    HeroContextWrapper.WrapTriggerHero("OnProjectileReflect", "TriggeredByTable")
+    HeroContextWrapper.WrapTriggerHero("OnWeaponClipEmpty", "OwnerTable")
+    -- OnTouchdown -- TODO
+    -- OnCollisionReaction
+    -- OnAllegianceFlip
+    -- OnObstacleCollision
+    -- OnUnitCollision
+    -- OnMovementReaction
+end
+
+function DamageHooks.wrap.OnHit(baseFun, args)
     -- Only one usage
     local fun = args[1]
     baseFun { function(triggerArgs)
@@ -64,10 +91,9 @@ HookUtils.wrap("OnHit", function(baseFun, args)
             end
         end
     end }
-end)
+end
 
-local _OnProjectileDeath = OnProjectileDeath
-function OnProjectileDeath(args)
+function DamageHooks.wrap.OnProjectileDeath(_OnProjectileDeath, args)
     local originalHandler = args[1]
 
     _OnProjectileDeath { function(triggerArgs)
@@ -93,27 +119,4 @@ function OnProjectileDeath(args)
     end }
 end
 
--- TODO check: HandleStoredProjectileDeath
--- Lob weapon fucked in ChronosPhaseTransition
--- WTF with LOB ChronosPhaseTransition
-
-HeroContextWrapper.WrapTriggerHero("OnWeaponFired", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnWeaponTriggerRelease", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnWeaponFailedToFire", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnWeaponCharging", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnWeaponChargeCanceled", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnPerfectChargeWindowEntered", "OwnerTable")
-HeroContextWrapper.WrapTriggerHero("OnProjectileCreation", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnProjectileArm", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnProjectileBlock", "Blocker")
-HeroContextWrapper.WrapTriggerHero("OnDodge", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnProjectileReflect", "TriggeredByTable")
-HeroContextWrapper.WrapTriggerHero("OnWeaponClipEmpty", "OwnerTable")
--- OnTouchdown -- TODO
--- OnCollisionReaction
--- OnAllegianceFlip
--- OnObstacleCollision
--- OnUnitCollision
--- OnMovementReaction
-
-
+return DamageHooks
