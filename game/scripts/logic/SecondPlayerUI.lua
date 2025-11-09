@@ -33,7 +33,8 @@ function SecondPlayerUi.RegisterComponents(componentData)
         end
     end
 
-    componentData.MoneyIcon.BottomOffset = 150
+    componentData.MoneyIcon.BottomOffset = 300
+    componentData.InventoryIcon.BottomOffset = 396
 
     componentData.ResourceBackingShadow.BottomOffset = -400
 

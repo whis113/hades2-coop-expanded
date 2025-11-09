@@ -109,6 +109,10 @@ function UIHooks:InitGameHooks()
     UIHooks.CallForEveryVisibleHero("ShowAmmoUI")
     --UIHooks.CallForEveryHero("UpdateAmmoUI")
     UIHooks.CallForEveryHero("HideAmmoUI")
+
+    -- Taits tray
+    UIHooks.CallForEveryVisibleHero("ShowTraitUI")
+    UIHooks.CallForEveryHero("HideTraitUI")
 end
 
 function UIHooks.pre.SetupFormatContainers()
@@ -157,6 +161,35 @@ function UIHooks.pre.CreateScreenFromData(screen, componentData)
             allComponents[key] = value
         end
     })
+end
+
+-- Traits
+
+function UIHooks.wrap.TraitUIAdd(baseFun, trait, args)
+    if CoopPlayers.GetMainHero() == CurrentRun.Hero then
+        return baseFun(trait, args)
+    end
+
+    if not HUDScreen then
+        return
+    end
+
+    if trait.AnchorId or (args and args.LocationX) then
+        return baseFun(trait, args)
+    end
+
+    local slotIndex = GetIndex(HUDScreen.SlottedTraitOrder, trait.Slot)
+
+    if slotIndex > 0 then
+        return baseFun(trait, args)
+    end
+
+    ScreenData.TraitTrayScreen.TraitStartX = 1920 - 50
+    ScreenData.TraitTrayScreen.TraitSpacingX = -100
+    baseFun(trait, args)
+    ScreenData.TraitTrayScreen.TraitStartX = 50
+    ScreenData.TraitTrayScreen.TraitSpacingX = 100
+
 end
 
 function UIHooks.post.ShowUseButton(objectId, useTarget)
