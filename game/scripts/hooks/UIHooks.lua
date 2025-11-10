@@ -110,6 +110,22 @@ function UIHooks:InitGameHooks()
     --UIHooks.CallForEveryHero("UpdateAmmoUI")
     UIHooks.CallForEveryHero("HideAmmoUI")
 
+    -- AxeUI
+    UIHooks.CallForEveryVisibleHero("ShowAxeUI")
+    UIHooks.CallForEveryHero("HideAxeUI")
+
+    -- LobUI WTF is that
+    UIHooks.CallForEveryVisibleHero("ShowLobUI")
+    UIHooks.CallForEveryHero("HideLobUI")
+
+    -- DaggerUI
+    UIHooks.CallForEveryVisibleHero("ShowDaggerUI")
+    UIHooks.CallForEveryHero("HideDaggerUI")
+
+    -- SuitUI
+    UIHooks.CallForEveryVisibleHero("ShowSuitUI")
+    UIHooks.CallForEveryHero("HideSuitUI")
+
     -- Taits tray
     UIHooks.CallForEveryVisibleHero("ShowTraitUI")
     UIHooks.CallForEveryHero("HideTraitUI")
@@ -121,9 +137,16 @@ function UIHooks.pre.SetupFormatContainers()
     end
 
     HeroContextProxySpliterStore.GetOrCreate("ScreenAnchors", ScreenAnchors, {
-        "AmmoIndicatorUI"
+        "AmmoIndicatorUI",
+        "AxeUI",
+        "AxeUIChargeAmount",
+        "LobUI",
+        "LobUIChargeAmount",
+        "DaggerUI",
+        "DaggerUIChargeAmount",
+        "SuitUI",
+        "SuitUIChargeAmount",
     })
-
 
     ScreenAnchors.CoopWasAppliedProxy = true
 end

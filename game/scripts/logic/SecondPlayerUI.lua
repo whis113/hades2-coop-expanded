@@ -33,8 +33,11 @@ function SecondPlayerUi.RegisterComponents(componentData)
         end
     end
 
-    componentData.MoneyIcon.BottomOffset = 300
-    componentData.InventoryIcon.BottomOffset = 396
+    -- Avoid overlaping with active traits
+    componentData.MoneyIcon.BottomOffset = nil
+    componentData.InventoryIcon.BottomOffset = nil
+    componentData.MoneyIcon.Y = 40
+    componentData.InventoryIcon.Y = 40 + 96
 
     componentData.ResourceBackingShadow.BottomOffset = -400
 
