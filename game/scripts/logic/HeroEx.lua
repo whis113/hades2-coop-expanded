@@ -79,6 +79,10 @@ end
 ---@param args ICreateFreshHeroArgs
 function HeroEx.CreateFreshHero(args)
     local hero = CreateNewHero(nil, { WeaponName = args.weaponName })
+
+    -- The game does that in DoPatches
+    hero.MaxLastStands = 0
+
     if args.weaponName then
         local secondaryWeapon = WeaponData[args.weaponName].SecondaryWeapon
         if secondaryWeapon then
@@ -91,10 +95,6 @@ function HeroEx.CreateFreshHero(args)
 
         EquipWeaponUpgrade(hero, { SkipTraitHighlight = true })
         InitHeroLastStands(hero)
-
-        -- hero.MaxHealth = hero.MaxHealth +
-        -- GetNumMetaUpgrades("HealthMetaUpgrade") * MetaUpgradeData.HealthMetaUpgrade.ChangeValue
-        hero.Health = hero.MaxHealth
     end)
 
     return hero
