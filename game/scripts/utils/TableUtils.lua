@@ -123,6 +123,18 @@ function TableUtils.copyKeysDeep(from, to, keys)
     end
 end
 
+---@param from table
+---@param to table
+---@param keys any[]
+function TableUtils.moveKeys(from, to, keys)
+    local key
+    for i = 1, #keys do
+        key = keys[i]
+        to[key] = from[key]
+        from[key] = nil
+    end
+end
+
 ---@generic FunctionName
 ---@param t { [FunctionName]: fun(...) }[]
 ---@param key FunctionName

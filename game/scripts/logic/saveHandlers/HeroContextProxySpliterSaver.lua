@@ -17,7 +17,7 @@ end
 
 function HeroContextProxySpliterSaver.PostSave()
     for _, instance in HeroContextProxySpliterStore.Iterator() do
-        instance:RemoveKeysFromTarget()
+        instance:ExtractCurrentContextToPlayer(1)
     end
 end
 

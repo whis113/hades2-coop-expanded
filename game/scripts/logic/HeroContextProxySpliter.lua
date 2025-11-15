@@ -80,12 +80,7 @@ end
 
 ---@param playerId number
 function HeroContextProxySpliter:ExtractCurrentContextToPlayer(playerId)
-    local extractTo = self.data[playerId]
-    local from = self.target
-    for _, key in pairs(self.keys) do
-        extractTo[key] = from[key]
-        from[key] = nil
-    end
+    TableUtils.moveKeys(self.target, self.data[playerId], self.keys)
 end
 
 ---@private

@@ -146,6 +146,7 @@ function UIHooks.pre.SetupFormatContainers()
         "DaggerUIChargeAmount",
         "SuitUI",
         "SuitUIChargeAmount",
+        "LifePipIds",
     })
 
     ScreenAnchors.CoopWasAppliedProxy = true
@@ -153,11 +154,15 @@ end
 
 function UIHooks.ApplyScreenConfigProxy()
     local handler = HeroContextProxySpliterStore.GetOrCreate("HUDScreen", HUDScreen, {
-        "AmmoX"
+        "AmmoX",
+        "LastStandX",
+        "LastStandSpacingX",
     })
 
     local secondHeroData = handler:GetPlayerData(2)
     secondHeroData.AmmoX = 1190
+    secondHeroData.LastStandX = 1300
+    secondHeroData.LastStandSpacingX = -48
 end
 
 function UIHooks.pre.CreateScreenFromData(screen, componentData)
