@@ -17,25 +17,21 @@ end
 
 ---@param hero table
 ---@return string
----@return string
-function HeroEx.GetGiftAndAssist(hero)
-    local currentGift, currentAssist
+function HeroEx.GetGift(hero)
+    local currentGift
     for _, trait in pairs(hero.Traits) do
         if not trait.InheritFrom then
             goto continue
         end
 
-        if trait.InheritFrom[1] == "AssistTrait" then
-            currentAssist = trait.Name
-        elseif trait.InheritFrom[1] == "GiftTrait" then
+        if trait.InheritFrom[1] == "GiftTrait" then
             currentGift = trait.Name
         end
 
         ::continue::
     end
 
-
-    return currentGift, currentAssist
+    return currentGift
 end
 
 ---@param hero table
@@ -71,8 +67,8 @@ end
 
 
 ---@class ICreateFreshHeroArgs
----@field keepsake string
----@field assist string
+---@field keepsake string?
+---@field familiar string?
 ---@field weaponName string
 ---@field weaponVariant number
 
@@ -91,7 +87,15 @@ function HeroEx.CreateFreshHero(args)
     end
 
     HeroContext.RunWithHeroContext(hero, function()
-        EquipKeepsake(hero, args.keepsake, { SkipNewTraitHighlight = true })
+        EquipPreRunMetaUpgrades(nil, hero)
+
+        if args.familiar then
+            EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = args.familiar })
+        end
+
+        if args.keepsake then
+            EquipKeepsake(hero, args.keepsake, { SkipNewTraitHighlight = true })
+        end
 
         EquipWeaponUpgrade(hero, { SkipTraitHighlight = true })
         InitHeroLastStands(hero)

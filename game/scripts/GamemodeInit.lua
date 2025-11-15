@@ -48,6 +48,7 @@ function Gamemode.RegisterHooks()
     HookStorage.Add "hooks/WeaponHooks.lua"
     HookStorage.Add "hooks/WeaponLogicHooksLob.lua"
     HookStorage.Add "hooks/EffectHooks.lua"
+    HookStorage.Add "hooks/FamilliarHooks.lua"
 
     HookStorage.Add "hooks/AnaimationSwapHook.lua"
 end
@@ -63,9 +64,9 @@ function Gamemode.RegisterEngineHandlers()
         hooksInited = true
         Events.engine:trigger("hooksPreInicialized")
 
+        HeroContext.InitHooks()
         HeroEx.SaveUnhookedFunctions()
 
-        HeroContext.InitHooks()
         HookStorage.GameInit()
 
         CoopCamera.InitHooks()

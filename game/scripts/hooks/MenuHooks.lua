@@ -20,7 +20,8 @@ local HeroEx = ModRequire "../logic/HeroEx.lua"
 local MenuHooks = SimpleHook.New()
 
 function MenuHooks.InitGameHooks()
-    --MenuHooks.HookUiControl("ShowAwardMenu") -- Wrong name
+    MenuHooks.HookUiControl("OpenKeepsakeRackScreen")
+    MenuHooks.HookUiControl("OpenMetaUpgradeCardScreen")
     MenuHooks.HookUiControl("PlayTextLines")
     MenuHooks.HookUiControl("OpenUpgradeChoiceMenu")
     MenuHooks.HookUiControl("ShowStoreScreen")
@@ -43,23 +44,25 @@ function MenuHooks.HookUiControl(funName)
     end)
 end
 
--- function MenuHooks.wrap.ShowAwardMenu(baseFun, ...)
---     if HeroContext.GetCurrentHeroContext() == CoopPlayers.GetMainHero() then
---         baseFun(...)
---         return
---     end
+function MenuHooks.wrap.OpenKeepsakeRackScreen(baseFun, ...)
+    local playerId = CoopPlayers.GetCurrentPlayerId()
 
---     local prevGift, prevAssist = GameState.LastAwardTrait, GameState.LastAssistTrait
+    if playerId == 1 then
+        baseFun(...)
+        return
+    end
 
---     local currentGift, currentAssist = HeroEx.GetGiftAndAssist(CurrentRun.Hero)
+    local key = "LastAwardTraitCoopPlayer" .. playerId
+    local prevGift = GameState.LastAwardTrait
+    local currentGift = GameState[key]
 
---     GameState.LastAwardTrait = currentGift
---     GameState.LastAssistTrait = currentAssist
+    GameState.LastAwardTrait = currentGift
 
---     baseFun(...)
+    baseFun(...)
 
---     GameState.LastAwardTrait, GameState.LastAssistTrait = prevGift, prevAssist
--- end
+    GameState[key] = GameState.LastAwardTrait
+    GameState.LastAwardTrait = prevGift
+end
 
 function MenuHooks.wrap.OpenSellTraitMenu(base)
     local playerId = CoopPlayers.GetPlayerByHero(HeroContext.GetCurrentHeroContext()) or 1

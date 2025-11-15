@@ -33,7 +33,7 @@ end
 
 ---@private
 function CoopGame.Load()
-    TableUtils.callEvery(CoopGame.SaveHandlers, "Load")
+    TableUtils.callEveryReverse(CoopGame.SaveHandlers, "Load")
 end
 
 ---@private

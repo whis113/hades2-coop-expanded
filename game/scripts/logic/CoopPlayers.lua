@@ -60,6 +60,10 @@ function CoopPlayers.GetHero(playerId)
     return CoopPlayers.CoopHeroes[playerId]
 end
 
+function CoopPlayers.SetHero(playerId, hero)
+    CoopPlayers.CoopHeroes[playerId] = hero
+end
+
 function CoopPlayers.PlayersIterator()
     return ipairs(CoopPlayers.CoopHeroes)
 end
@@ -77,6 +81,11 @@ function CoopPlayers.GetPlayerByHero(hero)
             return playerId
         end
     end
+end
+
+---@return number
+function CoopPlayers.GetCurrentPlayerId()
+    return CoopPlayers.GetPlayerByHero(CurrentRun.Hero)
 end
 
 function CoopPlayers.GetHeroByUnit(unitId)
@@ -160,8 +169,8 @@ function CoopPlayers.InitCoopUnit(playerId)
     local hero = CoopPlayers.CoopHeroes[playerId]
     if not hero then
         hero = HeroEx.CreateFreshHero{
-            keepsake = GameState.LastAwardTrait;
-            assist = GameState.LastAssistTrait;
+            keepsake = GameState["LastAwardTraitCoopPlayer" .. playerId],
+            familiar = GameState["EquippedFamiliarCoopPlayer" .. playerId],
             weaponName = WeaponSets.HeroPrimaryWeapons[1];
             weaponVariant = 1;
         }
@@ -190,15 +199,14 @@ end
 function CoopPlayers.RecreateFreshHeroWithCurrentMeta(playerId)
     local hero = CoopPlayers.CoopHeroes[playerId]
     local currentUnit = hero.ObjectId
-    local keepsake, assist = HeroEx.GetGiftAndAssist(hero)
     local weaponName, weaponIndex = HeroEx.GetHeroWeaponFull(hero)
 
     weaponName = weaponName or WeaponSets.HeroPrimaryWeapons[1]
     weaponIndex = weaponIndex or 1
 
     hero = HeroEx.CreateFreshHero{
-        keepsake = keepsake;
-        assist = assist;
+        keepsake = GameState["LastAwardTraitCoopPlayer" .. playerId];
+        familiar = GameState["EquippedFamiliarCoopPlayer" .. playerId];
         weaponName = weaponName;
         weaponVariant = weaponIndex;
     }
@@ -245,8 +253,8 @@ function CoopPlayers.CoopInit()
         -- Create fresh hero for all players
         for playerId = 2, CoopPlayers.GetPlayersCount() do
             CoopPlayers.CoopHeroes[playerId] = HeroEx.CreateFreshHero {
-                keepsake = GameState.LastAwardTrait,
-                assist = GameState.LastAssistTrait,
+                keepsake = GameState["LastAwardTraitCoopPlayer" .. playerId],
+                familiar = GameState["EquippedFamiliarCoopPlayer" .. playerId],
                 weaponName = WeaponSets.HeroPrimaryWeapons[1],
                 weaponVariant = 1,
             }
