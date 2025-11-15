@@ -61,6 +61,10 @@ function RunEx.IsHubRoom(name)
     return name == "Hub_Main" or name == "Hub_PreRun"
 end
 
+function RunEx.GetCurrentRoom()
+    return CurrentHubRoom or CurrentRun.CurrentRoom
+end
+
 function RunEx.RemoveRewardFromAllDefaultDoors()
     for _, door in pairs(MapState.OfferedExitDoors) do
         if door.IsDefaultDoor then

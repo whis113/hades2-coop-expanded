@@ -38,6 +38,7 @@ function MapStateHooks.ApplyMapStateProxy()
     for playerId = 1, CoopPlayers.GetPlayersCount() do
         local playerData = hadnler:GetPlayerData(playerId)
         playerData.EquippedWeapons = playerData.EquippedWeapons or {}
+        playerData.HeroNotStopsProjectile = playerData.HeroNotStopsProjectile or {}
     end
 end
 
