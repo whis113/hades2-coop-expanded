@@ -23,16 +23,7 @@ end
 function SinglePlayerHeroSaveHandler.Load()
     local hero = CurrentRun and CurrentRun.CoopWorkaroundMainHero
     if hero then
-        CurrentRun.Hero = hero
-        SinglePlayerHeroSaveHandler.RemoveMainHeroDeathWorkaround()
-    end
-end
-
----@private
-function SinglePlayerHeroSaveHandler.DoPatchesPreHook()
-    local hero = CurrentRun and CurrentRun.CoopWorkaroundMainHero
-    if hero then
-        CurrentRun.Hero = hero
+        CoopPlayers.SetMainHero(hero)
         SinglePlayerHeroSaveHandler.RemoveMainHeroDeathWorkaround()
     end
 end
@@ -40,7 +31,7 @@ end
 ---@private
 function SinglePlayerHeroSaveHandler.ApplyMainHeroDeathWorkaround()
     local hero = CurrentRun and CurrentRun.Hero
-    if hero.IsDead then
+    if hero and CoopPlayers.IsHeroShouldBeHidden(hero) then
         CurrentRun.CoopWorkaroundMainHero = hero
         local safeHero = CoopPlayers.GetFirstAliveHero() or hero
         CurrentRun.Hero = safeHero

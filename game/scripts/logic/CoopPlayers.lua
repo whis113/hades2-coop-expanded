@@ -259,4 +259,8 @@ function CoopPlayers.CoopInit()
     end
 end
 
+function CoopPlayers.IsHeroShouldBeHidden(hero)
+    return hero.IsDead and not RunEx.IsRunEnded()
+end
+
 return CoopPlayers
