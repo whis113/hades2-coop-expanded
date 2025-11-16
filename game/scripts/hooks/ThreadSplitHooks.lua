@@ -12,9 +12,34 @@ local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 local ThreadSplitHooks = SimpleHook.New()
 
 local THREAD_TO_SPLIT = {
+    -- Mana regen
     ManaRegenStartup = true;
     ManaRegenInterval = true;
     IdleManaRegen = true;
+    -- TODO check
+    WeaponCastArmIndicatorFire = true;
+
+    WeaponStaffSwing5IndicatorFire = true,
+    WeaponStaffBallIndicatorFire = true,
+
+    WeaponDagger5IndicatorFire = true,
+    WeaponDaggerThrowIndicatorFire = true,
+
+    WeaponTorchIndicatorFire = true;
+    WeaponTorchSpecialIndicatorFire = true;
+
+    WeaponAxeSpinIndicatorFire = true,
+    WeaponAxeSpecialSwingIndicatorFire = true,
+
+    WeaponLobIndicatorFire = true;
+    WeaponLobSpecialIndicatorFire = true;
+
+    WeaponSuitChargedIndicatorFire = true,
+    WeaponSuitRangedIndicatorFire = true,
+
+    -- weapon charge
+    ChargeManaWeaponStart = true;
+    ManaChargeComplete = true;
 }
 
 ---@param name string
@@ -24,6 +49,17 @@ local function GetThreadRename(name)
     end
 
     return name
+end
+
+function ThreadSplitHooks:InitGameHooks()
+    setmetatable(_eventTimeoutRecord, {
+        __index = function(self, key)
+            return rawget(self, GetThreadRename(key))
+        end;
+        __newindex = function(self, key, value)
+            rawset(self, GetThreadRename(key), value)
+        end;
+    })
 end
 
 function ThreadSplitHooks.wrap.HasThread(HasThread, name)
@@ -44,6 +80,23 @@ end
 
 function ThreadSplitHooks.wrap.wait(wait, duration, tag, persist)
     return wait(duration, GetThreadRename(tag), persist)
+end
+
+function ThreadSplitHooks.wrap.HasWaitUntil(HasWaitUntil, tag)
+    return HasWaitUntil(GetThreadRename(tag))
+end
+
+function ThreadSplitHooks.wrap.waitUntil(waitUntil, event, tag, persist)
+    return waitUntil(GetThreadRename(event), tag, persist)
+end
+
+function ThreadSplitHooks.wrap.notifyExistingWaiters(notifyExistingWaiters, event, wasTimeout)
+    return notifyExistingWaiters(GetThreadRename(event), wasTimeout)
+end
+
+function ThreadSplitHooks.wrap.NotifyOnWeaponCharge(NotifyOnWeaponCharge, args)
+    args.Notify = GetThreadRename(args.Notify)
+    NotifyOnWeaponCharge(args)
 end
 
 return ThreadSplitHooks
