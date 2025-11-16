@@ -29,6 +29,7 @@ end
 ---@private
 function Gamemode.RegisterHooks()
     HookStorage.Add "hooks/EngineHooks.lua"
+    HookStorage.Add "hooks/ThreadSplitHooks.lua"
     HookStorage.Add "hooks/FreezeHooks.lua"
     HookStorage.Add "hooks/RunHooks.lua"
     HookStorage.Add "hooks/MenuHooks.lua"
