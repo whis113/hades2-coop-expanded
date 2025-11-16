@@ -108,17 +108,40 @@ function TableUtils.removeKeys(t, keys)
     end
 end
 
----@param from table
----@param to table
+---@param t table
 ---@param keys any[]
-function TableUtils.copyKeysDeep(from, to, keys)
+function TableUtils.removeKeysRaw(t, keys)
+    for i = 1, #keys do
+        rawset(t, keys[i], nil)
+    end
+end
+
+---@param dest table
+---@param src table
+---@param keys any[]
+function TableUtils.copyKeysDeep(dest, src, keys)
     for i = 1, #keys do
         local key = keys[i]
-        local v = from[key]
+        local v = src[key]
         if type(v) == "table" then
-            to[key] = TableUtils.copyDeep(v)
+            dest[key] = TableUtils.copyDeep(v)
         else
-            to[key] = v
+            dest[key] = v
+        end
+    end
+end
+
+---@param dest table
+---@param src table
+---@param keys any[]
+function TableUtils.copyKeysDeepRaw(dest, src, keys)
+    for i = 1, #keys do
+        local key = keys[i]
+        local v = src[key]
+        if type(v) == "table" then
+            rawset(dest, key, TableUtils.copyDeep(v))
+        else
+            rawset(dest, key, v)
         end
     end
 end

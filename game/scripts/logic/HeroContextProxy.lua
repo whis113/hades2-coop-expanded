@@ -65,7 +65,10 @@ function HeroContextProxy:HookTable()
 
         __len = function()
             return #getTableForCurrentHero()
-        end
+        end,
+
+        -- For debug only
+        handler = self,
     }
 
     setmetatable(self.target, contextMt)

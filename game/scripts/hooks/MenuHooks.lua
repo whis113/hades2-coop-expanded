@@ -13,8 +13,8 @@ local HookUtils = ModRequire "../utils/HookUtils.lua"
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type CoopControl
 local CoopControl = ModRequire "../logic/CoopControl.lua"
----@type HeroEx
-local HeroEx = ModRequire "../logic/HeroEx.lua"
+---@type GameStateEx
+local GameStateEx = ModRequire "../logic/GameStateEx.lua"
 
 ---@class MenuHooks : SimpleHook
 local MenuHooks = SimpleHook.New()
@@ -42,6 +42,10 @@ function MenuHooks.HookUiControl(funName)
 
         originalFun(...)
     end)
+end
+
+function MenuHooks.pre.OpenMetaUpgradeCardScreen()
+    GameStateEx.CopyTraitsToMetaUpgrades(CurrentRun.Hero)
 end
 
 function MenuHooks.wrap.OpenKeepsakeRackScreen(baseFun, ...)

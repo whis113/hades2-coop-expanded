@@ -72,7 +72,9 @@ function HeroContextProxySpliter:HookTable()
             else
                 rawset(self, key, value)
             end
-        end
+        end,
+        -- For debug only
+        handler = self,
     }
 
     setmetatable(self.target, mt)
@@ -93,16 +95,16 @@ end
 
 ---@param playerId number
 function HeroContextProxySpliter:CopyContextToPlayer(playerId)
-    TableUtils.copyKeysDeep(self.target, self.data[playerId], self.keys)
+    TableUtils.copyKeysDeep(self.data[playerId], self.target, self.keys)
 end
 
 ---@param playerId number
 function HeroContextProxySpliter:MovePlayerDataToTarget(playerId)
-    TableUtils.copyKeysDeep(self.data[playerId], self.target, self.keys)
+    TableUtils.copyKeysDeepRaw(self.data[playerId], self.target, self.keys)
 end
 
 function HeroContextProxySpliter:RemoveKeysFromTarget()
-    TableUtils.removeKeys(self.target, self.keys)
+    TableUtils.removeKeysRaw(self.target, self.keys)
 end
 
 ---@param playerId number
