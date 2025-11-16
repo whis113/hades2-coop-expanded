@@ -14,11 +14,12 @@ local ThreadSplitHooks = SimpleHook.New()
 local THREAD_TO_SPLIT = {
     ManaRegenStartup = true;
     ManaRegenInterval = true;
+    IdleManaRegen = true;
 }
 
 ---@param name string
 local function GetThreadRename(name)
-    if THREAD_TO_SPLIT[name] then
+    if name and THREAD_TO_SPLIT[name] then
         name = name .. "CoopPlayers" .. (CoopPlayers.GetCurrentPlayerId() or 1)
     end
 
@@ -39,6 +40,10 @@ end
 
 function ThreadSplitHooks.wrap.killTaggedThreads(killTaggedThreads, tag)
     return killTaggedThreads(GetThreadRename(tag))
+end
+
+function ThreadSplitHooks.wrap.wait(wait, duration, tag, persist)
+    return wait(duration, GetThreadRename(tag), persist)
 end
 
 return ThreadSplitHooks
