@@ -32,8 +32,7 @@ end
 ---@param funName string
 function MenuHooks.HookUiControl(funName)
     HookUtils.wrap(funName, function(originalFun, ...)
-        local currentHero = HeroContext.GetCurrentHeroContext()
-        local playerId = CoopPlayers.GetPlayerByHero(currentHero)
+        local playerId = CoopPlayers.GetCurrentPlayerId()
         CoopControl.SwitchControlForMenu(playerId)
 
         HookUtils.onPreFunctionOnce("UnfreezePlayerUnit", function()

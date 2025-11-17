@@ -7,6 +7,8 @@
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
 ---@type HeroContext
 local HeroContext = ModRequire "../logic/HeroContext.lua"
+---@type HeroContextNative
+local HeroContextNative = ModRequire "../logic/HeroContextNative.lua"
 ---@type SimpleHook
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 
@@ -59,6 +61,17 @@ function ControlHooks.wrap.NotifyOnControlPressed(baseFun, argumenst)
         baseFun(argumenst)
     else
         baseFun(argumenst)
+    end
+end
+
+function ControlHooks.wrap.ToggleMove(ToggleMove, argumenst)
+    -- Custom argument
+    if argumenst.PlayerIndex then
+        HeroContextNative.RunWithNativeHeroContext(argumenst.PlayerIndex, ToggleMove, argumenst)
+    else
+        for playerId = 1, CoopPlayers.GetPlayersCount() do
+            HeroContextNative.RunWithNativeHeroContext(playerId, ToggleMove, argumenst)
+        end
     end
 end
 

@@ -38,7 +38,7 @@ local AnaimationSwapHook = SimpleHook.New()
 
 function AnaimationSwapHook.wrap.SwapAnimation(baseFun, args)
     if ANIMATIONS_TO_SWAP[args.Name] then
-        local playerIndex = CoopPlayers.GetPlayerByHero(CurrentRun.Hero) or 1
+        local playerIndex = CoopPlayers.GetCurrentPlayerId() or 1
         if args.Reverse then
             CoopRemoveAnimationSwap(playerIndex, args.Name)
         else
