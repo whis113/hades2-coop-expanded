@@ -55,10 +55,16 @@ end
 function CoopControl.SwitchControlForMenu(playerId)
     local controllerId = CoopControl.Schemas.Current[playerId].ControllerId
 
+    SetConfigOption { Name = "AllowControlHotSwap", Value = true }
     CoopSetPlayerGamepad(1, controllerId)
     for playerId = 2, #CoopControl.Schemas.Current do
         CoopSetPlayerGamepad(playerId, UNUSED_GAMEPAD_INDEX)
     end
+end
+
+function CoopControl.ExitMenuControl()
+    SetConfigOption { Name = "AllowControlHotSwap", Value = false }
+    CoopControl.ResetAllPlayers()
 end
 
 ---@param schema ControlSchema?

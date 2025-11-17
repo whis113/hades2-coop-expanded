@@ -21,11 +21,34 @@ local MenuHooks = SimpleHook.New()
 
 function MenuHooks.InitGameHooks()
     MenuHooks.HookUiControl("OpenKeepsakeRackScreen")
-    MenuHooks.HookUiControl("OpenMetaUpgradeCardScreen")
-    MenuHooks.HookUiControl("PlayTextLines")
-    MenuHooks.HookUiControl("OpenUpgradeChoiceMenu")
-    MenuHooks.HookUiControl("ShowStoreScreen")
+    MenuHooks.HookUiControl("OpenWeaponShopScreen")
+    MenuHooks.HookUiControl("OpenCosmeticsShopScreen")
+    MenuHooks.HookUiControl("ShowBoonInfoScreen")
+    MenuHooks.HookUiControl("OpenBountyBoardScreen")
+    MenuHooks.HookUiControl("OpenCodexScreen")
+    MenuHooks.HookUiControl("OpenElementalPromptScreen")
+    MenuHooks.HookUiControl("OpenFamiliarCostumeScreen")
+    MenuHooks.HookUiControl("OpenFamiliarShopScreen")
+    MenuHooks.HookUiControl("OpenGameStatsScreen")
+    MenuHooks.HookUiControl("OpenGhostAdminScreen")
+    MenuHooks.HookUiControl("OpenMailboxScreen")
+    MenuHooks.HookUiControl("OpenMarketScreen")
+    MenuHooks.HookUiControl("OpenMusicPlayerScreen")
+    MenuHooks.HookUiControl("OpenQuestLogScreen")
+    MenuHooks.HookUiControl("OpenInventoryScreen")
+    MenuHooks.HookUiControl("OpenRunHistoryScreen")
     MenuHooks.HookUiControl("OpenSellTraitMenu")
+    MenuHooks.HookUiControl("OpenShrineScreen")
+    MenuHooks.HookUiControl("OpenSpellScreen")
+    MenuHooks.HookUiControl("ShowStoreScreen")
+    MenuHooks.HookUiControl("ShowSurfaceShopScreen")
+    MenuHooks.HookUiControl("OpenTalentScreen")
+    MenuHooks.HookUiControl("OpenMetaUpgradeCardScreen")
+    MenuHooks.HookUiControl("OpenTradeScreen")
+    MenuHooks.HookUiControl("OpenTraitTrayScreen")
+    MenuHooks.HookUiControl("OpenUpgradeChoiceMenu")
+    MenuHooks.HookUiControl("PlayTextLines")
+    MenuHooks.HookUiControl("OpenWeaponUpgradeScreen")
 end
 
 ---@private
@@ -36,7 +59,7 @@ function MenuHooks.HookUiControl(funName)
         CoopControl.SwitchControlForMenu(playerId)
 
         HookUtils.onPreFunctionOnce("UnfreezePlayerUnit", function()
-            CoopControl.ResetAllPlayers()
+            CoopControl.ExitMenuControl()
         end)
 
         originalFun(...)
@@ -97,6 +120,10 @@ function MenuHooks.wrap.DisplayTextLine(baseFun, screen, source, line, parentLin
         end)
     end
     baseFun(screen, source, line, parentLine)
+end
+
+function MenuHooks.pre.OnScreenOpened(screen)
+    DebugPrint { Text = "OnScreenOpened:  " .. tostring(screen.Name) }
 end
 
 return MenuHooks
