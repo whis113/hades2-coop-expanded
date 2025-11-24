@@ -12,7 +12,7 @@ local Events = {}
 ---@type Observable<"hooksPreInicialized" | "hooksInicialized" | "presave" | "postsave" | "tick">
 Events.engine = Observable.new()
 
----@type Observable<"newRunStarted" | "mapLoaded" | "roomPresentationFinished" | "roomPreLeave" | "allEnemiesDead">
+---@type Observable<"newRunStarted" | "mapLoaded" | "roomPreStart" | "roomPresentationFinished" | "roomPreLeave" | "allEnemiesDead">
 Events.run = Observable.new()
 
 ---@type Observable<"comsumeAmmoItem">

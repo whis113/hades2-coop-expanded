@@ -90,7 +90,9 @@ function HeroEx.CreateFreshHero(args)
         EquipPreRunMetaUpgrades(nil, hero)
 
         if args.familiar then
+            local prevFamiliar = GameState.EquippedFamiliar
             EquipFamiliar(nil, { Unit = CurrentRun.Hero, FamiliarName = args.familiar })
+            GameState.EquippedFamiliar = prevFamiliar
         end
 
         if args.keepsake then

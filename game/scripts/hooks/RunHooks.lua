@@ -202,4 +202,8 @@ function RunHooks.pre.OnAllEnemiesDead()
     Events.run:trigger("allEnemiesDead")
 end
 
+function RunHooks.pre.StartRoom()
+    Events.run:trigger("roomPreStart")
+end
+
 return RunHooks

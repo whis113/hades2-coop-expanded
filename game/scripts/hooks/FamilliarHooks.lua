@@ -7,10 +7,33 @@
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 ---@type CoopPlayers
 local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
+---@type HeroContext
+local HeroContext = ModRequire "../logic/HeroContext.lua"
+---@type Events
+local Events = ModRequire "../logic/Events.lua"
 
-local FamilliarHooks = SimpleHook.New()
+---@class FamiliarHooks : SimpleHook
+local FamiliarHooks = SimpleHook.New()
 
-function FamilliarHooks.wrap.UseFamiliar(UseFamiliar, familiar, args, user)
+function FamiliarHooks:InitEngineHooks()
+    Events.run:on("roomPreStart", FamiliarHooks.LoadAdditionalPackages)
+end
+
+function FamiliarHooks.LoadAdditionalPackages()
+    local loadAdditional = {}
+    for playerId in pairs(CoopPlayers.GetAliveHeroes()) do
+        local key = "EquippedFamiliarCoopPlayer" .. playerId
+        local familiar = GameState[key]
+        if familiar then
+            table.insert(loadAdditional, familiar)
+        end
+    end
+    if not IsEmpty(loadAdditional) then
+        LoadPackages { Names = loadAdditional }
+    end
+end
+
+function FamiliarHooks.wrap.UseFamiliar(UseFamiliar, familiar, args, user)
     local playerId = CoopPlayers.GetCurrentPlayerId()
 
     if playerId == 1 then
@@ -28,4 +51,18 @@ function FamilliarHooks.wrap.UseFamiliar(UseFamiliar, familiar, args, user)
     GameState.EquippedFamiliar = prevFamilliar
 end
 
-return FamilliarHooks
+-- Activate familiars for all alive players here
+function FamiliarHooks.wrap.FamiliarSetup(ActivateFamiliar, eventSource, args)
+    local firstPlayerFamiliar = GameState.EquippedFamiliar
+    for playerId, hero in pairs(CoopPlayers.GetAliveHeroes()) do
+        if playerId == 1 then
+            GameState.EquippedFamiliar = firstPlayerFamiliar
+        else
+            GameState.EquippedFamiliar = GameState["EquippedFamiliarCoopPlayer" .. playerId]
+        end
+        HeroContext.RunWithHeroContextAwait(hero, ActivateFamiliar, eventSource, args)
+    end
+    GameState.EquippedFamiliar = firstPlayerFamiliar
+end
+
+return FamiliarHooks
