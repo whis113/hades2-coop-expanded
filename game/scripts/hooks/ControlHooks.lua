@@ -15,16 +15,20 @@ local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 local ControlHooks = SimpleHook.New()
 
 function ControlHooks.wrap.OnControlPressed(baseFun, args)
-    -- if args[1] == "AdvancedTooltip" then
-    --     -- override control here
-    --     args[2] = GameModifed.AdvancedTooltipModifedHandler
-    -- end
     baseFun {
         args[1],
         function(triggerArgs)
-            local hero = CoopPlayers.GetHero(triggerArgs.mPlayerIndex)
+            local hero
+            if triggerArgs.mPlayerIndex then
+                hero = CoopPlayers.GetHero(triggerArgs.mPlayerIndex)
+            else
+                hero = CoopPlayers.GetHeroByUnit(triggerArgs.triggeredById)
+            end
             if hero then
                 HeroContext.RunWithHeroContext(hero, args[2], triggerArgs)
+            else
+                DebugAssert({ Condition = false, Text = "Controll was pressed without right hero context " .. args[1], Owner = "Uladzislau" })
+                args[2](triggerArgs)
             end
         end
     }
