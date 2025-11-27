@@ -69,7 +69,7 @@ end
 
 function LootShared.Reset()
     HeroContextProxyStore.GetOrCreate(CurrentRun, "LootTypeHistory"):Reset()
-    LootQuery.Reset(CoopPlayers.GetPlayersCount())
+    LootQuery.Reset()
 end
 
 ---@param baseFun fun(args: table): table
