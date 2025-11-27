@@ -10,67 +10,48 @@ local CoopPlayers = ModRequire "CoopPlayers.lua"
 local CombinedTraitsUI = {}
 
 ---@private
-CombinedTraitsUI.isTraitsContextSwithInFrogress = false
-
----@private
 CombinedTraitsUI.currentTraitsHero = nil
 
 ---@public
 function CombinedTraitsUI.ChangeHeroInTraitsMenu()
-    if CombinedTraitsUI.isTraitsContextSwithInFrogress then
-        return
-    end
-
     local currentHeroInMenu = CombinedTraitsUI.GetCurrentTraitHero()
     if CurrentRun.Hero == currentHeroInMenu then
         return
     end
 
-    CombinedTraitsUI.isTraitsContextSwithInFrogress = true
-
-    CombinedTraitsUI.RemoveHeroTrait(currentHeroInMenu)
+    CombinedTraitsUI.RemoveTraitsFromMenu(currentHeroInMenu)
 
     CombinedTraitsUI.currentTraitsHero = CurrentRun.Hero
-    CombinedTraitsUI.AddHeroTraits(CombinedTraitsUI.currentTraitsHero)
-
-    if CurrentRun and CurrentRun.CurrentRoom then
-        TraitUIActivateTraits()
-    end
-
-    CombinedTraitsUI.isTraitsContextSwithInFrogress = false
 end
 
 ---@private
 ---@param hero table
-function CombinedTraitsUI.RemoveHeroTrait(hero)
+function CombinedTraitsUI.RemoveTraitsFromMenu(hero)
     for _, trait in pairs(hero.Traits) do
-        TraitUIRemove(trait)
-    end
-end
-
----@private
----@param hero table
-function CombinedTraitsUI.AddHeroTraits(hero)
-    local showingTraits = {}
-
-    for _, traitData in pairs(hero.Traits) do
-        if showingTraits[traitData.Name] == nil or not AreTraitsIdentical(traitData, showingTraits[traitData.Name]) or (AreTraitsIdentical(traitData, showingTraits[traitData.Name]) and GetRarityValue(showingTraits[traitData.Name].Rarity) < GetRarityValue(traitData.Rarity)) then
-            if not showingTraits[traitData.Name] then
-                showingTraits[traitData.Name] = {}
-            end
-            table.insert(showingTraits[traitData.Name], traitData)
-        end
-    end
-
-    for traitName, traitDatas in pairs(showingTraits) do
-        for i, traitData in pairs(traitDatas) do
-            TraitUIAdd(traitData, true)
+        if not CombinedTraitsUI.IsTrayTarit(trait) then
+            TraitUIRemove(trait)
         end
     end
 end
 
+---@public
 function CombinedTraitsUI.GetCurrentTraitHero()
     return CombinedTraitsUI.currentTraitsHero or CoopPlayers.GetMainHero()
+end
+
+---@public
+function CombinedTraitsUI.IsTrayTarit(trait)
+    local slot = trait.Slot
+    return slot == "Keepsake" or slot == "Spell" or slot == "Assist"
+end
+
+---@public
+function CombinedTraitsUI.IsTraitShouldBeVisibleForCurrentHero(trait)
+    if CombinedTraitsUI.IsTrayTarit(trait) then
+        return true
+    end
+
+    return CurrentRun.Hero == CombinedTraitsUI.GetCurrentTraitHero()
 end
 
 return CombinedTraitsUI

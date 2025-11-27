@@ -129,6 +129,9 @@ function UIHooks:InitGameHooks()
     -- Taits tray
     UIHooks.CallForEveryVisibleHero("ShowTraitUI")
     UIHooks.CallForEveryHero("HideTraitUI")
+
+    UIHooks.SimpleCurrentTraitWrapper("TraitTrayScreenClose")
+    UIHooks.SimpleCurrentTraitWrapper("PinTraitDetails")
 end
 
 function UIHooks.pre.SetupFormatContainers()
@@ -194,7 +197,12 @@ end
 -- Traits
 
 function UIHooks.wrap.TraitUIAdd(baseFun, trait, args)
-    if CoopPlayers.GetMainHero() == CurrentRun.Hero then
+    if not CombinedTraitsUI.IsTraitShouldBeVisibleForCurrentHero(trait) then
+        return
+    end
+
+    local currentHero = CurrentRun.Hero
+    if CoopPlayers.GetMainHero() == currentHero then
         return baseFun(trait, args)
     end
 
@@ -222,8 +230,12 @@ end
 
 function UIHooks.post.ShowUseButton(objectId, useTarget)
     if HeroContext.GetDefaultHero() ~= HeroContext.GetCurrentHeroContext() then
-        Move({ Id = ScreenAnchors.UsePrompts[objectId], DestinationId = ScreenAnchors.UsePrompts[objectId], OffsetY = -50 })
+        Move{ Id = ScreenAnchors.UsePrompts[objectId], DestinationId = ScreenAnchors.UsePrompts[objectId], OffsetY = -50 }
     end
+end
+
+function UIHooks.pre.OpenTraitTrayScreen()
+    CombinedTraitsUI.ChangeHeroInTraitsMenu()
 end
 
 return UIHooks
