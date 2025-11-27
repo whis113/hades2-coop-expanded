@@ -18,12 +18,7 @@ function ControlHooks.wrap.OnControlPressed(baseFun, args)
     baseFun {
         args[1],
         function(triggerArgs)
-            local hero
-            if triggerArgs.mPlayerIndex then
-                hero = CoopPlayers.GetHero(triggerArgs.mPlayerIndex)
-            else
-                hero = CoopPlayers.GetHeroByUnit(triggerArgs.triggeredById)
-            end
+            local hero = CoopPlayers.GetHeroByUnit(triggerArgs.triggeredById)
             if hero then
                 HeroContext.RunWithHeroContext(hero, args[2], triggerArgs)
             else
