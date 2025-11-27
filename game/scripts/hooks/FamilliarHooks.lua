@@ -52,7 +52,7 @@ function FamiliarHooks.wrap.UseFamiliar(UseFamiliar, familiar, args, user)
 end
 
 -- Activate familiars for all alive players here
-function FamiliarHooks.wrap.FamiliarSetup(ActivateFamiliar, eventSource, args)
+function FamiliarHooks.wrap.FamiliarSetup(FamiliarSetup, eventSource, args)
     local firstPlayerFamiliar = GameState.EquippedFamiliar
     for playerId, hero in pairs(CoopPlayers.GetAliveHeroes()) do
         if playerId == 1 then
@@ -60,7 +60,14 @@ function FamiliarHooks.wrap.FamiliarSetup(ActivateFamiliar, eventSource, args)
         else
             GameState.EquippedFamiliar = GameState["EquippedFamiliarCoopPlayer" .. playerId]
         end
-        HeroContext.RunWithHeroContextAwait(hero, ActivateFamiliar, eventSource, args)
+
+        HeroContext.RunWithHeroContextAwait(hero, function()
+            FamiliarSetup(eventSource, args)
+            -- We use this to setup right hero context in damage handlers
+            if MapState.FamiliarUnit then
+                MapState.FamiliarUnit.CoopOwnerHero = hero
+            end
+        end)
     end
     GameState.EquippedFamiliar = firstPlayerFamiliar
 end

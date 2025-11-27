@@ -37,7 +37,8 @@ function MapStateHooks.ApplyMapStateProxy()
         "ShowManaChargeIndicator",
         "ManaChargeIndicatorCost",
         "ManaChargeIndicatorData",
-        "ManaChargeIndicatorIds"
+        "ManaChargeIndicatorIds",
+        "FamiliarUnit",
     })
 
     for playerId = 1, CoopPlayers.GetPlayersCount() do
