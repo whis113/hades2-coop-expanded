@@ -9,6 +9,7 @@
 #include "CoopContext.h"
 #include "hooks/AnimSwapHook.h"
 #include "hooks/MagnetismHook.h"
+#include "hooks/AllyModelLimitsAssertHooh.h"
 
 HADES_MOD_API void _cdecl HadesModLuaCreated(lua_State *luaState) {CoopContext::GetInstance()->InitLua(luaState); };
 
@@ -18,6 +19,8 @@ HADES_MOD_API bool _cdecl HadesModInit(const IModApi *modApi) {
 
     AnimSpawnHook::Install(modApi->GetSymbolAddress);
     MagnetismHook::Install(modApi->GetSymbolAddress);
+    AllyModelLimitsAssertHooh::Install(modApi->GetSymbolAddress);
+
     HookTable::Instance().Init(*modApi->GetHookTable());
 
     return true;
