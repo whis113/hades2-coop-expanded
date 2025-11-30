@@ -49,6 +49,10 @@ function HeroContextProxySpliterStore.Recreate(name, target, keys)
     return proxy
 end
 
+function HeroContextProxySpliterStore.Delete(name)
+    store[name] = nil
+end
+
 ---@return fun(store: table<string, HeroContextProxySpliter>, index?: string): string, HeroContextProxySpliter
 ---@return table<string, HeroContextProxySpliter>
 function HeroContextProxySpliterStore.Iterator()

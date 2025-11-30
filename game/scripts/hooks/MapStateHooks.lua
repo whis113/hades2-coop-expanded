@@ -57,7 +57,14 @@ function MapStateHooks.ApplySessionMapStateProxy()
     })
 end
 
-MapStateHooks.post.MapStateInit = MapStateHooks.ApplyMapStateProxy
-MapStateHooks.post.SessionMapStateInit = MapStateHooks.ApplySessionMapStateProxy
+function MapStateHooks.post.MapStateInit()
+    HeroContextProxySpliterStore.Delete("MapState")
+    MapStateHooks.ApplyMapStateProxy()
+end
+
+function MapStateHooks.post.SessionMapStateInit()
+    HeroContextProxySpliterStore.Delete("SessionMapState")
+    MapStateHooks.ApplySessionMapStateProxy()
+end
 
 return MapStateHooks
