@@ -31,8 +31,10 @@ function HeroContext.InitHooks()
         local heroContext = CorontinueToHero[coroutine.running()]
         if heroContext then
             _thread(function(...)
-                CorontinueToHero[coroutine.running()] = heroContext
+                local thread = coroutine.running()
+                CorontinueToHero[thread] = heroContext
                 fun(...)
+                CorontinueToHero[thread] = nil
             end, ...)
         else
             _thread(fun, ...)
@@ -96,8 +98,10 @@ end
 ---@param ... unknown params
 function HeroContext.RunWithHeroContext(hero, fun, ...)
     thread(function(...)
-        CorontinueToHero[coroutine.running()] = hero
+        local thread = coroutine.running()
+        CorontinueToHero[thread] = hero
         fun(...)
+        CorontinueToHero[thread] = nil
     end, ...)
 end
 
@@ -125,8 +129,10 @@ function HeroContext.RunWithHeroContextAwait(hero, fun, ...)
     local done = false
 
     thread(function(...)
-        CorontinueToHero[coroutine.running()] = hero
+        local thread = coroutine.running()
+        CorontinueToHero[thread] = hero
         fun(...)
+        CorontinueToHero[thread] = nil
         notifyExistingWaiters(notifyName)
         done = true
     end, ...)
