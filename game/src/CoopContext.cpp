@@ -7,11 +7,12 @@
 
 #include "CoopContext.h"
 
-#include <hades2/PlayerManager.h>
 #include <hades2/PlayerUnit.h>
 #include <hades2/UnitManager.h>
 #include <hades2/GameDataManager.h>
 #include <hades2/World.h>
+#include <hades2/Interact.h>
+#include <hades2/Thing.h>
 
 #include "extensions/LuaFunctionDefs.h"
 
@@ -118,11 +119,8 @@ bool CoopContext::UseItem(size_t playerUnitIndex, size_t useUnitIndex) {
 
     if (!playerUnit || !useThing)
         return false;
-
-    throw std::exception("Not implemented");
     
-    // From Hades 1
-    //useThing->GetIteract()->Use(playerUnit, true, true);
+    useThing->GetInteraction()->Use(playerUnit, true, true);
 
     return true;
 }
