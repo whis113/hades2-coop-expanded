@@ -79,7 +79,7 @@ function DamageHooks.wrap.OnHit(baseFun, args)
             HeroContext.RunWithHeroContext(attacker, fun, triggerArgs)
         elseif isVictimPlayer then
             HeroContext.RunWithHeroContext(victim, fun, triggerArgs)
-        elseif attacker.CoopOwnerHero then
+        elseif attacker and attacker.CoopOwnerHero then
             -- familiars
             HeroContext.RunWithHeroContext(attacker.CoopOwnerHero, fun, triggerArgs)
         else
