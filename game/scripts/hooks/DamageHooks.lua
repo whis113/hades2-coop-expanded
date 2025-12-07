@@ -48,7 +48,7 @@ function DamageHooks.wrap.OnHit(baseFun, args)
     local fun = args[1]
     baseFun { function(triggerArgs)
         local attacker = triggerArgs.AttackerTable
-        local victim = triggerArgs.TriggeredByTable
+        local victim = triggerArgs.Victim
 
         local isAttackerPlayer = attacker and CoopPlayers.IsPlayerHero(attacker)
         local isVictimPlayer = CoopPlayers.IsPlayerHero(victim)
