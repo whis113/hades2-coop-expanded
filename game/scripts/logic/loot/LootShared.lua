@@ -64,7 +64,7 @@ function LootShared.SpawnRoomReward(baseFun, eventSource, args)
         end
     end
 
-    HeroContext.RunWithHeroContextAwait(hero, baseFun, eventSource, args)
+    return HeroContext.RunWithHeroContextAwait(hero, baseFun, eventSource, args)
 end
 
 function LootShared.Reset()

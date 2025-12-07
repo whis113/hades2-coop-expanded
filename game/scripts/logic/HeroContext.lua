@@ -128,10 +128,11 @@ function HeroContext.RunWithHeroContextAwait(hero, fun, ...)
     local notifyName = "RunWithHeroContextAwait" .. awaitableThreadId
     local done = false
 
+    local out = {}
     thread(function(...)
         local thread = coroutine.running()
         CorontinueToHero[thread] = hero
-        fun(...)
+        out = { fun(...) }
         CorontinueToHero[thread] = nil
         notifyExistingWaiters(notifyName)
         done = true
@@ -140,6 +141,8 @@ function HeroContext.RunWithHeroContextAwait(hero, fun, ...)
     if not done then
         waitUntil(notifyName)
     end
+
+    return table.unpack(out)
 end
 
 return HeroContext
