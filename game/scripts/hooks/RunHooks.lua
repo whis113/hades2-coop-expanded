@@ -206,4 +206,11 @@ function RunHooks.pre.StartRoom()
     Events.run:trigger("roomPreStart")
 end
 
+--- Fix players positions in the second stage
+function RunHooks.post.ChronosPhaseTransition()
+    for _, hero in pairs(CoopPlayers.GetAliveHeroes()) do
+        Teleport({ Id = hero.ObjectId, DestinationId = 645921 })
+    end
+end
+
 return RunHooks
