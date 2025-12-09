@@ -84,7 +84,7 @@ function LootHooks.wrap.SpawnRoomReward(baseFun, ...)
     -- Fix #16
     CurrentRun.CurrentRoom.DisableRewardMagnetisim = true
 
-    LootDelivery.SpawnRoomReward(baseFun, ...)
+    return LootDelivery.SpawnRoomReward(baseFun, ...)
 end
 
 --- Warning: this function mutates the game state in ChooseNextRoomData
