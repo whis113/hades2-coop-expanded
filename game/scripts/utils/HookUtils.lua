@@ -33,7 +33,7 @@ function HookUtils.onPreFunction(funcName, handler)
 
     _G[funcName] = function(...)
         handler(...)
-        original(...)
+        return original(...)
     end
 end
 

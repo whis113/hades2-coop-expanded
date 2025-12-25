@@ -62,7 +62,7 @@ function MenuHooks.HookUiControl(funName)
             CoopControl.ExitMenuControl()
         end)
 
-        originalFun(...)
+        return originalFun(...)
     end)
 end
 
