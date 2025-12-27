@@ -61,6 +61,19 @@ function RunEx.IsHubRoom(name)
     return name == "Hub_Main" or name == "Hub_PreRun"
 end
 
+local META_STORY_ROOMS = {
+    I_PostBoss01 = true,
+    I_DeathAreaRestored = true,
+    I_ChronosFlashback01 = true,
+    EndCredits01 = true,
+    Q_PostBoss01 = true
+}
+
+---@return boolean
+function RunEx.IsMetaStoryRoom(name)
+    return META_STORY_ROOMS[name] or false
+end
+
 function RunEx.GetCurrentRoom()
     return CurrentHubRoom or CurrentRun.CurrentRoom
 end

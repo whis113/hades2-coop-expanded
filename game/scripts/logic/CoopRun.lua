@@ -45,6 +45,8 @@ function CoopRun.OnMapLoaded(mapName)
     DebugPrint{ Text = "Coop map starter: " .. tostring(mapName)}
     if RunEx.IsHubRoom(mapName) then
         CoopPlayers.HealAllAdditionalPlayers()
+    elseif RunEx.IsMetaStoryRoom(mapName) then
+        CoopRun.MakeFirstPlayerOnlyMode()
     end
 end
 
@@ -125,6 +127,16 @@ function CoopRun.OnAllEnemiesDead()
             ClearEffect{ Id = hero.ObjectId, Name = "DamageOverTime" }
             ClearEffect{ Id = hero.ObjectId, Name = "Inked" }
         end
+    end
+end
+
+function CoopRun.MakeFirstPlayerOnlyMode()
+    local mainHero = CoopPlayers.GetMainHero()
+    mainHero.IsDead = nil
+    mainHero.Health = mainHero.MaxHealth or 100
+    for _, hero in CoopPlayers.AdditionalHeroesIterator() do
+        hero.IsDead = true
+        hero.Health = 0
     end
 end
 
