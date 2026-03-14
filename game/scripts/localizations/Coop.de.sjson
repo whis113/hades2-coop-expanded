@@ -1,0 +1,46 @@
+{
+  lang = "de"
+  Texts =
+  [
+    {
+        Id = "CoopMenu_MenuHeader"
+        DisplayName = "Controller"
+    },
+    {
+        Id = "CoopMenu_StartMessage"
+        DisplayName = "Mindestens ein Spieler muss einen Gamepad verwenden. Nur Spieler 1 kann Tastatur und Maus nutzen. Verwende RemotePlayWhatever für Online-Spieler."
+    },
+    {
+        Id = "CoopMenu_P1Press"
+        DisplayName = "Spieler 1, drücke diese Taste"
+    },
+    {
+        Id = "CoopMenu_P2Press"
+        DisplayName = "Spieler 2, drücke diese Taste"
+    },
+    {
+        Id = "CoopMenu_ErrP1KBOnly"
+        DisplayName = "Nur Spieler 1 kann eine Tastatur verwenden"
+    },
+    {
+        Id = "CoopMenu_ErrDeviceCollision"
+        DisplayName = "Beide Spieler verwenden dasselbe Gerät"
+    },
+    {
+        Id = "CoopMenu_Again"
+        DisplayName = "Neu starten"
+    },
+    {
+        Id = "CoopMenu_KbAndMouse"
+        DisplayName = "Tastatur + Maus"
+    },
+    {
+        Id = "CoopMenu_Gamepad"
+        DisplayName = "Gamepad {ParamValue}"
+    },
+    {
+        Id = "CoopMenu_PlayerController"
+        DisplayName = "Spieler $PlayerIndex: $Controller"
+    }
+  ]
+}

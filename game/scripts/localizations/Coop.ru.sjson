@@ -1,0 +1,46 @@
+{
+  lang = "ru"
+  Texts =
+  [
+    {
+    Id = "CoopMenu_MenuHeader"
+    DisplayName = "Контроллеры"
+    },
+    {
+    Id = "CoopMenu_StartMessage"
+    DisplayName = "Как минимум один игрок должен играть на геймпаде. Только первый игрок может играть с клавиатуры и мыши. Используйте RemotePlayWhatever для игры по сети"
+    },
+    {
+    Id = "CoopMenu_P1Press"
+    DisplayName = "Первый игрок, нажми сюда"
+    },
+    {
+    Id = "CoopMenu_P2Press"
+    DisplayName = "Второй игрок, нажми сюда"
+    },
+    {
+    Id = "CoopMenu_ErrP1KBOnly"
+    DisplayName = "Только первый игрок может использовать клавиатуру"
+    },
+    {
+    Id = "CoopMenu_ErrDeviceCollision"
+    DisplayName = "Выбран один девайс для обоих игроков"
+    },
+    {
+    Id = "CoopMenu_Again"
+    DisplayName = "Начать снова"
+    },
+    {
+    Id = "CoopMenu_KbAndMouse"
+    DisplayName = "Клавамышь"
+    },
+    {
+    Id = "CoopMenu_Gamepad"
+    DisplayName = "Геймпад {ParamValue}"
+    },
+    {
+    Id = "CoopMenu_PlayerController"
+    DisplayName = "Игрок $PlayerIndex: $Controller"
+    }
+  ]
+}

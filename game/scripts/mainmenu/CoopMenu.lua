@@ -6,8 +6,7 @@
 local SelectedGuiControl = {}
 
 local function GetCurrentControl()
-    local isMouseVisible = GetConfigOptionValue { Name = "UseMouse" } or
-        not GetConfigOptionValue { Name = "UseGamepadGlyphs" }
+    local isMouseVisible = GetConfigOptionValue { Name = "UseMouse" }
 
     if isMouseVisible then
         return
@@ -30,7 +29,8 @@ local function TostringPlayerConfiguration(playerId)
     else
         local index = SelectedGuiControl[playerId].ControllerId
         --return "Gamepad " .. index .. " - " .. CoopGetGamepadName(index)
-        return GetDisplayName { Text = "CoopMenu_Gamepad", Param =  index }
+        local template = GetDisplayName { Text = "CoopMenu_Gamepad", ParamValue = index }
+        return string.gsub(template, "{(%w+)}", { ParamValue = index } )
     end
 end
 
@@ -60,6 +60,11 @@ local START_BUTTON_MESSAGES = {
     "Let's Cause Trouble",
     "Press Start to Change Everything"
 }
+
+local function GetRelativeScreenPath()
+    local scriptDir = GetScriptDir()
+    return scriptDir:sub(#("Content/Mods/")) .. "/ControllerSelectionMenuScreen.sjson"
+end
 
 MainMenuAPIAddGamemode("Coop", function(name)
     SelectedGuiControl = {}
@@ -97,8 +102,7 @@ MainMenuAPIAddGamemode("Coop", function(name)
             local template = GetDisplayName { Text = "CoopMenu_PlayerController" }
             local text = string.gsub(template, "%$(%w+)", { PlayerIndex = 1, Controller = TostringPlayerConfiguration(1) })
             local text2 = string.gsub(template, "%$(%w+)", { PlayerIndex = 2, Controller = TostringPlayerConfiguration(2) })
-
-            message:SetText(text .. "\n" .. text2)
+            message:SetText(text .. "   \n" .. text2)
             btn:SetText(START_BUTTON_MESSAGES[math.random(1, #START_BUTTON_MESSAGES)])
         elseif state == MENU_STATE.INVALID_STATE_SECOND_KEYBOARD then
             message:SetTextLocalizationKey("CoopMenu_ErrP1KBOnly")
@@ -138,6 +142,5 @@ MainMenuAPIAddGamemode("Coop", function(name)
     end)
 
     menu:AddReflection("mControllerPress", btn)
-
-    menu:LoadDefenitions("../Mods/TN_CoopMod/ControllerSelectionMenuScreen.sjson")
+    menu:LoadDefenitions(GetRelativeScreenPath())
 end)

@@ -1,15 +1,18 @@
 {
   ControllerSelectionMenuScreen = {
     Platform = "default"
-    CloseSound = "null"
-    SelectionSound = "/SFX/Menu Sounds/DialoguePanelOutMenu"
-    UseSelectionSoundWithMouse = false
+    OpenSound = "/SFX/Menu Sounds/IrisMenuOpenSmall"
+    CloseSound = "/SFX/Menu Sounds/IrisMenuBack"
+    SelectionSound = "/SFX/Menu Sounds/IrisMenuToggle2"
+    Music = "/VO/ChronosLaughSingle"
+    GamepadCursorControl = true
     TransitionOnTime = 0.1
-    TransitionOffTime = 0.15
-    ShowControls = false
+    TransitionOffTime = 0.2
     ForceShowCursor = true
     GamepadSelectionStyle = "VerticalCycle"
     FreeFormSelectWrapping = true
+
+
     Back = {
       Justification = "Left"
       VerticalJustification = "Top"
@@ -20,23 +23,22 @@
       Height = 1080
       Alpha = 0.9
     }
+
     AnimatedBackground = {
       X = 960
-      Y = 540
+      Y = 430
       Graphic = "GUI\Shell\background_confirm"
       Justification = "Center"
       VerticalJustification = "Center"
     }
+
     TitleText = {
       X = 960
-      Y = 400
+      Y = 280
       Justification = "Center"
       VerticalJustification = "Center"
       HelpTextId = "CoopMenu_MenuHeader"
-      Font = "SpectralSCLightTitling"
-      
-      AlwaysUpperCase = false
-      LangJaUpperCase = true
+      Font = "P22UndergroundSCLightTitling"      
       FontSize = 32
       TextRed = 1
       TextGreen = 1
@@ -51,23 +53,21 @@
       ShadowOffsetY = 2
       ShadowAlpha = 1
       ShadowBlur = 2
-      LangRuScaleModifier = 0.9
     }
 
     MessageText =
 	{
       X = 580
-      Y = 540
+      Y = 400
       Justification = "Left"
-      VerticalJustification = "Center"
-      Font = "AlegreyaSansRegular"
+      VerticalJustification = "Top"
+      Font = "LatoMedium"
       FontSize = 26
       TextSymbolScale = 0.8
-      Height = 400
+      Height = 200
       Width = 800
       LineSpacingBottom = 3
       VariableAutoFormat = "NameFormat"
-      HighlightFormat = "NameHighlightFormat"
       TextRed = 0.812
       TextGreen = 0.884
       TextBlue = 0.849
@@ -87,7 +87,6 @@
       ShadowBlur = 0
       ShadowOffsetY = 4
       OutlineThickness = 4
-      NonEnglishScaleModifier = 0.7
     }
 
     ControllerPress = {
@@ -101,21 +100,20 @@
       SelectOnMouseOver = true
       DeselectOnMouseOff = true
       UseTextArea = true
-      Font = "AlegreyaSansSCRegular"
+      Font = "P22UndergroundSCMedium"
       TextRed = 0.75
       TextGreen = 0.75
       TextBlue = 0.75
       FontSize = 28
-      SelectedTextRed = 0.808
-      SelectedTextGreen = 0.1
-      SelectedTextBlue = 0.1
-      DisabledTextRed = 0.2
-      DisabledTextGreen = 0.2
-      DisabledTextBlue = 0.2
-      AlwaysUpperCase = false
+      SelectedTextRed = 0.337
+      SelectedTextGreen = 1.000
+      SelectedTextBlue = 0.714
+      DisabledTextRed = 0.25
+      DisabledTextGreen = 0.25
+      DisabledTextBlue = 0.25      
       TextJustification = "Center"
       SelectedTextScale = 1.0
-      NonEnglishScaleModifier = 0.85
+      
       TextOutlineRed = 0
       TextOutlineGreen = 0
       TextOutlineBlue = 0
@@ -126,12 +124,10 @@
       ShadowOffsetY = 3
       ShadowAlpha = 1
       ShadowBlur = 0
-      HelpTextId = ""
-      PressSound = "/SFX/Menu Sounds/GodBoonMenuClose"
     }
     
-	CancelButton =
-	{
+  CancelButton =
+    {
       Graphic = "CancelButtonFlash"
       UnderCursorOnAnimation = "CancelButtonFlashHover"
       UnderCursorOffAnimation = "CancelButtonFlash"
@@ -139,17 +135,15 @@
       Justification = "Center"
       VerticalJustification = "Center"
       X = 960
-      Y = 760
+      Y = 770
       FlashMin = 0.0
       FlashMax = 0.5
       FlashSpeed = 1.2
       FlashRed = 0.6
       FlashGreen = 0.4
       FlashBlue = 0.0
-      MouseOverSound = "null"
-      PressSound = "/SFX/Menu Sounds/GodBoonMenuClose"
-      TooltipId = "SettingsScreen_Back"
-	  Scale = 0.8
+      Scale = 0.8
     }
+
   }
 }

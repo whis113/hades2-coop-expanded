@@ -1,0 +1,46 @@
+{
+  lang = "zh-CN"
+  Texts =
+  [
+    {
+        Id = "CoopMenu_MenuHeader"
+        DisplayName = "控制器"
+    },
+    {
+        Id = "CoopMenu_StartMessage"
+        DisplayName = "至少一名玩家必须使用手柄。仅玩家1可使用键鼠。使用RemotePlayWhatever进行在线游戏。"
+    },
+    {
+        Id = "CoopMenu_P1Press"
+        DisplayName = "玩家1请按此按钮"
+    },
+    {
+        Id = "CoopMenu_P2Press"
+        DisplayName = "玩家2请按此按钮"
+    },
+    {
+        Id = "CoopMenu_ErrP1KBOnly"
+        DisplayName = "仅玩家1可使用键盘"
+    },
+    {
+        Id = "CoopMenu_ErrDeviceCollision"
+        DisplayName = "两名玩家使用相同设备"
+    },
+    {
+        Id = "CoopMenu_Again"
+        DisplayName = "重新开始"
+    },
+    {
+        Id = "CoopMenu_KbAndMouse"
+        DisplayName = "键盘 + 鼠标"
+    },
+    {
+        Id = "CoopMenu_Gamepad"
+        DisplayName = "手柄 {ParamValue}"
+    },
+    {
+        Id = "CoopMenu_PlayerController"
+        DisplayName = "玩家 $PlayerIndex: $Controller"
+    }
+  ]
+}

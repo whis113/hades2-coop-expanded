@@ -1,0 +1,46 @@
+{
+  lang = "fr"
+  Texts =
+  [
+    {
+        Id = "CoopMenu_MenuHeader"
+        DisplayName = "Contrôleurs"
+    },
+    {
+        Id = "CoopMenu_StartMessage"
+        DisplayName = "Au moins un joueur doit utiliser une manette. Seul le Joueur 1 peut utiliser clavier et souris. Utilisez RemotePlayWhatever pour jouer à distance."
+    },
+    {
+        Id = "CoopMenu_P1Press"
+        DisplayName = "Joueur 1, appuyez ici"
+    },
+    {
+        Id = "CoopMenu_P2Press"
+        DisplayName = "Joueur 2, appuyez ici"
+    },
+    {
+        Id = "CoopMenu_ErrP1KBOnly"
+        DisplayName = "Seul le joueur 1 peut utiliser un clavier"
+    },
+    {
+        Id = "CoopMenu_ErrDeviceCollision"
+        DisplayName = "Les deux joueurs utilisent le même appareil"
+    },
+    {
+        Id = "CoopMenu_Again"
+        DisplayName = "Recommencer"
+    },
+    {
+        Id = "CoopMenu_KbAndMouse"
+        DisplayName = "Clavier + Souris"
+    },
+    {
+        Id = "CoopMenu_Gamepad"
+        DisplayName = "Gamepad {ParamValue}"
+    },
+    {
+        Id = "CoopMenu_PlayerController"
+        DisplayName = "Joueur $PlayerIndex: $Controller"
+    }
+  ]
+}

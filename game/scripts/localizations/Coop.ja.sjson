@@ -1,0 +1,46 @@
+{
+  lang = "ja"
+  Texts =
+  [
+    {
+        Id = "CoopMenu_MenuHeader"
+        DisplayName = "コントローラー"
+    },
+    {
+        Id = "CoopMenu_StartMessage"
+        DisplayName = "最低1人はゲームパッドを使用してください。キーボードとマウスはプレイヤー1のみ使用可能です。オンラインプレイにはRemotePlayWhateverをご利用ください。"
+    },
+    {
+        Id = "CoopMenu_P1Press"
+        DisplayName = "プレイヤー1、ここを押してください"
+    },
+    {
+        Id = "CoopMenu_P2Press"
+        DisplayName = "プレイヤー2、ここを押してください"
+    },
+    {
+        Id = "CoopMenu_ErrP1KBOnly"
+        DisplayName = "キーボードはプレイヤー1のみ使用可能"
+    },
+    {
+        Id = "CoopMenu_ErrDeviceCollision"
+        DisplayName = "両プレイヤーが同じデバイスを使用しています"
+    },
+    {
+        Id = "CoopMenu_Again"
+        DisplayName = "再開する"
+    },
+    {
+        Id = "CoopMenu_KbAndMouse"
+        DisplayName = "キーボード + マウス"
+    },
+    {
+        Id = "CoopMenu_Gamepad"
+        DisplayName = "ゲームパッド {ParamValue}"
+    },
+    {
+        Id = "CoopMenu_PlayerController"
+        DisplayName = "プレイヤー $PlayerIndex: $Controller"
+    }
+  ]
+}

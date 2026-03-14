@@ -1,0 +1,46 @@
+{
+  lang = "ko"
+  Texts =
+  [
+    {
+        Id = "CoopMenu_MenuHeader"
+        DisplayName = "컨트롤러"
+    },
+    {
+        Id = "CoopMenu_StartMessage"
+        DisplayName = "최소 한 명의 플레이어는 게임패드를 사용해야 합니다. 플레이어 1만 키보드와 마우스를 사용할 수 있습니다. 온라인 플레이는 RemotePlayWhatever를 사용하세요."
+    },
+    {
+        Id = "CoopMenu_P1Press"
+        DisplayName = "플레이어 1, 여기를 누르세요"
+    },
+    {
+        Id = "CoopMenu_P2Press"
+        DisplayName = "플레이어 2, 여기를 누르세요"
+    },
+    {
+        Id = "CoopMenu_ErrP1KBOnly"
+        DisplayName = "플레이어 1만 키보드 사용 가능"
+    },
+    {
+        Id = "CoopMenu_ErrDeviceCollision"
+        DisplayName = "두 플레이어가 같은 장치를 사용 중"
+    },
+    {
+        Id = "CoopMenu_Again"
+        DisplayName = "다시 시작"
+    },
+    {
+        Id = "CoopMenu_KbAndMouse"
+        DisplayName = "키보드 + 마우스"
+    },
+    {
+        Id = "CoopMenu_Gamepad"
+        DisplayName = "게임패드 {ParamValue}"
+    },
+    {
+        Id = "CoopMenu_PlayerController"
+        DisplayName = "플레이어 $PlayerIndex: $Controller"
+    }
+  ]
+}
