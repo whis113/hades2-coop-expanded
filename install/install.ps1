@@ -16,7 +16,6 @@ $GameExeDir = Split-Path -Path $ExePath -Parent
 $GameDir = Split-Path -Path $GameExeDir -Parent
 $ModsDir = Join-Path $GameDir "Content/Mods"
 $PluginsDir = Join-Path -Path $GameExeDir -ChildPath "plugins"
-$ModName = "TN_CoopMod"
 
 Write-Host "Target Directory: $GameExeDir" -ForegroundColor Cyan
 
@@ -72,12 +71,11 @@ function installASILoader() {
 }
 
 function installMod() {
-    Write-Host "Copy mod files..." -ForegroundColor Cyan
+    param (
+        $ModName
+    )
 
-    if (-not (Test-Path -Path $ModsDir)) {
-        New-Item -ItemType Directory -Path $ModsDir | Out-Null
-        Write-Host "Created Mods folder."
-    }
+    Write-Host "Copy $ModName mod files..." -ForegroundColor Cyan
     
     if (Test-Path -Path $ModsDir/$ModName) {
         Remove-Item $ModsDir/$ModName -Force -Recurse
@@ -93,7 +91,14 @@ function install {
         installASILoader
     }
 
-    installMod
+    if (-not (Test-Path -Path $ModsDir)) {
+        New-Item -ItemType Directory -Path $ModsDir | Out-Null
+        Write-Host "Created Mods folder."
+    }
+
+    
+    installMod -ModName "TN_Core"
+    installMod -ModName "TN_CoopMod"
 }
 
 
