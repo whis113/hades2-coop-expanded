@@ -15,11 +15,18 @@ add_subdirectory(libs/hades2-engine-interface)
 
 add_subdirectory(game)
 
+set(HADES_MOD_INSTALL_PATH ${CMAKE_SOURCE_DIR}/bin/TN_CoopMod)
+
+# Load environment variables from env.cmake
+if (EXISTS ${CMAKE_SOURCE_DIR}/env.cmake)
+    include(${CMAKE_SOURCE_DIR}/env.cmake)
+endif()
+
 install(TARGETS HadesCoopGame
         RUNTIME
-        DESTINATION ${CMAKE_SOURCE_DIR}/bin
+        DESTINATION ${HADES_MOD_INSTALL_PATH}
 )
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/game/scripts/
-        DESTINATION ${CMAKE_SOURCE_DIR}/bin
+        DESTINATION ${HADES_MOD_INSTALL_PATH}
 )
