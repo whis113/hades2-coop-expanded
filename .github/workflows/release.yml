@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Compile with MSVC for Windows
+        run: |
+          cmake -A x64 . -B build_msvc -DCMAKE_POLICY_VERSION_MINIMUM=3.20
+          cmake --build build_msvc --target install --config Release
+
+      - name: Get native extension
+        run: |
+          gh release download --repo Hades2-coop-project/hades2-mod-extension --pattern "Release.zip" --dir ./bin --clobber
+          cd ./bin && unzip -o Release.zip && del Release.zip
+        shell: cmd
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Archive build artifacts
+        shell: pwsh
+        run: |
+          Compress-Archive -Path bin/* -DestinationPath ./Release.zip
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release.zip
+          path: ./Release.zip
+
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2.5.3
+        with:
+          files: "**/Release.zip"
+          tag_name: ${{ github.ref_name }}
+          body: "Automated release of ${{ github.ref_name }}."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
