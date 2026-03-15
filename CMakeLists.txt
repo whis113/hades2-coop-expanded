@@ -30,3 +30,7 @@ install(TARGETS HadesCoopGame
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/game/scripts/
         DESTINATION ${HADES_MOD_INSTALL_PATH}
 )
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/install/
+        DESTINATION ${CMAKE_SOURCE_DIR}/bin
+)
