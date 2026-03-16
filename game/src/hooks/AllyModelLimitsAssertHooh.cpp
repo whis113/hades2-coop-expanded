@@ -20,7 +20,8 @@ void AllyModelLimitsAssertHooh::Install(IModApi::GetSymbolAddress_t GetSymbolAdd
 
     void *funcAddr = reinterpret_cast<void *>(GetSymbolAddress("?_FailedAssertOwnerGSGE@@YA?AW4FailBehavior@@PEBDH000ZZ"));
     if (!funcAddr) {
-        throw std::exception("Failed to get _FailedAssertOwnerGSGE address");
+        // This function can be missing in some env
+        return;
     }
     _FailedAssertOwnerGSGE_Hook.Install(funcAddr, 12);
 
