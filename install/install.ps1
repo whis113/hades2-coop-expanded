@@ -39,7 +39,7 @@ function installPlugin() {
 function installASILoader() {
     Write-Host "Downloading ASI Loader..." -ForegroundColor Cyan
 
-    if (-not (Test-Path -Path $PluginsDir)) {
+    if (-not (Test-Path -Path (Join-Path $PluginsDir "/bink2w64Hooked.dll"))) {
         Write-Host "Rename bink2w64.dll to bink2w64Hooked.dll."
         Move-Item -Path  (Join-Path $GameExeDir "bink2w64.dll") -Destination (Join-Path $GameExeDir "bink2w64Hooked.dll") -Force
     } else {
