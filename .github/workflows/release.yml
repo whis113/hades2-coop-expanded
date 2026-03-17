@@ -32,13 +32,13 @@ jobs:
       - name: Archive build artifacts
         shell: pwsh
         run: |
-          Compress-Archive -Path bin/* -DestinationPath ./Release.zip
+          Compress-Archive -Path bin/* -DestinationPath ./HadesCoopMod.zip
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Release.zip
-          path: ./Release.zip
+          name: HadesCoopMod.zip
+          path: ./HadesCoopMod.zip
 
   release:
     name: Release
@@ -51,7 +51,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2.5.3
         with:
-          files: "**/Release.zip"
+          files: "**/HadesCoopMod.zip"
           tag_name: ${{ github.ref_name }}
           body: "Automated release of ${{ github.ref_name }}."
         env:
