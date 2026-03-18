@@ -3,8 +3,10 @@
 -- Licensed under the MIT license. See LICENSE file in the project root for details.
 --
 
+---@type PlayerDeviceData[]
 local SelectedGuiControl = {}
 
+---@return PlayerDeviceData
 local function GetCurrentControl()
     local isMouseVisible = GetConfigOptionValue { Name = "UseMouse" }
 
@@ -31,6 +33,21 @@ local function TostringPlayerConfiguration(playerId)
         --return "Gamepad " .. index .. " - " .. CoopGetGamepadName(index)
         local template = GetDisplayName { Text = "CoopMenu_Gamepad", ParamValue = index }
         return string.gsub(template, "{(%w+)}", { ParamValue = index } )
+    end
+end
+
+-- We need set controller id for the keyboard player to avoid crashes
+local function AssingKeyboardPlayerFreeControllerId()
+    local kbPlayerData = SelectedGuiControl[1]
+
+    if kbPlayerData.Device ~= "Keyboard" then
+        return
+    end
+
+    if SelectedGuiControl[2].ControllerId == 4 then
+        kbPlayerData.ControllerId = 3
+    else
+        kbPlayerData.ControllerId = 4
     end
 end
 
@@ -134,6 +151,7 @@ MainMenuAPIAddGamemode("Coop", function(name)
             end
         elseif CURRENT_MENU_STATE == MENU_STATE.PLAYER_TWO_SELECTED then
             SetTempRuntimeData("Gamemode", name)
+            AssingKeyboardPlayerFreeControllerId()
             SetTempRuntimeData("TN_Coop:control", SelectedGuiControl)
             MainMenuOpenProfiles()
         else

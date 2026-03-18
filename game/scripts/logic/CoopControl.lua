@@ -6,6 +6,10 @@
 ---@class CoopControl
 local CoopControl = {}
 
+---@class PlayerDeviceData
+---@field Device "Keyboard" | "Gamepad"
+---@field ControllerId integer
+
 local UNUSED_GAMEPAD_INDEX = 5
 
 ---@alias ControlSchema "Current" | "Default" | "UserDefined"
@@ -13,6 +17,7 @@ local UNUSED_GAMEPAD_INDEX = 5
 -- UserDefined - User values
 -- Current - user values updated in runtime
 ---@private
+---@type table<ControlSchema, PlayerDeviceData[]>
 CoopControl.Schemas = {
     Default = {
         {
