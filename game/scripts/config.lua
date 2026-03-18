@@ -46,9 +46,9 @@ local Config = {
         Justification = "Center"
     },
     Debug = {
-        OneHit = true,
-        P1GodMode = true,
-        P2GodMode = true,
+        OneHit = false,
+        P1GodMode = false,
+        P2GodMode = false,
     }
 }
 
