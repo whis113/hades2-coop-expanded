@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Inquire"
+
 Add-Type -AssemblyName System.Windows.Forms
 
 $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{
@@ -103,5 +105,4 @@ function install {
 
 
 install
-
-Write-Host "`nSetup complete!." -ForegroundColor Green
+Read-Host -Prompt "`nSetup complete!. Press Enter to exit."
