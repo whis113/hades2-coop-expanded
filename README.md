@@ -5,9 +5,9 @@ This mod adds local cooperative multiplayer to Hades 2, allowing two players to 
 
 For online play: Use a streaming tool like [Parsec](https://parsec.app/) to share your game session with a remote friend.
 
-The mod supports the *Steam* and *Epic Games Store* versions of the gamme
+The mod supports the **Steam** and **Epic Games Store** versions of the gamme
 
-*Warnin*
+**Warning**
 You need a gameplay to play this mod.
 
 
