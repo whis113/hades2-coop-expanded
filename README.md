@@ -11,6 +11,11 @@ The mod supports the **Steam** and **Epic Games Store** versions of the gamme
 
 You need a gameplay to play this mod.
 
+# Intalling
+
+1. Download the latest release of this mod from the [releases page](https://github.com/Hades2-coop-project/hades2-coop/releases)
+2. Unpack the archive
+3. Run `install.ps1` with powershell
 
 # Build
 
@@ -29,11 +34,3 @@ You need to install cmake in the Visual Studio Installer to build the project.
 Open the project in VS and click Build -> Install HadesCoop in the top menu.
 
 Copy files from `build_msvc/bin` to the `Hades II/Mods/TN_CoopMod` folder.
-
-# Intalling
-
-1. Install [HadesModNativeExtension](https://github.com/Hades2-coop-project/hades2-mod-extension/releases)
-2. Download the latest release of this mod from the [releases page](https://github.com/Hades2-coop-project/hades2-coop/releases)
-3. Unpack the archive
-4. Run `install.ps1` with powershell
-
