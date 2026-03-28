@@ -1,0 +1,46 @@
+{
+  lang = "tr"
+  Texts =
+  [
+    {
+    Id = "CoopMenu_MenuHeader"
+    DisplayName = "Kumandalar"
+    },
+    {
+    Id = "CoopMenu_StartMessage"
+    DisplayName = "En az bir oyuncu oyun kumandası kullanmalıdır. Sadece Oyuncu 1 klavye ve fare kullanabilir. Uzaktaki oyuncularla oynamak için Parsec.app kullanın."
+    },
+    {
+    Id = "CoopMenu_P1Press"
+    DisplayName = "Oyuncu 1 bu düğmeye bassın"
+    },
+    {
+    Id = "CoopMenu_P2Press"
+    DisplayName = "Oyuncu 2 bu düğmeye bassın"
+    },
+    {
+    Id = "CoopMenu_ErrP1KBOnly"
+    DisplayName = "Sadece oyuncu 1 klavye kullanabilir"
+    },
+    {
+    Id = "CoopMenu_ErrDeviceCollision"
+    DisplayName = "Her iki oyuncu da aynı cihazı kullanıyor"
+    },
+    {
+    Id = "CoopMenu_Again"
+    DisplayName = "Yeniden başlat"
+    },
+    {
+    Id = "CoopMenu_KbAndMouse"
+    DisplayName = "Klavye + Fare"
+    },
+    {
+    Id = "CoopMenu_Gamepad"
+    DisplayName = "Oyun Kumandası {ParamValue}"
+    },
+    {
+    Id = "CoopMenu_PlayerController"
+    DisplayName = "Oyuncu $PlayerIndex: $Controller"
+    }
+  ]
+}

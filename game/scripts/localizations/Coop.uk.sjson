@@ -1,0 +1,46 @@
+{
+  lang = "uk"
+  Texts =
+  [
+    {
+    Id = "CoopMenu_MenuHeader"
+    DisplayName = "Контролери"
+    },
+    {
+    Id = "CoopMenu_StartMessage"
+    DisplayName = "Принаймні один гравець має використовувати геймпад. Тільки Гравець 1 може використовувати клавіатуру та мишу. Використовуйте Parsec.app, щоб грати з віддаленими гравцями."
+    },
+    {
+    Id = "CoopMenu_P1Press"
+    DisplayName = "Гравець 1 натисніть цю кнопку"
+    },
+    {
+    Id = "CoopMenu_P2Press"
+    DisplayName = "Гравець 2 натисніть цю кнопку"
+    },
+    {
+    Id = "CoopMenu_ErrP1KBOnly"
+    DisplayName = "Тільки гравець 1 може використовувати клавіатуру"
+    },
+    {
+    Id = "CoopMenu_ErrDeviceCollision"
+    DisplayName = "Обидва гравці використовують один і той самий пристрій"
+    },
+    {
+    Id = "CoopMenu_Again"
+    DisplayName = "Розпочати знову"
+    },
+    {
+    Id = "CoopMenu_KbAndMouse"
+    DisplayName = "Клавіатура + Миша"
+    },
+    {
+    Id = "CoopMenu_Gamepad"
+    DisplayName = "Геймпад {ParamValue}"
+    },
+    {
+    Id = "CoopMenu_PlayerController"
+    DisplayName = "Гравець $PlayerIndex: $Controller"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  lang = "zh-TW"
+  Texts =
+  [
+    {
+    Id = "CoopMenu_MenuHeader"
+    DisplayName = "控制器"
+    },
+    {
+    Id = "CoopMenu_StartMessage"
+    DisplayName = "至少一名玩家必須使用遊戲手把。只有玩家 1 可以使用鍵盤和滑鼠。使用 Parsec.app 與遠端玩家一起遊玩。"
+    },
+    {
+    Id = "CoopMenu_P1Press"
+    DisplayName = "玩家 1 請按下此按鈕"
+    },
+    {
+    Id = "CoopMenu_P2Press"
+    DisplayName = "玩家 2 請按下此按鈕"
+    },
+    {
+    Id = "CoopMenu_ErrP1KBOnly"
+    DisplayName = "只有玩家 1 可以使用鍵盤"
+    },
+    {
+    Id = "CoopMenu_ErrDeviceCollision"
+    DisplayName = "兩名玩家使用同一裝置"
+    },
+    {
+    Id = "CoopMenu_Again"
+    DisplayName = "重新開始"
+    },
+    {
+    Id = "CoopMenu_KbAndMouse"
+    DisplayName = "鍵盤 + 滑鼠"
+    },
+    {
+    Id = "CoopMenu_Gamepad"
+    DisplayName = "遊戲手把 {ParamValue}"
+    },
+    {
+    Id = "CoopMenu_PlayerController"
+    DisplayName = "玩家 $PlayerIndex: $Controller"
+    }
+  ]
+}

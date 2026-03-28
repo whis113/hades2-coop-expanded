@@ -1,0 +1,46 @@
+{
+  lang = "el"
+  Texts =
+  [
+    {
+    Id = "CoopMenu_MenuHeader"
+    DisplayName = "Χειριστήρια"
+    },
+    {
+    Id = "CoopMenu_StartMessage"
+    DisplayName = "Τουλάχιστον ένας παίκτης πρέπει να χρησιμοποιεί χειριστήριο. Μόνο ο Παίκτης 1 μπορεί να χρησιμοποιεί πληκτρολόγιο και ποντίκι. Χρησιμοποιήστε το Parsec.app για να παίξετε με απομακρυσμένους παίκτες."
+    },
+    {
+    Id = "CoopMenu_P1Press"
+    DisplayName = "Ο Παίκτης 1 πατήστε αυτό το κουμπί"
+    },
+    {
+    Id = "CoopMenu_P2Press"
+    DisplayName = "Ο Παίκτης 2 πατήστε αυτό το κουμπί"
+    },
+    {
+    Id = "CoopMenu_ErrP1KBOnly"
+    DisplayName = "Μόνο ο Παίκτης 1 μπορεί να χρησιμοποιεί πληκτρολόγιο"
+    },
+    {
+    Id = "CoopMenu_ErrDeviceCollision"
+    DisplayName = "Και οι δύο παίκτες χρησιμοποιούν την ίδια συσκευή"
+    },
+    {
+    Id = "CoopMenu_Again"
+    DisplayName = "Εκκίνηση ξανά"
+    },
+    {
+    Id = "CoopMenu_KbAndMouse"
+    DisplayName = "Πληκτρολόγιο + Ποντίκι"
+    },
+    {
+    Id = "CoopMenu_Gamepad"
+    DisplayName = "Χειριστήριο {ParamValue}"
+    },
+    {
+    Id = "CoopMenu_PlayerController"
+    DisplayName = "Παίκτης $PlayerIndex: $Controller"
+    }
+  ]
+}
