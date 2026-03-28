@@ -34,3 +34,7 @@ You need to install cmake in the Visual Studio Installer to build the project.
 Open the project in VS and click Build -> Install HadesCoop in the top menu.
 
 Copy files from `build_msvc/bin` to the `Hades II/Mods/TN_CoopMod` folder.
+
+# Suppoort
+
+You can support development using crypto. See [my page](https://thenormalnij.de/donate) for details
