@@ -8,7 +8,7 @@
     },
     {
         Id = "CoopMenu_StartMessage"
-        DisplayName = "Al menos un jugador debe usar mando. Solo el Jugador 1 puede usar teclado y ratón. Usa RemotePlayWhatever para jugar en línea."
+        DisplayName = "Al menos un jugador debe usar mando. Solo el Jugador 1 puede usar teclado y ratón. Usa Parsec.app para jugar en línea."
     },
     {
         Id = "CoopMenu_P1Press"

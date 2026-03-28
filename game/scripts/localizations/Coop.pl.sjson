@@ -8,7 +8,7 @@
     },
     {
         Id = "CoopMenu_StartMessage"
-        DisplayName = "Co najmniej jeden gracz musi używać gamepada. Tylko Gracz 1 może używać klawiatury i myszy. Użyj RemotePlayWhatever do gry online."
+        DisplayName = "Co najmniej jeden gracz musi używać gamepada. Tylko Gracz 1 może używać klawiatury i myszy. Użyj Parsec.app do gry online."
     },
     {
         Id = "CoopMenu_P1Press"

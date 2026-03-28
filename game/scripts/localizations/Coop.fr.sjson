@@ -8,7 +8,7 @@
     },
     {
         Id = "CoopMenu_StartMessage"
-        DisplayName = "Au moins un joueur doit utiliser une manette. Seul le Joueur 1 peut utiliser clavier et souris. Utilisez RemotePlayWhatever pour jouer à distance."
+        DisplayName = "Au moins un joueur doit utiliser une manette. Seul le Joueur 1 peut utiliser clavier et souris. Utilisez Parsec.app pour jouer à distance."
     },
     {
         Id = "CoopMenu_P1Press"
