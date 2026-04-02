@@ -9,7 +9,7 @@ The mod supports the **Steam** and **Epic Games Store** versions of the gamme
 
 **Warning**
 
-You need a gameplay to play this mod.
+You need a gamepad to play this mod.
 
 # Intalling
 
