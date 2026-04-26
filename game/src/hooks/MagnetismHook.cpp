@@ -35,11 +35,11 @@ void MagnetismHook::Install(IModApi::GetSymbolAddress_t GetSymbolAddress) {
             return true;
         }
         // TODO optimize
-        auto state = thing->GetLuaTable().mLuaState;
+        auto state = thing->GetLuaTable().state;
         if (!state) {
             return true;
         }
-        auto ref = thing->GetLuaTable().mTableRef;
+        auto ref = thing->GetLuaTable().ref;
 
         lua_rawgeti(state, LUA_REGISTRYINDEX, ref);
         lua_getfield(state, -1, "PlayerIndexC");
