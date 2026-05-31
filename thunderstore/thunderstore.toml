@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "TheNormalnijMods"
 name = "Coop"
-versionNumber = "0.1.7"
+versionNumber = "0.1.8"
 description = "Coop mod. Play with friends"
 websiteUrl = "https://github.com/Hades2-coop-project/hades2-coop"
 containsNsfwContent = false
