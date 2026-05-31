@@ -1,0 +1,27 @@
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "TheNormalnijMods"
+name = "Coop"
+versionNumber = "0.1.7"
+description = "Lua API extension"
+websiteUrl = "https://github.com/Hades2-coop-project/hades2-coop"
+containsNsfwContent = false
+
+[package.dependencies]
+TheNormalnijMods-Hades2ModExtension = "0.2.1"
+
+[build]
+icon = "./icon.png"
+readme = "../README.md"
+outdir = "./build"
+
+[[build.copy]]
+source = "../bin/TN_CoopMod"
+target = "./"
+
+[publish]
+repository = "https://thunderstore.io"
+communities = ["hades-ii"]
+categories = ["mods"]
