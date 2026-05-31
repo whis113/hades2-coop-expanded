@@ -2,7 +2,7 @@
 	Name = "Coop mod"
 	Library = "HadesCoopGame.dll"
 	Priority = 0
-	Version = "0.1.6"
+	Version = "0.1.7"
 	Author = "Uladzislau 'TheNormalnij' Nikalayevich"
 	Localization = [
 		localizations/Coop
