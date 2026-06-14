@@ -38,6 +38,13 @@ function CoopRun.OnRunStarted(run)
     if not RunEx.IsFirstRun(run) then
         CoopPlayers.RecreateAllAdditionalPlayers()
     end
+
+    -- Reload weapon
+    for _, hero in CoopPlayers.AdditionalHeroesIterator() do
+        if hero.Weapons.WeaponLob then
+            HeroContext.RunWithHeroContext(hero, ReloadAmmo, { Name = "WeaponLob" })
+        end
+    end
 end
 
 ---@private

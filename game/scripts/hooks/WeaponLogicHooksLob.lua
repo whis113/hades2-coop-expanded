@@ -17,6 +17,8 @@ local HeroContextWrapper = ModRequire "../logic/HeroContextWrapper.lua"
 local Events = ModRequire "../logic/Events.lua"
 ---@type CoopModConfig
 local Config = ModRequire "../config.lua"
+---@type HeroContext
+local HeroContext = ModRequire "../logic/HeroContext.lua"
 
 local WeaponLogicHooksLob = SimpleHook.New()
 
@@ -26,6 +28,9 @@ function WeaponLogicHooksLob:InitGameHooks()
     Events.game:on("comsumeAmmoItem", function (item)
         LobAmmoPackToHero[item.ObjectId] = nil
     end)
+
+    -- Needs for WeaponLogicHooksLob.wrap.ReloadAmmo hook
+    WeaponData.WeaponLob.StartRoomEvents[1].Args.ReloadForAllPlayers = true
 end
 
 function WeaponLogicHooksLob:InitEngineHooks()
@@ -72,6 +77,16 @@ function WeaponLogicHooksLob.wrap.SpawnObstacle(baseFun, args)
         return id
     else
         return baseFun(args)
+    end
+end
+
+function WeaponLogicHooksLob.wrap.ReloadAmmo(baseFun, weaponData, customArgs)
+    if customArgs and customArgs.ReloadForAllPlayers then
+       for _, hero in CoopPlayers.PlayersIterator() do
+            HeroContext.RunWithHeroContext(hero, baseFun, weaponData)
+       end
+    else
+        baseFun(weaponData)
     end
 end
 
