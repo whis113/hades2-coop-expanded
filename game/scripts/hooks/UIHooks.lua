@@ -139,7 +139,7 @@ function UIHooks.pre.SetupFormatContainers()
         return
     end
 
-    HeroContextProxySpliterStore.GetOrCreate("ScreenAnchors", ScreenAnchors, {
+    HeroContextProxySpliterStore.Recreate("ScreenAnchors", ScreenAnchors, {
         "AmmoIndicatorUI",
         "AxeUI",
         "AxeUIChargeAmount",
@@ -156,7 +156,7 @@ function UIHooks.pre.SetupFormatContainers()
 end
 
 function UIHooks.ApplyScreenConfigProxy()
-    local handler = HeroContextProxySpliterStore.GetOrCreate("HUDScreen", HUDScreen, {
+    local handler = HeroContextProxySpliterStore.Recreate("HUDScreen", HUDScreen, {
         "AmmoX",
         "LastStandX",
         "LastStandSpacingX",
