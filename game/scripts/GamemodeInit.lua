@@ -42,6 +42,7 @@ function Gamemode.RegisterHooks()
     HookStorage.Add "hooks/MapStateHooks.lua"
     HookStorage.Add "hooks/PlayerVisibilityHooks.lua"
     HookStorage.Add "hooks/CameraHooks.lua"
+    HookStorage.Add "hooks/GameStateHooks.lua"
 
     HookStorage.Add "hooks/DamageHooks.lua"
     HookStorage.Add "hooks/InteractLogicHooks.lua"
