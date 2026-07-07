@@ -49,6 +49,7 @@ local Config = {
         OneHit = false,
         P1GodMode = false,
         P2GodMode = false,
+        SoftlockTrace = false,
     }
 }
 

@@ -86,7 +86,7 @@ function HeroEx.CreateFreshHero(args)
         end
     end
 
-    HeroContext.RunWithHeroContext(hero, function()
+    HeroContext.RunWithHeroContextAwait(hero, function()
         EquipPreRunMetaUpgrades(nil, hero)
 
         if args.familiar then

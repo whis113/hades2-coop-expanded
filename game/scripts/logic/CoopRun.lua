@@ -65,30 +65,55 @@ function CoopRun.OnRoomPreLeave(currentRun, door)
     -- Updates traits and health
     local nextRoom = door.Room
     local currentHero = CurrentRun.Hero
+    local shouldReviveDeadPlayers = RunEx.ShouldReviveDeadPlayersOnTransition(currentRun and currentRun.CurrentRoom, door)
     for _, hero in CoopPlayers.PlayersIterator() do
-        if hero ~= currentHero and not hero.IsDead then
-            ClearEffect({ Id = hero.ObjectId, All = true, BlockAll = true, })
-            StopCurrentStatusAnimation(hero)
-            hero.BlockStatusAnimations = true
+        if hero ~= currentHero then
+            if hero.IsDead then
+                if shouldReviveDeadPlayers then
+                    CoopRun.ReviveHeroForNextRoom(hero)
+                end
+            else
+                ClearEffect({ Id = hero.ObjectId, All = true, BlockAll = true, })
+                StopCurrentStatusAnimation(hero)
+                hero.BlockStatusAnimations = true
 
-            if not nextRoom.BlockDoorHealFromPrevious then
-                HeroContext.RunWithHeroContext(hero, CheckDoorHealTrait, currentRun)
-            end
+                local blockDoorHealFromPrevious = type(nextRoom) == "table" and nextRoom.BlockDoorHealFromPrevious
+                if not blockDoorHealFromPrevious then
+                    HeroContext.RunWithHeroContext(hero, CheckDoorHealTrait, currentRun)
+                end
 
-            local removedTraits = {}
-            for _, trait in pairs(hero.Traits) do
-                if trait.RemainingUses ~= nil and trait.UsesAsRooms ~= nil and trait.UsesAsRooms then
-                    UseTraitData(hero, trait)
-                    if trait.RemainingUses ~= nil and trait.RemainingUses <= 0 then
-                        table.insert(removedTraits, trait)
+                local removedTraits = {}
+                for _, trait in pairs(hero.Traits) do
+                    if trait.RemainingUses ~= nil and trait.UsesAsRooms ~= nil and trait.UsesAsRooms then
+                        UseTraitData(hero, trait)
+                        if trait.RemainingUses ~= nil and trait.RemainingUses <= 0 then
+                            table.insert(removedTraits, trait)
+                        end
                     end
                 end
+                for _, trait in pairs(removedTraits) do
+                    RemoveTraitData(hero, trait)
+                end
             end
-            for _, trait in pairs(removedTraits) do
-                RemoveTraitData(hero, trait)
+        else
+            -- Handle current hero (could be P1 or P2 depending on who triggered the door)
+            if hero.IsDead and shouldReviveDeadPlayers then
+                CoopRun.ReviveHeroForNextRoom(hero)
             end
         end
     end
+end
+
+function CoopRun.ReviveHeroForNextRoom(hero)
+    hero.IsDead = false
+    hero.Health = hero.MaxHealth or 50
+
+    -- P2's unit is removed on death, but P1 can still have an object to clean up.
+    if hero.ObjectId then
+        ClearEffect({ Id = hero.ObjectId, All = true, BlockAll = true, })
+    end
+    StopCurrentStatusAnimation(hero)
+    hero.BlockStatusAnimations = true
 end
 
 ---@private

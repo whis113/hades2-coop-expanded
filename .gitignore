@@ -1,6 +1,8 @@
 .vs
 bin
 build
+build_msvc
 out
 CMakeLists.txt.*
 env.cmake
+.gamepath

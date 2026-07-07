@@ -74,6 +74,37 @@ function RunEx.IsMetaStoryRoom(name)
     return META_STORY_ROOMS[name] or false
 end
 
+function RunEx.GetRoomName(room)
+    if type(room) == "table" then
+        return room.Name or room.ForceRoomName
+    end
+
+    return room
+end
+
+function RunEx.GetDoorTargetRoomName(door)
+    if not door then
+        return nil
+    end
+
+    return RunEx.GetRoomName(door.Room) or door.ForceRoomName or door.RoomName or door.Name
+end
+
+function RunEx.IsBossRoomName(name)
+    return type(name) == "string" and name:match("^[A-Z]_Boss%d+") ~= nil
+end
+
+function RunEx.IsRestRoomName(name)
+    return type(name) == "string" and name:match("^[A-Z]_PostBoss%d+") ~= nil
+end
+
+function RunEx.ShouldReviveDeadPlayersOnTransition(currentRoom, door)
+    local currentRoomName = RunEx.GetRoomName(currentRoom)
+    local nextRoomName = RunEx.GetDoorTargetRoomName(door)
+
+    return RunEx.IsBossRoomName(currentRoomName) and RunEx.IsRestRoomName(nextRoomName)
+end
+
 function RunEx.GetCurrentRoom()
     return CurrentHubRoom or CurrentRun.CurrentRoom
 end

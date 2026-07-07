@@ -38,6 +38,7 @@ function Gamemode.RegisterHooks()
     HookStorage.Add "hooks/LootHooks.lua"
     HookStorage.Add "hooks/UIHooks.lua"
     HookStorage.Add "hooks/VulnerabilityHooks.lua"
+    HookStorage.Add "hooks/TraitHooks.lua"
     HookStorage.Add "hooks/ResourceLoadingHooks.lua"
     HookStorage.Add "hooks/MapStateHooks.lua"
     HookStorage.Add "hooks/PlayerVisibilityHooks.lua"

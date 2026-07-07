@@ -23,9 +23,50 @@ local HeroEx = ModRequire "../logic/HeroEx.lua"
 local CoopControl = ModRequire "../logic/CoopControl.lua"
 ---@type Events
 local Events = ModRequire "../logic/Events.lua"
+---@type CoopModConfig
+local Config = ModRequire "../config.lua"
 
 ---@class RunHooks : SimpleHook
 local RunHooks = SimpleHook.New()
+
+local function CountTable(t)
+    local count = 0
+    for _ in pairs(t or {}) do
+        count = count + 1
+    end
+    return count
+end
+
+local function GetPlayerStateText()
+    local out = {}
+    for playerId, hero in CoopPlayers.PlayersIterator() do
+        table.insert(out, "P" .. tostring(playerId) ..
+            "{dead=" .. tostring(hero and hero.IsDead and true or false) ..
+            ",id=" .. tostring(hero and hero.ObjectId) .. "}")
+    end
+    return table.concat(out, " ")
+end
+
+local function TraceRoomExitState(label, result)
+    if not Config.Debug.SoftlockTrace then
+        return
+    end
+
+    local room = CurrentRun and CurrentRun.CurrentRoom
+    local encounter = room and room.Encounter
+
+    DebugPrint { Text = "[CoopSoftlockTrace] " .. label ..
+        " result=" .. tostring(result) ..
+        " room=" .. tostring(room and room.Name) ..
+        " roomSet=" .. tostring(room and room.RoomSetName) ..
+        " encounter=" .. tostring(encounter and encounter.Name) ..
+        " encounterType=" .. tostring(encounter and encounter.EncounterType) ..
+        " exitsUnlocked=" .. tostring(room and room.ExitsUnlocked) ..
+        " requiredKills=" .. tostring(CountTable(RequiredKillEnemies)) ..
+        " requiredObjects=" .. tostring(CountTable(MapState and MapState.RoomRequiredObjects)) ..
+        " alivePlayers=" .. tostring(#CoopPlayers.GetAliveHeroes()) ..
+        " players=" .. GetPlayerStateText() }
+end
 
 function RunHooks.pre.DeathAreaRoomTransition()
     if not HeroContext.GetDefaultHero() then
@@ -116,9 +157,13 @@ function RunHooks.wrap.CheckRoomExitsReady(baseFun, ...)
             result = baseFun(...)
         end, ...)
 
+        TraceRoomExitState("CheckRoomExitsReady", result)
+
         return result
     else
-        return baseFun(...)
+        local result = baseFun(...)
+        TraceRoomExitState("CheckRoomExitsReadyNoAliveHero", result)
+        return result
     end
 end
 
@@ -133,6 +178,7 @@ end
 
 function RunHooks.wrap.KillHero(baseFun, ...)
     CurrentRun.Hero.IsDead = true
+    TraceRoomExitState("KillHero")
     if not CoopPlayers.HasAlivePlayers() then
         -- Handle death for player 1 only
         local mainHero = CoopPlayers.GetMainHero()
@@ -163,6 +209,8 @@ function RunHooks.pre.LeaveRoom(currentRun, door)
 end
 
 function RunHooks.post.RestoreUnlockRoomExits()
+    TraceRoomExitState("RestoreUnlockRoomExits")
+
     if not HeroContext.GetDefaultHero() then
         HeroContext.InitRunHook()
     end
@@ -172,7 +220,8 @@ function RunHooks.post.RestoreUnlockRoomExits()
     for playerId = 2, CoopPlayers.GetPlayersCount() do
         CoopPlayers.RestoreSavedHero(playerId)
         local hero = CoopPlayers.GetHero(playerId)
-        if hero and not hero.IsDead then
+        -- Teleport alive players (including those revived in OnRoomPreLeave)
+        if hero and hero.ObjectId and not hero.IsDead then
             Teleport { Id = hero.ObjectId, DestinationId = spawnPoint }
         end
     end
@@ -199,6 +248,7 @@ function RunHooks.post.StartRoomPresentation(run, room)
 end
 
 function RunHooks.pre.OnAllEnemiesDead()
+    TraceRoomExitState("OnAllEnemiesDead")
     Events.run:trigger("allEnemiesDead")
 end
 

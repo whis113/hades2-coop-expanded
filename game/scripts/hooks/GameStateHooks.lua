@@ -51,9 +51,15 @@ function GameStateHooks.post.InitializeMetaUpgradeState()
     GameStateHooks.ApplyGameStateProxy()
 end
 
-function GameStateHooks.wrap.EquipMetaUpgrades(baseFun, ...)
-    for _, hero in CoopPlayers.PlayersIterator() do
-        HeroContext.RunWithHeroContext(hero, baseFun, ...)
+function GameStateHooks.wrap.EquipMetaUpgrades(baseFun, hero, args)
+    if HeroContext.IsHeroContextExplicit() and hero then
+        return baseFun(hero, args)
+    end
+
+    for _, playerHero in CoopPlayers.PlayersIterator() do
+        if playerHero then
+            HeroContext.RunWithHeroContext(playerHero, baseFun, playerHero, args)
+        end
     end
 end
 
