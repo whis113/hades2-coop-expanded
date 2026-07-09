@@ -120,6 +120,7 @@ function RunHooks.HandleGenericRoom(StartRoomFun, run, currentRoom)
     end)
 
     if RunEx.IsRunEnded() then
+        HeroContext.SetDefaultHero(CoopPlayers.GetMainHero())
         HeroContext.RunWithHeroContext(CoopPlayers.GetMainHero(), StartRoomFun, run, currentRoom)
     else
         local hero = CoopPlayers.GetAliveHeroes()[1] or CoopPlayers.GetMainHero()
@@ -213,8 +214,8 @@ function RunHooks.post.RestoreUnlockRoomExits()
 
     if not HeroContext.GetDefaultHero() then
         HeroContext.InitRunHook()
+        CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
     end
-    CoopPlayers.SetMainHero(HeroContext.GetDefaultHero())
 
     local spawnPoint = CurrentRun.CurrentRoom.HeroEndPoint or CoopPlayers.GetMainHero().ObjectId
     for playerId = 2, CoopPlayers.GetPlayersCount() do

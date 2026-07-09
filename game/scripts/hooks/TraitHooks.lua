@@ -14,6 +14,7 @@ local SimpleHook = ModRequire "../utils/SimpleHook.lua"
 local TraitHooks = SimpleHook.New()
 
 local isUpdatingChamberTraits = false
+local isApplyingEnterRoomTraitSetup = false
 
 function TraitHooks.wrap.CheckChamberTraits(baseFun, ...)
     if isUpdatingChamberTraits then
@@ -25,6 +26,21 @@ function TraitHooks.wrap.CheckChamberTraits(baseFun, ...)
         HeroContext.RunWithHeroContextAwait(hero, baseFun, ...)
     end
     isUpdatingChamberTraits = false
+end
+
+function TraitHooks.wrap.ApplyTraitSetupFunctions(baseFun, unit, args)
+    if isApplyingEnterRoomTraitSetup or not args or args.Context ~= "EnterRoom" then
+        return baseFun(unit, args)
+    end
+
+    isApplyingEnterRoomTraitSetup = true
+    local result
+    for _, hero in ipairs(CoopPlayers.GetAliveHeroes()) do
+        result = HeroContext.RunWithHeroContextAwait(hero, baseFun, hero, args)
+    end
+    isApplyingEnterRoomTraitSetup = false
+
+    return result
 end
 
 return TraitHooks

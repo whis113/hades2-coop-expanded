@@ -21,6 +21,7 @@ local CoopPlayers = ModRequire "CoopPlayers.lua"
 ---@field keys string[]
 ---@field data any
 ---@field target table
+---@field previousMetatable table | nil
 local HeroContextProxySpliter = {}
 
 ---@private
@@ -36,6 +37,7 @@ function HeroContextProxySpliter.New(target, keys)
             data = separatedData;
             target = target;
             keys = keys;
+            previousMetatable = getmetatable(target);
         },
         HeroContextProxySpliter
     )
@@ -51,6 +53,7 @@ end
 function HeroContextProxySpliter:HookTable()
     local separatedData = self.data
     local hashKeys = TableUtils.toHashmap(self.keys)
+    local previousMetatable = self.previousMetatable
 
     local function getTableForCurrentHero()
         local hero = HeroContext.GetCurrentHeroContext()
@@ -62,22 +65,42 @@ function HeroContextProxySpliter:HookTable()
         __index = function(self, key)
             if hashKeys[key] then
                 return getTableForCurrentHero()[key]
-            else
-                return rawget(self, key)
             end
+            if previousMetatable and previousMetatable.__index then
+                if type(previousMetatable.__index) == "function" then
+                    return previousMetatable.__index(self, key)
+                end
+                return previousMetatable.__index[key]
+            end
+            return rawget(self, key)
         end,
         __newindex = function(self, key, value)
             if hashKeys[key] then
                 getTableForCurrentHero()[key] = value
-            else
-                rawset(self, key, value)
+                return
             end
+            if previousMetatable and previousMetatable.__newindex then
+                if type(previousMetatable.__newindex) == "function" then
+                    previousMetatable.__newindex(self, key, value)
+                else
+                    previousMetatable.__newindex[key] = value
+                end
+                return
+            end
+            rawset(self, key, value)
         end,
         -- For debug only
         handler = self,
     }
 
     setmetatable(self.target, mt)
+end
+
+function HeroContextProxySpliter:UnhookTable()
+    local mt = getmetatable(self.target)
+    if mt and mt.handler == self then
+        setmetatable(self.target, self.previousMetatable)
+    end
 end
 
 ---@param playerId number

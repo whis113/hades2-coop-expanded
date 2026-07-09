@@ -50,6 +50,7 @@ local Config = {
         P1GodMode = false,
         P2GodMode = false,
         SoftlockTrace = false,
+        ArcanaFullUnlockRepair = true,
     }
 }
 

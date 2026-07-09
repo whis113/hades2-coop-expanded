@@ -5,62 +5,17 @@
 
 ---@type SimpleHook
 local SimpleHook = ModRequire "../utils/SimpleHook.lua"
----@type HeroContextProxySpliterStore
-local HeroContextProxySpliterStore = ModRequire "../logic/HeroContextProxySpliterStore.lua"
----@type CoopPlayers
-local CoopPlayers = ModRequire "../logic/CoopPlayers.lua"
----@type HeroContext
-local HeroContext = ModRequire "../logic/HeroContext.lua"
+---@type GameStateEx
+local GameStateEx = ModRequire "../logic/GameStateEx.lua"
 
 ---@class GameStateHooks : SimpleHook
 local GameStateHooks = SimpleHook.New()
 
----@public
-function GameStateHooks:InitEngineHooks()
-    if GameState then
-        GameStateHooks.ApplyGameStateProxy()
-    end
-end
-
----@private
-function GameStateHooks.ApplyGameStateProxy()
-    local currentMetaUpgradesState = GameState.MetaUpgradeState
-
-    local hadnler = HeroContextProxySpliterStore.GetOrCreate("GameState", GameState, {
-        "MetaUpgradeState",
-    })
-
-    local firtsPlayerData = hadnler:GetPlayerData(1)
-    firtsPlayerData.MetaUpgradeState = currentMetaUpgradesState
-
-    for playerId = 2, CoopPlayers.GetPlayersCount() do
-        local playerData = hadnler:GetPlayerData(playerId)
-
-        local playerMetaUpgradeState = GameState['MetaUpgradeStateCoopPlayer' .. playerId]
-        if not playerMetaUpgradeState then
-            playerMetaUpgradeState = DeepCopyTable(currentMetaUpgradesState)
-            GameState['MetaUpgradeStateCoopPlayer' .. playerId] = playerMetaUpgradeState
-        end
-
-        playerData.MetaUpgradeState = playerMetaUpgradeState
-    end
-end
+-- Keep Arcana / MetaUpgradeState on the vanilla single-player GameState path.
+-- Splitting this table can corrupt saved Arcana unlock/progression data.
 
 function GameStateHooks.post.InitializeMetaUpgradeState()
-    HeroContextProxySpliterStore.Delete("GameState")
-    GameStateHooks.ApplyGameStateProxy()
-end
-
-function GameStateHooks.wrap.EquipMetaUpgrades(baseFun, hero, args)
-    if HeroContext.IsHeroContextExplicit() and hero then
-        return baseFun(hero, args)
-    end
-
-    for _, playerHero in CoopPlayers.PlayersIterator() do
-        if playerHero then
-            HeroContext.RunWithHeroContext(playerHero, baseFun, playerHero, args)
-        end
-    end
+    GameStateEx.RepairArcanaFullUnlockState("InitializeMetaUpgradeState")
 end
 
 return GameStateHooks

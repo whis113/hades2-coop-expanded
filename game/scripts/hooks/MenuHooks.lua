@@ -58,16 +58,16 @@ function MenuHooks.HookUiControl(funName)
         local playerId = CoopPlayers.GetCurrentPlayerId()
         CoopControl.SwitchControlForMenu(playerId)
 
+        if funName == "OpenMetaUpgradeCardScreen" then
+            GameStateEx.RepairArcanaFullUnlockState("HookUiControl.OpenMetaUpgradeCardScreen")
+        end
+
         HookUtils.onPreFunctionOnce("UnfreezePlayerUnit", function()
             CoopControl.ExitMenuControl()
         end)
 
         return originalFun(...)
     end)
-end
-
-function MenuHooks.pre.OpenMetaUpgradeCardScreen()
-    GameStateEx.CopyTraitsToMetaUpgrades(CurrentRun.Hero)
 end
 
 function MenuHooks.wrap.OpenKeepsakeRackScreen(baseFun, ...)

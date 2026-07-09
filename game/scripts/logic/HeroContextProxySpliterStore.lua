@@ -44,12 +44,26 @@ end
 ---@param keys string[]
 ---@return HeroContextProxySpliter
 function HeroContextProxySpliterStore.Recreate(name, target, keys)
+    local oldProxy = store[name]
+    if oldProxy then
+        oldProxy:MovePlayerDataToTarget(1)
+        oldProxy:UnhookTable()
+    end
     local proxy = HeroContextProxySpliter.New(target, keys)
     store[name] = proxy
     return proxy
 end
 
 function HeroContextProxySpliterStore.Delete(name)
+    store[name] = nil
+end
+
+function HeroContextProxySpliterStore.Destroy(name)
+    local proxy = store[name]
+    if proxy then
+        proxy:MovePlayerDataToTarget(1)
+        proxy:UnhookTable()
+    end
     store[name] = nil
 end
 
