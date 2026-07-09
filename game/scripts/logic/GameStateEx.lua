@@ -62,6 +62,27 @@ local function CountUnlockedMetaUpgrades()
     return count
 end
 
+local function CountMaxedMetaUpgrades()
+    local count = 0
+    if not GameState or not GameState.MetaUpgradeState then
+        return count
+    end
+    for metaUpgradeName, state in pairs(GameState.MetaUpgradeState) do
+        local metaUpgradeData = MetaUpgradeCardData[metaUpgradeName]
+        if metaUpgradeData and state.Unlocked and state.Level == GameStateEx.GetMaxMetaUpgradeLevel(metaUpgradeData) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+function GameStateEx.GetMaxMetaUpgradeLevel(metaUpgradeData)
+    if not metaUpgradeData or not metaUpgradeData.UpgradeResourceCost then
+        return 1
+    end
+    return #metaUpgradeData.UpgradeResourceCost + 1
+end
+
 local function GetRecognizedArcanaLimit()
     if GetMaxMetaUpgradeCost then
         return GetMaxMetaUpgradeCost()
@@ -79,6 +100,7 @@ function GameStateEx.RepairArcanaFullUnlockState(reason)
 
     local beforeLayoutCount = CountLayoutCells(GameState.MetaUpgradeCardLayout)
     local beforeUnlockedCount = CountUnlockedMetaUpgrades()
+    local beforeMaxedCount = CountMaxedMetaUpgrades()
     local limitLevel = GameState.MetaUpgradeLimitLevel or 0
     local recognizedLimit = GetRecognizedArcanaLimit()
 
@@ -88,6 +110,7 @@ function GameStateEx.RepairArcanaFullUnlockState(reason)
             " recognizedLimit=" .. tostring(recognizedLimit) ..
             " layoutCells=" .. tostring(beforeLayoutCount) ..
             " unlocked=" .. tostring(beforeUnlockedCount) ..
+            " maxed=" .. tostring(beforeMaxedCount) ..
             " screensViewed=" .. tostring(GameState.ScreensViewed and GameState.ScreensViewed.MetaUpgradeCardLayout),
     })
 
@@ -99,6 +122,9 @@ function GameStateEx.RepairArcanaFullUnlockState(reason)
             GameState.MetaUpgradeState[metaUpgradeName] = GameState.MetaUpgradeState[metaUpgradeName] or {}
             GameState.MetaUpgradeState[metaUpgradeName].Unlocked = true
             GameState.MetaUpgradeState[metaUpgradeName].Level = GameState.MetaUpgradeState[metaUpgradeName].Level or 1
+            if Config.Debug.ArcanaMaxLevelRepair then
+                GameState.MetaUpgradeState[metaUpgradeName].Level = GameStateEx.GetMaxMetaUpgradeLevel(metaUpgradeData)
+            end
         end
     end
 
@@ -113,6 +139,7 @@ function GameStateEx.RepairArcanaFullUnlockState(reason)
         Text = "[CoopArcanaRepair] applied reason=" .. tostring(reason) ..
             " layoutCells=" .. tostring(CountLayoutCells(GameState.MetaUpgradeCardLayout)) ..
             " unlocked=" .. tostring(CountUnlockedMetaUpgrades()) ..
+            " maxed=" .. tostring(CountMaxedMetaUpgrades()) ..
             " unlockedCache=" .. tostring(GameState.MetaUpgradeUnlockedCountCache),
     })
 end

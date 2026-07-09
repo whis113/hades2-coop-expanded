@@ -51,6 +51,7 @@ local Config = {
         P2GodMode = false,
         SoftlockTrace = false,
         ArcanaFullUnlockRepair = true,
+        ArcanaMaxLevelRepair = true,
     }
 }
 
