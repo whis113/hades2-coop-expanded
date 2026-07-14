@@ -16,6 +16,10 @@ internal static class Program
 internal sealed class InstallerForm : Form
 {
     private const string ModFolderName = "TN_CoopMod";
+    private const string CoreFolderName = "TN_Core";
+    private const string DependenciesFolderName = "Dependencies";
+    private const string NativeExtensionName = "HadesModNativeExtension.asi";
+    private const string AsiLoaderName = "bink2w64.dll";
     private const string GameExecutableName = "Hades2.exe";
     private readonly TextBox gameExePathTextBox = new() { Dock = DockStyle.Fill };
     private readonly Label statusLabel = new() { AutoSize = true, MaximumSize = new Size(600, 0) };
@@ -108,9 +112,17 @@ internal sealed class InstallerForm : Form
         }
 
         var payloadDirectory = Path.Combine(AppContext.BaseDirectory, ModFolderName);
+        var dependenciesDirectory = Path.Combine(AppContext.BaseDirectory, DependenciesFolderName);
         if (!File.Exists(Path.Combine(payloadDirectory, "HadesCoopGame.dll")))
         {
             ShowError("发布包不完整：找不到 TN_CoopMod\\HadesCoopGame.dll。请重新下载完整测试包。");
+            return;
+        }
+        if (!Directory.Exists(Path.Combine(dependenciesDirectory, CoreFolderName))
+            || !File.Exists(Path.Combine(dependenciesDirectory, NativeExtensionName))
+            || !File.Exists(Path.Combine(dependenciesDirectory, AsiLoaderName)))
+        {
+            ShowError("发布包不完整：缺少 TN_Core、原生扩展或 ASI 加载器。请重新下载完整测试包。");
             return;
         }
 
@@ -129,6 +141,7 @@ internal sealed class InstallerForm : Form
             DeleteDirectoryIfExists(stagingDirectory);
             DeleteDirectoryIfExists(backupDirectory);
             Directory.CreateDirectory(modsDirectory);
+            InstallSharedDependencies(dependenciesDirectory, modsDirectory);
             CopyDirectory(payloadDirectory, stagingDirectory);
 
             if (Directory.Exists(targetModDirectory))
@@ -138,7 +151,8 @@ internal sealed class InstallerForm : Form
 
             Directory.Move(stagingDirectory, targetModDirectory);
             DeleteDirectoryIfExists(backupDirectory);
-            SetStatus("安装完成。请启动 Hades II，并从 co-op 入口开始游戏。", Color.DarkGreen);
+            VerifyInstallation(targetModDirectory, modsDirectory);
+            SetStatus("安装完成：Co-op 入口已就绪。请启动 Hades II 并从 co-op 入口开始游戏。", Color.DarkGreen);
         }
         catch (Exception exception)
         {
@@ -191,7 +205,7 @@ internal sealed class InstallerForm : Form
         {
             SetBusy(true, "正在卸载 Mod...");
             Directory.Delete(targetModDirectory, true);
-            SetStatus("卸载完成。", Color.DarkGreen);
+            SetStatus("TN_CoopMod 已卸载。TN_Core 和加载器会保留，避免影响其他 Mod。", Color.DarkGreen);
         }
         catch (Exception exception)
         {
@@ -289,6 +303,69 @@ internal sealed class InstallerForm : Form
         {
             var destinationFile = sourceFile.Replace(sourceDirectory, destinationDirectory, StringComparison.OrdinalIgnoreCase);
             File.Copy(sourceFile, destinationFile, true);
+        }
+    }
+
+    private static void InstallSharedDependencies(string dependenciesDirectory, string modsDirectory)
+    {
+        var coreSource = Path.Combine(dependenciesDirectory, CoreFolderName);
+        var nativeExtensionSource = Path.Combine(dependenciesDirectory, NativeExtensionName);
+        var loaderSource = Path.Combine(dependenciesDirectory, AsiLoaderName);
+        CopyDirectory(coreSource, Path.Combine(modsDirectory, CoreFolderName));
+
+        var contentDirectory = Directory.GetParent(modsDirectory);
+        var gameDirectory = contentDirectory?.Parent?.FullName
+            ?? throw new InvalidOperationException("无法确定游戏根目录。");
+        var shipDirectory = Path.Combine(gameDirectory, "Ship");
+        var pluginsDirectory = Path.Combine(shipDirectory, "plugins");
+        Directory.CreateDirectory(pluginsDirectory);
+        File.Copy(nativeExtensionSource, Path.Combine(pluginsDirectory, NativeExtensionName), true);
+
+        var returnOfModdingDirectory = Path.Combine(shipDirectory, "ReturnOfModding");
+        if (Directory.Exists(returnOfModdingDirectory))
+        {
+            return;
+        }
+
+        var loaderDestination = Path.Combine(shipDirectory, AsiLoaderName);
+        var originalBinkBackup = Path.Combine(shipDirectory, "bink2w64Hooked.dll");
+        if (!File.Exists(originalBinkBackup))
+        {
+            if (!File.Exists(loaderDestination))
+            {
+                throw new FileNotFoundException("找不到游戏原始 bink2w64.dll。", loaderDestination);
+            }
+
+            // Preserve the original game DLL before replacing it with the ASI loader.
+            // 替换为 ASI 加载器前先备份原始游戏 DLL。
+            File.Move(loaderDestination, originalBinkBackup);
+        }
+
+        File.Copy(loaderSource, loaderDestination, true);
+    }
+
+    private static void VerifyInstallation(string targetModDirectory, string modsDirectory)
+    {
+        var contentDirectory = Directory.GetParent(modsDirectory);
+        var gameDirectory = contentDirectory?.Parent?.FullName
+            ?? throw new InvalidOperationException("无法确定游戏根目录。");
+        var shipDirectory = Path.Combine(gameDirectory, "Ship");
+        var requiredPaths = new[]
+        {
+            Path.Combine(targetModDirectory, "HadesCoopGame.dll"),
+            Path.Combine(modsDirectory, CoreFolderName, "init.lua"),
+            Path.Combine(shipDirectory, "plugins", NativeExtensionName),
+        };
+
+        if (!Directory.Exists(Path.Combine(shipDirectory, "ReturnOfModding")))
+        {
+            requiredPaths = requiredPaths.Append(Path.Combine(shipDirectory, AsiLoaderName)).ToArray();
+        }
+
+        var missing = requiredPaths.Where(path => !File.Exists(path)).ToArray();
+        if (missing.Length > 0)
+        {
+            throw new InvalidOperationException($"安装校验失败，缺少：{string.Join("; ", missing)}");
         }
     }
 

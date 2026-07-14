@@ -1,4 +1,4 @@
-# Hades II Co-op v0.2 Test Build / Hades II 双人 Mod v0.2 测试版
+# Hades II Co-op v0.2.1 Test Build / Hades II 双人 Mod v0.2.1 测试版
 
 > Test build. Back up saves before use. / 测试版本。使用前请备份存档。
 
@@ -70,7 +70,9 @@ This package is based on the upstream **Hades II coop mod** by Hades2-coop-proje
 4. Select `Ship\Hades2.exe`, then choose **Install / Update Mod**. / 选择 `Ship\Hades2.exe`，点击“安装 / 更新 Mod”。
 5. Start the game and use the co-op entry point. / 启动游戏，从合作入口开始双人 run。
 
-The installer writes only to `<Hades II>\Content\Mods\TN_CoopMod`; it does not modify game files or delete saves.
+The installer deploys the complete local co-op dependency chain: `TN_CoopMod`, `TN_Core`, `HadesModNativeExtension.asi`, and (unless ReturnOfModding is already installed) the ASI loader. It backs up the original `Ship\bink2w64.dll` as `bink2w64Hooked.dll` before installing the loader.
+
+安装器会部署完整本地双人依赖链：`TN_CoopMod`、`TN_Core`、`HadesModNativeExtension.asi`，以及（除非已安装 ReturnOfModding）ASI 加载器。安装加载器前会将原始 `Ship\bink2w64.dll` 备份为 `bink2w64Hooked.dll`。
 
 安装器只写入 `<Hades II>\Content\Mods\TN_CoopMod`，不会修改游戏本体文件或删除存档。
 
