@@ -12,6 +12,14 @@ local Config = {
     -- The game has a query that select a player context for a reward.
     -- E.g. Player 1 boon room, meta progress room, Player 2 boon room, Player 1 boon room...
     LootDelivery = "Shared",
+    -- 普通战斗房双固定奖励开关。
+    -- Enables the second fixed reward in normal combat rooms.
+    NormalRoomDoubleRewards = true,
+    -- 开局免费 boon 双发开关。
+    -- Enables a second copy of the free starting boon.
+    StartingBoonDoubleRewards = true,
+    -- 扩展 Elite、无 Encounter 关键奖励、Chaos 和事件房的双奖励。 / Enables expanded double rewards for Elite, encounterless, Chaos, and event rooms.
+    ExpandedRoomDoubleRewards = true,
     Player1HasOutline = true;
     Player1Outline = {
         R = 0,
@@ -49,9 +57,16 @@ local Config = {
         OneHit = false,
         P1GodMode = false,
         P2GodMode = false,
-        SoftlockTrace = false,
+        SoftlockTrace = true,
+        -- 实时显示双人运行状态；测试完成后可改为 false。 / Shows live co-op state; set false after testing.
+        RuntimeMonitor = false,
+        -- 面板刷新间隔（秒）。 / Monitor refresh interval in seconds.
+        RuntimeMonitorInterval = 0.25,
         ArcanaFullUnlockRepair = true,
         ArcanaMaxLevelRepair = true,
+        -- Audit shared permanent Arcana state and the isolated P2 loadout data.
+        -- 审计共享的永久阿卡那状态与隔离的 P2 预设数据。
+        ArcanaLoadoutAudit = true,
     }
 }
 

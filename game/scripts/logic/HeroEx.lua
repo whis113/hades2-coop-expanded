@@ -5,6 +5,8 @@
 
 ---@type HeroContext
 local HeroContext = ModRequire "HeroContext.lua"
+---@type CoopArcana
+local CoopArcana = ModRequire "CoopArcana.lua"
 ---@type HookUtils
 local HookUtils = ModRequire "../utils/HookUtils.lua"
 
@@ -69,6 +71,7 @@ end
 ---@class ICreateFreshHeroArgs
 ---@field keepsake string?
 ---@field familiar string?
+---@field playerId number?
 ---@field weaponName string
 ---@field weaponVariant number
 
@@ -87,7 +90,11 @@ function HeroEx.CreateFreshHero(args)
     end
 
     HeroContext.RunWithHeroContextAwait(hero, function()
-        EquipPreRunMetaUpgrades(nil, hero)
+        -- P2 uses only its isolated equipped-card set; unlocks and levels remain shared.
+        -- P2 仅使用独立的装备卡集合；解锁和等级仍保持共享。
+        CoopArcana.RunWithPlayerLoadout(args.playerId, function()
+            EquipPreRunMetaUpgrades(nil, hero)
+        end)
 
         if args.familiar then
             local prevFamiliar = GameState.EquippedFamiliar

@@ -56,8 +56,19 @@ function EnemyAiHooks.wrap.NotifyWithinDistance(baseFun, params)
     end
 
     if CoopPlayers.IsPlayerUnit(params.DestinationId) then
+        local aliveUnitIds = {}
+        for _, hero in ipairs(CoopPlayers.GetAliveHeroes()) do
+            if hero.ObjectId ~= nil then
+                table.insert(aliveUnitIds, hero.ObjectId)
+            end
+        end
+        if #aliveUnitIds == 0 then
+            return baseFun(params)
+        end
+        -- Enemy distance waits must exclude dead heroes; otherwise Boss AI can reacquire a hidden P1 after control moved to P2.
+        -- 敌人的距离等待必须排除死亡英雄；否则 Boss AI 会在控制权切到 P2 后重新锁定隐藏的 P1。
         params.DestinationId = nil
-        params.DestinationIds = CoopPlayers.GetUnits()
+        params.DestinationIds = aliveUnitIds
         params.Ids = params.Ids or { params.Id }
         params.Id = nil
         NotifyWithinDistanceAny(params)

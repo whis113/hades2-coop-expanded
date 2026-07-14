@@ -41,4 +41,12 @@ function LootQuery.UseNextHeroForLoot()
     end
 end
 
+---@param playerId number
+function LootQuery.MarkHeroForLoot(playerId)
+    if playerId ~= nil then
+        -- 首份奖励也必须推进游标，否则第二份可能再次选中同一位玩家。 / The first reward must advance the cursor too, otherwise the second reward can select the same player again.
+        CurrentRun.CoopLootCounter = playerId
+    end
+end
+
 return LootQuery

@@ -6,5 +6,7 @@
 #pragma once
 
 #include <cstdint>
+#include <cstdlib>
+#include <fstream>
 #include <string>
 #include <windows.h>

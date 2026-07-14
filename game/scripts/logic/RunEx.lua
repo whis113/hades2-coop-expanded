@@ -117,27 +117,56 @@ function RunEx.RemoveRewardFromAllDefaultDoors()
     end
 end
 
+---@private
+---Clears an enemy's stale target wait and starts its native AI again.
+---清理敌人指向失效目标的等待，并重新启动本体 AI。
+local function RestartEnemyAI(enemy)
+    killTaggedThreads(enemy.AIThreadName)
+    killWaitUntilThreads(enemy.AINotifyName)
+    Stop({ Id = enemy.ObjectId })
+    StopAnimation({ DestinationId = enemy.ObjectId })
+
+    enemy.TargetId = nil
+    if enemy.AIStages ~= nil then
+        thread(StagedAI, enemy, CurrentRun)
+        return
+    end
+
+    local aiBehavior = enemy.AIBehavior
+    if aiBehavior ~= nil then
+        thread(SetAI, aiBehavior, enemy, CurrentRun)
+    end
+end
+
 function RunEx.RefreshEnemyAI()
     for _, enemy in pairs(ActiveEnemies) do
-        if not enemy.IsDead then
-            killTaggedThreads(enemy.AIThreadName)
-            killWaitUntilThreads(enemy.AINotifyName)
-            Stop({ Id = enemy.ObjectId })
-            StopAnimation({ DestinationId = enemy.ObjectId })
-
-            enemy.TargetId = nil
-            thread(function()
-                if enemy.AIStages ~= nil then
-                    thread(StagedAI, enemy, CurrentRun)
-                else
-                    local aiBehavior = enemy.AIBehavior
-                    if aiBehavior ~= nil then
-                        thread(SetAI, aiBehavior, enemy, CurrentRun)
-                    end
-                end
-            end)
+        -- Normal enemies can restart freely to discard cached dead-player targets.
+        -- 普通敌人可以直接重启，以清理缓存的死亡玩家目标。
+        if not enemy.IsDead and not enemy.IsBoss then
+            RestartEnemyAI(enemy)
         end
     end
+end
+
+---@return integer restarted
+---@return integer skipped
+function RunEx.RefreshBossAI()
+    local restarted = 0
+    local skipped = 0
+    for _, enemy in pairs(ActiveEnemies) do
+        if not enemy.IsDead and enemy.IsBoss then
+            -- Non-staged bosses can be restarted safely. Staged bosses must keep their native
+            -- coroutine because restarting it reapplies phase-one state after a player death.
+            -- 非分阶段 Boss 可以安全重启；分阶段 Boss 必须保留本体协程，重启会在玩家死亡后重置第一阶段状态。
+            if enemy.AIStages == nil then
+                RestartEnemyAI(enemy)
+                restarted = restarted + 1
+            else
+                skipped = skipped + 1
+            end
+        end
+    end
+    return restarted, skipped
 end
 
 return RunEx

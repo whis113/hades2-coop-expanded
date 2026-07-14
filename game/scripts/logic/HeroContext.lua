@@ -71,7 +71,14 @@ end
 function HeroContext.GetCurrentHeroContext()
     local thread, isMain = coroutine.running()
     if not isMain then
-        return CorontinueToHero[thread] or defaultHero
+        local contextHero = CorontinueToHero[thread] or defaultHero
+        -- Long-running native AI coroutines inherit the hero that started the room. When that
+        -- player dies, continue global combat logic with the surviving default hero instead.
+        -- 长生命周期的本体 AI 协程会继承开房时的英雄；该玩家死亡后，全局战斗逻辑应改用仍存活的默认英雄。
+        if contextHero ~= nil and contextHero.IsDead and defaultHero ~= nil and not defaultHero.IsDead then
+            return defaultHero
+        end
+        return contextHero
     end
 
     return defaultHero

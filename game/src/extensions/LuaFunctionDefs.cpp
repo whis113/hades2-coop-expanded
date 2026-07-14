@@ -7,7 +7,90 @@
 #include "LuaFunctionDefs.h"
 #include "CoopContext.h"
 #include "lua.hpp"
+#include <chrono>
+#include <iomanip>
 #include <hades2/HashGuid.h>
+
+// Reads a string field without leaving a value on the Lua stack.
+// 读取字符串字段，并确保 Lua 栈不会残留值。
+static std::string GetLuaStringField(lua_State *L, int tableIndex, const char *fieldName) {
+    tableIndex = lua_absindex(L, tableIndex);
+    lua_getfield(L, tableIndex, fieldName);
+    const char *value = lua_tostring(L, -1);
+    std::string result = value != nullptr ? value : "";
+    lua_pop(L, 1);
+    return result;
+}
+
+// Builds a readable area/layer/room tag from CurrentRun.CurrentRoom.
+// 从 CurrentRun.CurrentRoom 构造可读的区域、层级和房间标签。
+static std::string GetCoopTraceLocationTag(lua_State *L) {
+    lua_getglobal(L, "CurrentRun");
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        return "[NoRun]";
+    }
+
+    lua_getfield(L, -1, "CurrentRoom");
+    lua_remove(L, -2);
+    if (!lua_istable(L, -1)) {
+        lua_pop(L, 1);
+        return "[NoRoom]";
+    }
+
+    const std::string roomName = GetLuaStringField(L, -1, "Name");
+    const std::string roomSetName = GetLuaStringField(L, -1, "RoomSetName");
+    lua_pop(L, 1);
+
+    std::string area;
+    if (roomSetName == "F") area = "Underworld-Layer1-Erebus";
+    else if (roomSetName == "G") area = "Underworld-Layer2-Oceanus";
+    else if (roomSetName == "H") area = "Underworld-Layer3-Fields";
+    else if (roomSetName == "I") area = "Underworld-Layer4-Tartarus";
+    else if (roomSetName == "N") area = "Surface-Layer1-Ephyra";
+    else if (roomSetName == "O") area = "Surface-Layer2-Rift";
+    else if (roomSetName == "P") area = "Surface-Layer3-Olympus";
+    else if (roomName.find("Chaos") != std::string::npos) area = "Chaos";
+    else if (roomName.find("Hub") != std::string::npos) area = "Hub";
+    else area = "Special";
+
+    std::string roomKind = "Room";
+    if (roomName.find("MiniBoss") != std::string::npos) roomKind = "EliteRoom";
+    else if (roomName.find("Boss") != std::string::npos) roomKind = "BossRoom";
+    else if (roomName.find("Shop") != std::string::npos) roomKind = "ShopRoom";
+    else if (roomName.find("Reprieve") != std::string::npos) roomKind = "RestRoom";
+    else if (roomName.find("Story") != std::string::npos) roomKind = "EventRoom";
+    else if (roomName.find("Opening") != std::string::npos) roomKind = "OpeningRoom";
+    else if (roomName.find("Combat") != std::string::npos) roomKind = "CombatRoom";
+
+    return "[" + area + "-" + roomKind + "-" + (roomName.empty() ? "Unknown" : roomName) + "]";
+}
+
+// 将诊断日志追加到用户的 Hades II 存档目录，绕过 DebugPrint 不落盘的问题。
+// Appends a diagnostic line to the user's Hades II save directory, bypassing DebugPrint persistence gaps.
+static int CoopAppendTraceLog(lua_State *L) {
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Argument 1 must be a string");
+    }
+
+    const char *userProfile = std::getenv("USERPROFILE");
+    if (userProfile == nullptr) {
+        return 0;
+    }
+
+    std::string path = std::string(userProfile) + "\\Saved Games\\Hades II\\TN_CoopMod.log";
+    std::ofstream output(path, std::ios::app);
+    if (output.is_open()) {
+        const auto now = std::chrono::system_clock::now();
+        const std::time_t nowTime = std::chrono::system_clock::to_time_t(now);
+        std::tm localTime{};
+        localtime_s(&localTime, &nowTime);
+        output << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S") << " "
+               << GetCoopTraceLocationTag(L) << " " << lua_tostring(L, 1) << '\n';
+    }
+
+    return 0;
+}
 
 // bool CoopSetPlayerGamepad(number playerIndex, number controllerIndex)
 static int CoopSetPlayerGamepad(lua_State *L) {
@@ -249,6 +332,7 @@ void LuaFunctionDefs::Load(lua_State* L) {
 
     REGISTER(CoopSetAnimationSwap);
     REGISTER(CoopRemoveAnimationSwap);
+    REGISTER(CoopAppendTraceLog);
 
     #undef REGISTER
 }

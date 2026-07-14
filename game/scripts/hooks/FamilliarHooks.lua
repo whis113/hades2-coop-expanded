@@ -34,7 +34,7 @@ function FamiliarHooks.LoadAdditionalPackages()
 end
 
 function FamiliarHooks.wrap.UseFamiliar(UseFamiliar, familiar, args, user)
-    local playerId = CoopPlayers.GetCurrentPlayerId()
+    local playerId = CoopPlayers.GetCurrentPlayerId() or 1
 
     if playerId == 1 then
         return UseFamiliar(familiar, args, user)
@@ -45,10 +45,21 @@ function FamiliarHooks.wrap.UseFamiliar(UseFamiliar, familiar, args, user)
 
     GameState.EquippedFamiliar = GameState[key]
 
-    UseFamiliar(familiar, args, user)
+    local hero = CoopPlayers.GetHero(playerId)
+    local result
+    if hero ~= nil then
+        -- 本体会直接将熟灵 trait 加到 CurrentRun.Hero；P2 必须使用自己的上下文。
+        -- Native code adds familiar traits directly to CurrentRun.Hero, so P2 needs its own context.
+        result = { HeroContext.RunWithHeroContextAwait(hero, UseFamiliar, familiar, args, user) }
+    else
+        result = { UseFamiliar(familiar, args, user) }
+    end
 
     GameState[key] = GameState.EquippedFamiliar
     GameState.EquippedFamiliar = prevFamilliar
+    CoopPlayers.RemoveMisplacedAdditionalFamiliarTraits()
+
+    return table.unpack(result)
 end
 
 -- Activate familiars for all alive players here

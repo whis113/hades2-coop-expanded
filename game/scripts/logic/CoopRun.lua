@@ -19,6 +19,10 @@ local PlayerVisibilityHelper = ModRequire "PlayerVisibilityHelper.lua"
 local CoopCamera = ModRequire "CoopCamera.lua"
 ---@type CoopControl
 local CoopControl = ModRequire "CoopControl.lua"
+---@type HeroEx
+local HeroEx = ModRequire "HeroEx.lua"
+---@type UIHooks
+local UIHooks = ModRequire "../hooks/UIHooks.lua"
 
 ---@class CoopRun
 local CoopRun = {}
@@ -51,7 +55,8 @@ end
 function CoopRun.OnMapLoaded(mapName)
     DebugPrint{ Text = "Coop map starter: " .. tostring(mapName)}
     if RunEx.IsHubRoom(mapName) then
-        CoopPlayers.HealAllAdditionalPlayers()
+        -- Hub load is the final safety net if the native death outro finished asynchronously. / Hub load is the final safety net when the native death outro completes asynchronously.
+        CoopPlayers.ResetAfterRunEnd("hub-map-loaded:" .. tostring(mapName))
     elseif RunEx.IsMetaStoryRoom(mapName) then
         CoopRun.MakeFirstPlayerOnlyMode()
     end
@@ -108,9 +113,17 @@ function CoopRun.ReviveHeroForNextRoom(hero)
     hero.IsDead = false
     hero.Health = hero.MaxHealth or 50
 
-    -- P2's unit is removed on death, but P1 can still have an object to clean up.
+    -- 死亡玩家在战斗中只透明/锁输入，不删除单位。
+    -- Dead co-op heroes are made invisible/input-locked during combat instead of deleting their units.
+    -- 复活时先恢复既有单位可见，再交给房间表现流程传送。
+    -- On revive, show the existing unit before room presentation teleports it.
     if hero.ObjectId then
         ClearEffect({ Id = hero.ObjectId, All = true, BlockAll = true, })
+        HeroEx.ShowHero(hero)
+    end
+    local playerId = CoopPlayers.GetPlayerByHero(hero)
+    if playerId then
+        RemoveInputBlock { Name = "CoopDeadPlayer" .. tostring(playerId), PlayerIndex = playerId }
     end
     StopCurrentStatusAnimation(hero)
     hero.BlockStatusAnimations = true
@@ -118,6 +131,12 @@ end
 
 ---@private
 function CoopRun.OnRoomPresentationFinished(run, currentRoom)
+    if RunEx.IsRunEnded() then
+        -- Hub 房间演出结束后再刷新一次，处理本体在 StartRoom 后覆盖 HUD 的情况。
+        -- Refresh once more after Hub presentation in case native StartRoom work overwrote the HUD.
+        CoopPlayers.ScheduleHubUiRefresh("hub-room-presentation:" .. tostring(currentRoom and currentRoom.Name))
+    end
+
     for playerId = 2, CoopPlayers.GetPlayersCount() do
         local hero = CoopPlayers.GetHero(playerId)
         if not hero or (hero and not hero.IsDead) then
@@ -148,6 +167,17 @@ function CoopRun.OnRoomPresentationFinished(run, currentRoom)
             end
         end
     end
+
+    -- The native HUD may rebuild after this callback; capture both the immediate and settled P2 spell state.
+    -- 本体 HUD 可能在此回调后继续重建；记录 P2 Spell 的即时状态和稳定后的状态。
+    UIHooks.TracePlayerSpellUi("room-presentation-finished:" .. tostring(currentRoom and currentRoom.Name), 2)
+    thread(function()
+        wait(0.4, RoomThreadName)
+        -- Recreate only P2's spell icon when native HUD reconstruction discarded its component registration.
+        -- 当本体 HUD 重建丢失 P2 Spell 组件注册时，只重建 P2 的法术图标。
+        UIHooks.RebuildPlayerSpellHud(2, "room-presentation-settled:" .. tostring(currentRoom and currentRoom.Name))
+        UIHooks.TracePlayerSpellUi("room-presentation-settled:" .. tostring(currentRoom and currentRoom.Name), 2)
+    end)
 end
 
 ---@private

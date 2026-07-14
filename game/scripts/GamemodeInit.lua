@@ -17,6 +17,10 @@ local LootInterface = ModRequire "logic/loot/LootInterface.lua"
 local HeroContext = ModRequire "logic/HeroContext.lua"
 ---@type CoopCamera
 local CoopCamera = ModRequire "logic/CoopCamera.lua"
+---@type CoopDebugMonitor
+local CoopDebugMonitor = ModRequire "logic/CoopDebugMonitor.lua"
+---@type CoopArcana
+local CoopArcana = ModRequire "logic/CoopArcana.lua"
 
 local Gamemode = {}
 
@@ -36,6 +40,7 @@ function Gamemode.RegisterHooks()
     HookStorage.Add "hooks/SaveHooks.lua"
     HookStorage.Add "hooks/EnemyAiHooks.lua"
     HookStorage.Add "hooks/LootHooks.lua"
+    HookStorage.Add "hooks/UpgradeChoiceHooks.lua"
     HookStorage.Add "hooks/UIHooks.lua"
     HookStorage.Add "hooks/VulnerabilityHooks.lua"
     HookStorage.Add "hooks/TraitHooks.lua"
@@ -72,8 +77,13 @@ function Gamemode.RegisterEngineHandlers()
 
         HookStorage.GameInit()
 
+        -- Initialize the isolated P2 Arcana loadout after the mod hooks are ready.
+        -- 在 Mod hook 就绪后初始化隔离的 P2 阿卡那预设。
+        CoopArcana.Initialize()
+
         CoopCamera.InitHooks()
         LootInterface.InitHooks()
+        CoopDebugMonitor.Init()
 
         CoopGame.Init()
 
