@@ -534,7 +534,7 @@ Elite 稀有度继承确认：
 部署与测试方式：
 
 - 已运行 `build_and_deploy.ps1` 成功，已部署 `config.lua`、`GamemodeInit.lua`、`logic/CoopDebugMonitor.lua`、`hooks/LootHooks.lua`、`logic/loot/LootShared.lua`。
-- 进入 run 后观察左上 `CO-OP DEBUG`；日志路径为 `C:\Users\haoxu\Saved Games\Hades II\TN_CoopMod.log`。
+- 进入 run 后观察左上 `CO-OP DEBUG`；日志路径为 `%USERPROFILE%\Saved Games\Hades II\TN_CoopMod.log`。
 - 针对 P2 `ForceBoon`，测试时记录 P2 面板的 `K`/`Force` 字段和对应 `[CoopDebug]` 的 `traitForce`、`result`、`forced`。
 
 后续调整：
@@ -721,7 +721,7 @@ Elite 稀有度继承确认：
 下一次测试：
 
 - 在可转阶段 Boss 战中，等待转阶段完成后让 P2 死亡。
-- 无论卡住与否，退出后读取 `C:\Users\haoxu\Saved Games\Hades II\TN_CoopMod.log` 中的 `[CoopBossTrace]` 行，用该快照选择下一步修复。
+- 无论卡住与否，退出后读取 `%USERPROFILE%\Saved Games\Hades II\TN_CoopMod.log` 中的 `[CoopBossTrace]` 行，用该快照选择下一步修复。
 
 最终测试结论：
 
@@ -764,7 +764,7 @@ Elite 稀有度继承确认：
 - 已部署到游戏 mod 目录：
 
 ```text
-E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod\hooks\MenuHooks.lua
+<Hades II>\Content\Mods\TN_CoopMod\hooks\MenuHooks.lua
 ```
 
 - 源文件和部署文件 SHA256 已确认一致。
@@ -825,7 +825,7 @@ E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod\hooks\MenuHook
 处理前备份：
 
 ```text
-C:\Users\haoxu\Saved Games\Hades II\Profile1.sav.codex-before-arcana-level-repair-20260709-155353
+%USERPROFILE%\Saved Games\Hades II\Profile1.sav.codex-before-arcana-level-repair-<timestamp>
 ```
 
 本次处理：
@@ -907,7 +907,7 @@ checkpoint-arcana-ui-and-levels-repaired-20260709
 下一次测试：
 
 - 完全重启游戏后进入准备房打开阿卡那界面。
-- 如果仍未恢复，读取 `C:\Users\haoxu\Saved Games\Hades II\Hades II.log` 中的 `[CoopArcanaRepair]` 行，判断是状态识别错误还是界面逻辑覆盖。
+- 如果仍未恢复，读取 `%USERPROFILE%\Saved Games\Hades II\Hades II.log` 中的 `[CoopArcanaRepair]` 行，判断是状态识别错误还是界面逻辑覆盖。
 
 ### 阿卡那悟性恢复但牌面仍是初始 9 张
 
@@ -956,25 +956,25 @@ checkpoint-arcana-ui-and-levels-repaired-20260709
 - 已备份当前损坏存档：
 
 ```text
-C:\Users\haoxu\Saved Games\Hades II\Profile1.sav.codex-before-arcana-restore-20260709-124732
+%USERPROFILE%\Saved Games\Hades II\Profile1.sav.codex-before-arcana-restore-<timestamp>
 ```
 
 - 已用最新可用备份恢复当前存档：
 
 ```text
-C:\Users\haoxu\Saved Games\Hades II\Profile1.sav.bak3
+%USERPROFILE%\Saved Games\Hades II\Profile1.sav.bak3
 ```
 
 后续 `bak3` 实测仍不对，已继续恢复到：
 
 ```text
-C:\Users\haoxu\Saved Games\Hades II\Profile1.sav.bak6
+%USERPROFILE%\Saved Games\Hades II\Profile1.sav.bak6
 ```
 
 恢复后的当前存档：
 
 ```text
-C:\Users\haoxu\Saved Games\Hades II\Profile1.sav
+%USERPROFILE%\Saved Games\Hades II\Profile1.sav
 ```
 
 下一次测试重点：
@@ -1016,7 +1016,7 @@ C:\Users\haoxu\Saved Games\Hades II\Profile1.sav
 本地工作副本：
 
 ```text
-E:\hades2coop\MYcoopProject\hades2coop-mode
+<previous local working copy>
 ```
 
 已推送到远端：
@@ -1034,7 +1034,7 @@ e5508a003baa29409a6a5a7b4b36e9106fe7e13f
 额外创建了一个验证 clone：
 
 ```text
-E:\hades2coop\MYcoopProject\hades2-coop-github-clone
+<temporary verification clone>
 ```
 
 该 clone 已包含子模块 `libs/hades2-engine-interface`。
@@ -1046,13 +1046,13 @@ E:\hades2coop\MYcoopProject\hades2-coop-github-clone
 当前工作副本：
 
 ```text
-E:\hades2coop\MYcoopProject\hades2coop-mode
+<previous local working copy>
 ```
 
 原版/参考项目：
 
 ```text
-E:\hades2coop\reference project\hades2-coop-procject\hades2-coop
+<upstream/reference project>
 ```
 
 ### 构建 / 部署脚本
@@ -1069,7 +1069,7 @@ CMake 自动检测会在 `PATH` 中没有普通 `cmake` 时使用 Visual Studio 
 本机已知 CMake 路径：
 
 ```text
-D:\Tool\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
+<Visual Studio installation>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe
 ```
 
 ### 复活功能
@@ -1162,7 +1162,7 @@ D:\Tool\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Micr
 `build_and_deploy.ps1` 成功将修改后的 Lua 文件部署到：
 
 ```text
-E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod
+<Hades II>\Content\Mods\TN_CoopMod
 ```
 
 最近复制过的文件包括：

@@ -3,7 +3,7 @@
 Last updated: 2026-07-14
 
 Chinese version: [`ARCHITECTURE_ZH.md`](ARCHITECTURE_ZH.md).
-Active working copy: `E:\hades2coop\workplace\hades2-coop-expanded`
+Repository root: `hades2-coop-expanded/`
 
 ## Project Goal
 

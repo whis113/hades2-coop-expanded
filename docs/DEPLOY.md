@@ -4,19 +4,19 @@
 
 ## 当前工作流
 
-当前开发副本：`E:\hades2coop\workplace\hades2-coop-expanded`
+从仓库根目录运行以下命令。
 
 无论修改 Lua 还是 C++，均使用同一条命令：
 
 ```powershell
-cd E:\hades2coop\workplace\hades2-coop-expanded
+Set-Location 'C:\path\to\hades2-coop-expanded'
 .\scripts\build_and_deploy.ps1
 ```
 
 该脚本会配置 CMake、构建 Release、安装到 `bin\TN_CoopMod`，并把变更复制到：
 
 ```text
-E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod
+<Hades II>\Content\Mods\TN_CoopMod
 ```
 
 首次安装或环境检查使用：
@@ -30,7 +30,7 @@ E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod
 构建输出应显示 `Deploy complete`。若改动涉及 C++，还应显示新的 `HadesCoopGame.dll` 写入时间。
 
 ```powershell
-Get-Item 'E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod\HadesCoopGame.dll'
+Get-Item '<Hades II>\Content\Mods\TN_CoopMod\HadesCoopGame.dll'
 ```
 
 不要直接使用旧的 `dev_deploy.ps1` 或 `build_and_deploy.bat` 作为日常工作流；它们保留仅供历史兼容，未经当前流程验证。
@@ -40,7 +40,7 @@ Get-Item 'E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod\Hade
 打开独立终端：
 
 ```powershell
-cd E:\hades2coop\workplace\hades2-coop-expanded
+Set-Location 'C:\path\to\hades2-coop-expanded'
 .\scripts\watch_coop_debug.ps1
 ```
 

@@ -46,7 +46,7 @@ For external testing, use `release/Hades2Coop-v0.2.2-TestBuild.zip`.
 For development:
 
 ```powershell
-Set-Location E:\hades2coop\workplace\hades2-coop-expanded
+Set-Location 'C:\path\to\hades2-coop-expanded'
 .\scripts\install_all.ps1
 .\scripts\build_and_deploy.ps1
 ```
