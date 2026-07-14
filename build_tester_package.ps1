@@ -7,7 +7,7 @@ $modExtensionRoot = Join-Path $scriptDir "..\..\reference project\hades2-coop-pr
 $modExtensionBin = Join-Path $modExtensionRoot "bin"
 $coreSource = Join-Path $modExtensionBin "TN_Core"
 $nativeExtensionSource = Join-Path $modExtensionBin "HadesModNativeExtension.asi"
-$releaseDir = Join-Path $scriptDir "release\Hades2Coop-v0.2.1-TestBuild"
+$releaseDir = Join-Path $scriptDir "release\Hades2Coop-v0.2.2-TestBuild"
 $publishDir = Join-Path $scriptDir "tools\TesterInstaller\bin\Release\net8.0-windows\win-x64\publish"
 $asiLoaderUrl = "https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases/download/x64-latest/bink2w64-x64.zip"
 
@@ -61,7 +61,7 @@ Remove-Item -LiteralPath $loaderExtract -Recurse -Force
 Copy-Item -LiteralPath (Join-Path $scriptDir "TESTER_README.md") -Destination $releaseDir -Force
 Copy-Item -LiteralPath (Join-Path $scriptDir "LICENSE.txt") -Destination $releaseDir -Force
 
-$zipPath = Join-Path $scriptDir "release\Hades2Coop-v0.2.1-TestBuild.zip"
+$zipPath = Join-Path $scriptDir "release\Hades2Coop-v0.2.2-TestBuild.zip"
 if (Test-Path -LiteralPath $zipPath) {
     Remove-Item -LiteralPath $zipPath -Force
 }
