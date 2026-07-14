@@ -3,7 +3,7 @@
 Add-Type -AssemblyName System.Windows.Forms
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$projectRoot = $scriptDir
+$projectRoot = Split-Path -Parent $scriptDir
 $gamePathFile = Join-Path $projectRoot ".gamepath"
 
 function Get-CMakePath {
@@ -57,6 +57,7 @@ function Find-ModExtensionDir {
     $candidates = @(
         (Join-Path $projectRoot "libs\hades2-mod-extension"),
         (Join-Path $projectRoot "..\hades2-mod-extension"),
+        (Join-Path $projectRoot "..\..\reference project\hades2-coop-procject\hades2-mod-extension"),
         (Join-Path $projectRoot "..\..\hades2-coop-procject\hades2-mod-extension")
     )
 
@@ -176,4 +177,4 @@ Write-Host "`nInstall complete." -ForegroundColor Green
 Write-Host "  $pluginsDir\HadesModNativeExtension.asi" -ForegroundColor White
 Write-Host "  $modsDir\TN_Core" -ForegroundColor White
 Write-Host "  $modsDir\TN_CoopMod" -ForegroundColor White
-Write-Host "`nFor later Lua-only updates, run: .\dev_deploy.ps1" -ForegroundColor Gray
+Write-Host "`nFor later Lua-only updates, run: .\scripts\dev_deploy.ps1" -ForegroundColor Gray

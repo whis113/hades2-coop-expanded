@@ -1,7 +1,8 @@
 ﻿$ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$buildDir = Join-Path $scriptDir "build_msvc"
+$projectRoot = Split-Path -Parent $scriptDir
+$buildDir = Join-Path $projectRoot "build_msvc"
 
 function Get-CMakePath {
     $command = Get-Command cmake -ErrorAction SilentlyContinue
@@ -35,7 +36,7 @@ Write-Host "Hades II Co-op Mod - build and deploy" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 Write-Host "`n[1/3] Configure CMake..." -ForegroundColor Yellow
-& $cmake -A x64 "$scriptDir" -B "$buildDir"
+& $cmake -A x64 "$projectRoot" -B "$buildDir"
 
 Write-Host "`n[2/3] Build install target..." -ForegroundColor Yellow
 & $cmake --build "$buildDir" --target install --config Release

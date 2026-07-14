@@ -10,7 +10,7 @@
 
 ```powershell
 cd E:\hades2coop\workplace\hades2-coop-expanded
-.\build_and_deploy.ps1
+.\scripts\build_and_deploy.ps1
 ```
 
 该脚本会配置 CMake、构建 Release、安装到 `bin\TN_CoopMod`，并把变更复制到：
@@ -22,7 +22,7 @@ E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod
 首次安装或环境检查使用：
 
 ```powershell
-.\install_all.ps1
+.\scripts\install_all.ps1
 ```
 
 ## 验证部署
@@ -41,7 +41,7 @@ Get-Item 'E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod\Hade
 
 ```powershell
 cd E:\hades2coop\workplace\hades2-coop-expanded
-.\watch_coop_debug.ps1
+.\scripts\watch_coop_debug.ps1
 ```
 
 完整日志文件：

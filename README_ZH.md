@@ -107,13 +107,13 @@ E:\SteamLibrary\steamapps\common\Hades II\Content\Mods\TN_CoopMod
 
 ```powershell
 cd E:\hades2coop\workplace\hades2-coop-expanded
-.\build_and_deploy.ps1
+.\scripts\build_and_deploy.ps1
 ```
 
 首次安装或完整环境检查可运行：
 
 ```powershell
-.\install_all.ps1
+.\scripts\install_all.ps1
 ```
 
 ## 快速开始
@@ -122,7 +122,7 @@ cd E:\hades2coop\workplace\hades2-coop-expanded
 
 ```powershell
 cd E:\hades2coop\workplace\hades2-coop-expanded
-.\build_and_deploy.ps1
+.\scripts\build_and_deploy.ps1
 ```
 
 2. 启动 Hades II。
@@ -159,10 +159,8 @@ workplace/hades2-coop-expanded/game/scripts/config.lua
 | `reference project/hades2-coop-procject/hades2-coop/` | 原版/参考 Hades II co-op 项目。 |
 | `reference project/hades2-coop-procject/hades2-engine-interface/` | Hades II 引擎逆向头文件。 |
 | `reference project/hades2-coop-procject/hades2-mod-extension/` | Hades II mod extension / framework。 |
-| `ARCHITECTURE.md` | 中英文架构说明 / Bilingual architecture notes. |
-| `TODO.md` | 当前任务列表。 |
-| `PROJECT_LOG.md` | 按日期记录的详细开发日志。 |
-| `SESSION_NOTES.md` | 下次继续 Codex session 的恢复记录。 |
+| `docs/ARCHITECTURE.md` | 中英文架构说明 / Bilingual architecture notes. |
+| `docs/PROJECT_LOG.md` | 按日期记录的详细开发日志。 |
 
 ## 术语与注意事项
 
@@ -208,7 +206,7 @@ workplace/hades2-coop-expanded/game/scripts/config.lua
 在当前目录执行脚本时需要加 `.\`：
 
 ```powershell
-.\build_and_deploy.ps1
+.\scripts\build_and_deploy.ps1
 ```
 
 ### `cmake` 无法识别
@@ -220,7 +218,7 @@ workplace/hades2-coop-expanded/game/scripts/config.lua
 重新运行：
 
 ```powershell
-.\build_and_deploy.ps1
+.\scripts\build_and_deploy.ps1
 ```
 
 并确认目标目录中 `Content\Mods\TN_CoopMod` 的文件时间已更新。
@@ -231,7 +229,7 @@ workplace/hades2-coop-expanded/game/scripts/config.lua
 
 ```powershell
 cd E:\hades2coop\workplace\hades2-coop-expanded
-.\watch_coop_debug.ps1
+.\scripts\watch_coop_debug.ps1
 ```
 
 终端会实时筛选奖励、原野/船区、月神 UI、泉水、NPC、死亡和 Boss 相关行；每行均带可读地点标签。`Ctrl+C` 停止。若需要游戏内面板，可把 `Debug.RuntimeMonitor` 改为 `true`。详细事件日志位于：
@@ -243,7 +241,7 @@ C:\Users\haoxu\Saved Games\Hades II\TN_CoopMod.log
 ## 贡献
 
 - 当前优先使用 issue/日志描述可复现问题：room name、encounter name/type、死亡玩家、存活玩家、是否 Boss 转阶段、奖励类型。
-- 提交代码前先运行 `.\build_and_deploy.ps1`。
+- 提交代码前先运行 `.\scripts\build_and_deploy.ps1`。
 - 不要直接修改参考项目；所有开发改动应进入 `workplace/hades2-coop-expanded/`。
 
 ## 许可证
@@ -269,7 +267,7 @@ workplace/hades2-coop-expanded/LICENSE.txt
 - 已验证 P1/P2 独立阿卡那编辑、持久化、重新读取、run 生效、死亡后保留和 Trait Tray 显示；共享的仅是原版解锁、等级和悟性进度。
 - 已验证审判与水晶雕像的 P2 临时加卡。实现复刻本体 `CombatLogic.Kill` 的单位条件，避免以房间名错误识别扎格列欧斯或精英遭遇。
 - 已修复同武器双锤子列表复制：P2 在自身 HeroContext 中使用独立同步随机槽生成候选；不同武器路径保持按各自武器池生成。
-- 已生成 `Hades2Coop-v0.2-TestBuild.zip`，内含自包含安装器、完整 Mod、MIT 许可证和双语 `TESTER_README.md`；测试说明要求保持 `TN_CoopMod.log` 的实时终端开启。
+- 已生成 `Hades2Coop-v0.2.2-TestBuild.zip`，内含自包含安装器、完整 Mod、MIT 许可证和双语 `TESTER_README.md`；测试说明要求保持 `TN_CoopMod.log` 的实时终端开启。
 
 ### 2026-07-13
 

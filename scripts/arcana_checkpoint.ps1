@@ -7,11 +7,12 @@ param(
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$checkpointDir = Join-Path $scriptDir "checkpoints\$CheckpointName"
+$projectRoot = Split-Path -Parent $scriptDir
+$checkpointDir = Join-Path $projectRoot "checkpoints\$CheckpointName"
 $sourceSnapshotDir = Join-Path $checkpointDir "source"
 $payloadSnapshotDir = Join-Path $checkpointDir "payload\TN_CoopMod"
-$currentPayloadDir = Join-Path $scriptDir "bin\TN_CoopMod"
-$gamePathFile = Join-Path $scriptDir ".gamepath"
+$currentPayloadDir = Join-Path $projectRoot "bin\TN_CoopMod"
+$gamePathFile = Join-Path $projectRoot ".gamepath"
 
 $arcanaSourceFiles = @(
     "game\scripts\config.lua",
@@ -30,7 +31,7 @@ $postCheckpointArcanaFiles = @(
 
 function Get-GameModDirectory {
     if (-not (Test-Path -LiteralPath $gamePathFile)) {
-        throw "Missing .gamepath. Run .\build_and_deploy.ps1 once before restoring the deployed Mod."
+        throw "Missing .gamepath. Run .\scripts\build_and_deploy.ps1 once before restoring the deployed Mod."
     }
 
     $gameExe = (Get-Content -LiteralPath $gamePathFile -Raw).Trim()
@@ -63,12 +64,12 @@ if ($Action -eq "Create") {
         throw "Checkpoint already exists: $checkpointDir"
     }
     if (-not (Test-Path -LiteralPath (Join-Path $currentPayloadDir "HadesCoopGame.dll"))) {
-        throw "Current Mod payload is missing. Run .\build_and_deploy.ps1 first."
+        throw "Current Mod payload is missing. Run .\scripts\build_and_deploy.ps1 first."
     }
 
     New-Item -ItemType Directory -Path $sourceSnapshotDir -Force | Out-Null
     foreach ($relativePath in $arcanaSourceFiles) {
-        $sourceFile = Join-Path $scriptDir $relativePath
+        $sourceFile = Join-Path $projectRoot $relativePath
         if (-not (Test-Path -LiteralPath $sourceFile)) {
             throw "Cannot checkpoint missing source file: $sourceFile"
         }
@@ -101,12 +102,12 @@ if (Get-Process -Name "Hades2" -ErrorAction SilentlyContinue) {
 
 foreach ($relativePath in $arcanaSourceFiles) {
     $snapshotFile = Join-Path $sourceSnapshotDir $relativePath
-    $destinationFile = Join-Path $scriptDir $relativePath
+    $destinationFile = Join-Path $projectRoot $relativePath
     New-Item -ItemType Directory -Path (Split-Path -Parent $destinationFile) -Force | Out-Null
     Copy-Item -LiteralPath $snapshotFile -Destination $destinationFile -Force
 }
 foreach ($relativePath in $postCheckpointArcanaFiles) {
-    $candidate = Join-Path $scriptDir $relativePath
+    $candidate = Join-Path $projectRoot $relativePath
     if (Test-Path -LiteralPath $candidate) {
         Remove-Item -LiteralPath $candidate -Force
     }

@@ -3,7 +3,8 @@
 Add-Type -AssemblyName System.Windows.Forms
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$gamePathFile = Join-Path $scriptDir ".gamepath"
+$projectRoot = Split-Path -Parent $scriptDir
+$gamePathFile = Join-Path $projectRoot ".gamepath"
 
 function Select-HadesExe {
     $browser = New-Object System.Windows.Forms.OpenFileDialog
@@ -33,8 +34,8 @@ function Get-HadesExePath {
 
 function Get-CoopOutputDir {
     $candidates = @(
-        (Join-Path $scriptDir "bin\TN_CoopMod"),
-        (Join-Path $scriptDir "build_msvc\bin\TN_CoopMod")
+        (Join-Path $projectRoot "bin\TN_CoopMod"),
+        (Join-Path $projectRoot "build_msvc\bin\TN_CoopMod")
     )
 
     foreach ($candidate in $candidates) {
@@ -43,7 +44,7 @@ function Get-CoopOutputDir {
         }
     }
 
-    throw "Co-op build output was not found. Run .\build_and_deploy.ps1 or cmake --build build_msvc --target install --config Release first."
+    throw "Co-op build output was not found. Run .\scripts\build_and_deploy.ps1 or cmake --build build_msvc --target install --config Release first."
 }
 
 $buildPath = Get-CoopOutputDir
@@ -56,7 +57,7 @@ Write-Host "Source: $buildPath" -ForegroundColor Gray
 Write-Host "Target: $modsDir" -ForegroundColor Gray
 
 if (-not (Test-Path -LiteralPath $modsDir)) {
-    throw "Target mod directory does not exist. Run .\install_all.ps1 first."
+    throw "Target mod directory does not exist. Run .\scripts\install_all.ps1 first."
 }
 
 Write-Host "`nCopying changed files..." -ForegroundColor Cyan

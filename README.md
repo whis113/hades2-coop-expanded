@@ -35,20 +35,20 @@ Still under test:
 
 ## Installation
 
-For external testing, use `release/Hades2Coop-v0.2-TestBuild.zip`.
+For external testing, use `release/Hades2Coop-v0.2.2-TestBuild.zip`.
 
 1. Extract the archive without separating `Hades2CoopInstaller.exe` from `TN_CoopMod`.
 2. Run `Hades2CoopInstaller.exe`.
 3. Select `<Hades II>\Ship\Hades2.exe`.
-4. Choose Install or Update. The installer only manages `<Hades II>\Content\Mods\TN_CoopMod`.
-5. Use Uninstall in the same installer to remove the mod payload.
+4. Choose Install or Update. The installer deploys the co-op mod and its required loader dependencies.
+5. Use Uninstall in the same installer to remove the `TN_CoopMod` payload; shared loader dependencies are retained to avoid breaking other mods.
 
 For development:
 
 ```powershell
 Set-Location E:\hades2coop\workplace\hades2-coop-expanded
-.\install_all.ps1
-.\build_and_deploy.ps1
+.\scripts\install_all.ps1
+.\scripts\build_and_deploy.ps1
 ```
 
 Use `install_all.ps1` for initial setup and `build_and_deploy.ps1` after every development change, including Lua-only changes.
@@ -66,14 +66,11 @@ Defect reports should include the route, room label, P1/P2 state, reproduction s
 ## Project Layout
 
 ```text
-workplace/hades2-coop-expanded/   Active C++ and Lua working copy
-reference project/                Upstream/reference projects; do not edit by default
-ARCHITECTURE.md                   English technical architecture
-ARCHITECTURE_ZH.md                Chinese technical architecture
-PROJECT_LOG.md                    English chronological project history
-PROJECT_LOG_ZH.md                 Chinese chronological project history
-TODO.md                           Current work and validation list
-SESSION_NOTES.md                  Session handoff notes
+game/                             C++ and Lua mod source
+scripts/                          Development, deployment, packaging, and log tools
+tools/                            Tester installer source
+docs/                             Architecture, deployment, tester, and project-history docs
+release/                          Locally generated tester packages (ignored by Git)
 ```
 
 ## Terminology
@@ -85,12 +82,12 @@ SESSION_NOTES.md                  Session handoff notes
 - `Rest Room`: the safe inter-layer room after a boss.
 - `Elite Room` / `Miniboss Room`: a stronger encounter, not necessarily a layer boss.
 
-See [`ARCHITECTURE.md`](ARCHITECTURE.md) for the full room naming table and architecture boundaries.
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full room naming table and architecture boundaries.
 
 ## Contribution
 
-Read [`AGENTS.md`](AGENTS.md), [`TODO.md`](TODO.md), and the architecture document before changing gameplay behavior. Keep code comments in Chinese and English, preserve upstream attribution, and update both language versions of affected documentation.
+Read the [architecture](docs/ARCHITECTURE.md) and [deployment guide](docs/DEPLOY.md) before changing gameplay behavior. Keep code comments in Chinese and English, preserve upstream attribution, and update both language versions of affected documentation.
 
 ## License
 
-See [`LICENSE`](workplace/hades2-coop-expanded/LICENSE).
+See [`LICENSE.txt`](LICENSE.txt).
