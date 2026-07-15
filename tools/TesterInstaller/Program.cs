@@ -21,6 +21,7 @@ internal sealed class InstallerForm : Form
     private const string NativeExtensionName = "HadesModNativeExtension.asi";
     private const string AsiLoaderName = "bink2w64.dll";
     private const string GameExecutableName = "Hades2.exe";
+    private const string EnemyScalerName = "Hades2CoopEnemyScaler.exe";
 
     private readonly TextBox gameExePathTextBox = new() { Dock = DockStyle.Fill };
     private readonly Label statusLabel = new() { AutoSize = true, MaximumSize = new Size(620, 0) };
@@ -114,6 +115,7 @@ internal sealed class InstallerForm : Form
 
         var payloadDirectory = Path.Combine(AppContext.BaseDirectory, ModFolderName);
         var dependenciesDirectory = Path.Combine(AppContext.BaseDirectory, DependenciesFolderName);
+        var enemyScalerSource = Path.Combine(AppContext.BaseDirectory, EnemyScalerName);
         if (!File.Exists(Path.Combine(payloadDirectory, "HadesCoopGame.dll")))
         {
             ShowError(Bilingual(
@@ -128,6 +130,13 @@ internal sealed class InstallerForm : Form
             ShowError(Bilingual(
                 "Incomplete package: required co-op dependencies are missing. Download the full test package again.",
                 "测试包不完整：缺少双人模式所需依赖。请重新下载完整测试包。"));
+            return;
+        }
+        if (!File.Exists(enemyScalerSource))
+        {
+            ShowError(Bilingual(
+                "Incomplete package: Hades2CoopEnemyScaler.exe is missing. Download the full test package again.",
+                "测试包不完整：缺少 Hades2CoopEnemyScaler.exe。请重新下载完整测试包。"));
             return;
         }
 
@@ -147,6 +156,7 @@ internal sealed class InstallerForm : Form
             DeleteDirectoryIfExists(backupDirectory);
             Directory.CreateDirectory(modsDirectory);
             InstallSharedDependencies(dependenciesDirectory, modsDirectory);
+            InstallEnemyScaler(enemyScalerSource, modsDirectory);
             CopyDirectory(payloadDirectory, stagingDirectory);
 
             if (Directory.Exists(targetModDirectory))
@@ -207,9 +217,10 @@ internal sealed class InstallerForm : Form
         {
             SetBusy(true, Bilingual("Uninstalling TN_CoopMod...", "正在卸载 TN_CoopMod..."));
             Directory.Delete(targetModDirectory, true);
+            RemoveEnemyScaler(Directory.GetParent(targetModDirectory)?.FullName);
             SetStatus(Bilingual(
-                "TN_CoopMod was removed. Shared TN_Core and loader files were kept.",
-                "TN_CoopMod 已卸载。共享 TN_Core 和加载器已保留。"), Color.DarkGreen);
+                "TN_CoopMod and the enemy HP tool were removed. Shared TN_Core and loader files were kept.",
+                "TN_CoopMod 和敌人生命工具已卸载。共享 TN_Core 和加载器已保留。"), Color.DarkGreen);
         }
         catch (Exception exception)
         {
@@ -359,6 +370,32 @@ internal sealed class InstallerForm : Form
         File.Copy(Path.Combine(dependenciesDirectory, AsiLoaderName), loaderDestination, true);
     }
 
+    private static void InstallEnemyScaler(string sourcePath, string modsDirectory)
+    {
+        var gameDirectory = Directory.GetParent(modsDirectory)?.Parent?.FullName
+            ?? throw new InvalidOperationException("Unable to determine the game directory / 无法确定游戏根目录。");
+        var destinationPath = Path.Combine(gameDirectory, "Ship", EnemyScalerName);
+
+        // The HP tool lives beside Hades2.exe so players can find it without reopening the package.
+        // 生命倍率工具放在 Hades2.exe 同目录，玩家无需重新打开压缩包即可使用。
+        File.Copy(sourcePath, destinationPath, true);
+    }
+
+    private static void RemoveEnemyScaler(string? modsDirectory)
+    {
+        var gameDirectory = modsDirectory is null ? null : Directory.GetParent(modsDirectory)?.Parent?.FullName;
+        if (gameDirectory is null)
+        {
+            return;
+        }
+
+        var scalerPath = Path.Combine(gameDirectory, "Ship", EnemyScalerName);
+        if (File.Exists(scalerPath))
+        {
+            File.Delete(scalerPath);
+        }
+    }
+
     private static void VerifyInstallation(string targetModDirectory, string modsDirectory)
     {
         var gameDirectory = Directory.GetParent(modsDirectory)?.Parent?.FullName
@@ -369,6 +406,7 @@ internal sealed class InstallerForm : Form
             Path.Combine(targetModDirectory, "HadesCoopGame.dll"),
             Path.Combine(modsDirectory, CoreFolderName, "init.lua"),
             Path.Combine(shipDirectory, "plugins", NativeExtensionName),
+            Path.Combine(shipDirectory, EnemyScalerName),
         };
         if (!Directory.Exists(Path.Combine(shipDirectory, "ReturnOfModding")))
         {

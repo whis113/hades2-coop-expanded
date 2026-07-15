@@ -12,3 +12,4 @@ tools/**/obj/
 release/*-TestBuild/
 release/*.zip
 checkpoints/
+trashbin/

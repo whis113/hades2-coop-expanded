@@ -4,6 +4,27 @@ Chinese version: [`PROJECT_LOG_ZH.md`](PROJECT_LOG_ZH.md).
 
 > This log records gameplay development, investigations, tests, and releases. Documentation-only changes and workspace path migrations are intentionally excluded. Historical file paths and retired approaches are retained only when needed to explain a technical decision.
 
+## 2026-07-15
+
+### Arcana Progression Safeguard
+
+- Disabled `ArcanaFullUnlockRepair` and `ArcanaMaxLevelRepair` after regression testing confirmed that independent P1/P2 Arcana loadouts and runtime effects remain functional.
+- The extension now leaves native shared Arcana unlocks, card levels, grasp, tutorial state, and resources unchanged. The compatibility module and hook chain remain loaded because removing them caused save-load failures and prevented P2 creation.
+
+### Co-op Enemy Health Scaling
+
+- Located the native shared health path: enemy templates live in `EnemyData`, while `RoomLogic.SetupUnit()` applies native Elite and Shrine modifiers before assigning `unit.MaxHealth` and `unit.Health`.
+- Added a co-op-only post-`SetupUnit()` hook that scales hostile enemy health after native modifiers. Default multiplier: `1.5x`; neutral, charmed, and allied units are excluded.
+- Added `Hades2CoopEnemyScaler.exe`, which updates only the installed mod's `TN_CoopMod/config.lua` after the user selects `Ship/Hades2.exe`.
+
+### v0.2.3 External Test Package
+
+- Packaged v0.2.3 with the self-contained installer, full mod payload, `Hades2CoopEnemyScaler.exe`, and a package-root bilingual `README.md`.
+- The installer deploys the health-scaling tool to `<Hades II>\Ship\Hades2CoopEnemyScaler.exe` and removes it on uninstall.
+- Added bilingual package-root reminder files directing testers to read `README.md` before installation.
+- Replaced the self-contained .NET HP tool with a native Win32 executable, preserving the English file-picker UI while reducing the tool to about 351 KiB.
+- Package SHA-256: `80632434633D429D83BA48626779D3DAC55850AD341C2B09DA4974F9182F0056`.
+
 ## 2026-07-14
 
 ### v0.2 Release and Independent Arcana
@@ -17,7 +38,7 @@ Chinese version: [`PROJECT_LOG_ZH.md`](PROJECT_LOG_ZH.md).
 ### Regression State
 
 - Boss-to-Rest revival, reward duplication, special-boss compatibility, independent keepsakes, fountains, and broad local two-player gameplay remain verified.
-- Remaining work: remove legacy Arcana recovery switches safely, refresh Hub HP/MP immediately after a run, cover `F_PreBoss` Zagreus rewards, and verify Fields `TalentDrop` plus rare NPC/event paths.
+- Remaining work: refresh Hub HP/MP immediately after a run, cover `F_PreBoss` Zagreus rewards, and verify Fields `TalentDrop` plus rare NPC/event paths.
 
 ## 2026-07-13
 

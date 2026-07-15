@@ -3,13 +3,15 @@ $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $projectRoot = Split-Path -Parent $scriptDir
 $installerProject = Join-Path $projectRoot "tools\TesterInstaller\Hades2CoopInstaller.csproj"
+$enemyScalerBuildScript = Join-Path $projectRoot "scripts\build_enemy_scaler.ps1"
 $modSource = Join-Path $projectRoot "bin\TN_CoopMod"
 $modExtensionRoot = Join-Path $projectRoot "..\..\reference project\hades2-coop-procject\hades2-mod-extension"
 $modExtensionBin = Join-Path $modExtensionRoot "bin"
 $coreSource = Join-Path $modExtensionBin "TN_Core"
 $nativeExtensionSource = Join-Path $modExtensionBin "HadesModNativeExtension.asi"
-$releaseDir = Join-Path $projectRoot "release\Hades2Coop-v0.2.2-TestBuild"
+$releaseDir = Join-Path $projectRoot "release\Hades2Coop-v0.2.3-TestBuild"
 $publishDir = Join-Path $projectRoot "tools\TesterInstaller\bin\Release\net8.0-windows\win-x64\publish"
+$enemyScalerOutput = Join-Path $projectRoot "tools\EnemyScalerNative\bin\Hades2CoopEnemyScaler.exe"
 $asiLoaderUrl = "https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases/download/x64-latest/bink2w64-x64.zip"
 
 if (-not (Test-Path -LiteralPath (Join-Path $modSource "HadesCoopGame.dll"))) {
@@ -28,6 +30,9 @@ if ($LASTEXITCODE -ne 0) {
     throw "Installer publish failed with exit code $LASTEXITCODE"
 }
 
+Write-Host "Building native enemy HP tool..." -ForegroundColor Cyan
+& $enemyScalerBuildScript
+
 Write-Host "Creating tester package..." -ForegroundColor Cyan
 if (Test-Path -LiteralPath $releaseDir) {
     Remove-Item -LiteralPath $releaseDir -Recurse -Force
@@ -35,6 +40,7 @@ if (Test-Path -LiteralPath $releaseDir) {
 New-Item -ItemType Directory -Path $releaseDir -Force | Out-Null
 
 Copy-Item -LiteralPath (Join-Path $publishDir "Hades2CoopInstaller.exe") -Destination $releaseDir -Force
+Copy-Item -LiteralPath $enemyScalerOutput -Destination $releaseDir -Force
 Copy-Item -LiteralPath $modSource -Destination (Join-Path $releaseDir "TN_CoopMod") -Recurse -Force
 New-Item -ItemType Directory -Path (Join-Path $releaseDir "Dependencies") -Force | Out-Null
 Copy-Item -LiteralPath $coreSource -Destination (Join-Path $releaseDir "Dependencies\TN_Core") -Recurse -Force
@@ -54,10 +60,11 @@ Copy-Item -LiteralPath $loaderSource.FullName -Destination (Join-Path $releaseDi
 Remove-Item -LiteralPath $loaderZip -Force
 Remove-Item -LiteralPath $loaderExtract -Recurse -Force
 
-Copy-Item -LiteralPath (Join-Path $projectRoot "docs\TESTER_README.md") -Destination $releaseDir -Force
+Copy-Item -LiteralPath (Join-Path $projectRoot "docs\RELEASE_README.md") -Destination (Join-Path $releaseDir "README.md") -Force
+Copy-Item -Path (Join-Path $projectRoot "docs\*.txt") -Destination $releaseDir -Force
 Copy-Item -LiteralPath (Join-Path $projectRoot "LICENSE.txt") -Destination $releaseDir -Force
 
-$zipPath = Join-Path $projectRoot "release\Hades2Coop-v0.2.2-TestBuild.zip"
+$zipPath = Join-Path $projectRoot "release\Hades2Coop-v0.2.3-TestBuild.zip"
 if (Test-Path -LiteralPath $zipPath) {
     Remove-Item -LiteralPath $zipPath -Force
 }

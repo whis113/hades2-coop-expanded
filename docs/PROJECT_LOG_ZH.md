@@ -6,6 +6,27 @@
 
 本日志的英文版本为 [`PROJECT_LOG.md`](PROJECT_LOG.md)。只记录功能开发、问题定位、测试结果和发布；文档同步及路径迁移不记录。历史路径和已废弃方案只在解释技术决策时保留。
 
+## 2026-07-15
+
+### 阿卡那进度保护：已验证
+
+- 实测关闭 `ArcanaFullUnlockRepair` 与 `ArcanaMaxLevelRepair` 后，P1/P2 独立阿卡那预设及运行时效果保持正常。
+- 扩展不再改写原版共享的阿卡那解锁、等级、悟性、教程状态或资源。为保持兼容性，仍保留 `GameStateEx` 模块与 Hook 调用链；此前直接移除会导致读取存档报错且 P2 无法创建。
+
+### Co-op 敌人生命倍率：待实机验证
+
+- 已定位本体统一生命值入口：敌人模板位于 `EnemyData`，`RoomLogic.SetupUnit()` 会在完成原版精英与誓约修正后写入 `unit.MaxHealth` 和 `unit.Health`。
+- 新增仅在 Co-op 模式加载的 `SetupUnit()` 后置 Hook，默认将敌对单位生命值乘以 `1.5`；中立、魅惑和友方单位不受影响。
+- 新增 `Hades2CoopEnemyScaler.exe`，用户选择 `Ship/Hades2.exe` 后可修改已安装 Mod 的 `TN_CoopMod/config.lua`，不会改写游戏本体或存档。
+
+### v0.2.3 外部测试包 / v0.2.3 External Test Package
+
+- 已生成 v0.2.3：包含自包含安装器、完整 Mod、`Hades2CoopEnemyScaler.exe` 和发布包根目录的中英文 `README.md`。
+- 安装器会将敌人生命值工具部署到 `<Hades II>\Ship\Hades2CoopEnemyScaler.exe`，卸载时一并移除。
+- 发布包根目录新增中英文提醒文件，要求测试者安装前阅读 `README.md`。
+- 敌人生命值工具已替换为原生 Win32 EXE，保留英文文件选择界面，体积约为 351 KiB。
+- 包 SHA-256：`80632434633D429D83BA48626779D3DAC55850AD341C2B09DA4974F9182F0056`。
+
 ## 2026-07-14
 
 ### v0.2 测试包、独立阿卡那与锤子候选：已验证并发布 / v0.2 Test Package, Independent Arcana, and Hammer Choices: Verified and Released

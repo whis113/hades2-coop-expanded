@@ -15,11 +15,12 @@ The upstream `hades2-coop` project provides the local P1/P2 framework: player cr
 
 This workspace owns gameplay extensions: boss-to-rest revival, death handling, independent keepsakes and Arcana loadouts, duplicated rewards, special-boss/menu compatibility, and diagnostics. Do not attribute the inherited framework to this extension.
 
-## v0.2 Status
+## v0.2.3 Status
 
 Verified:
 
 - P1/P2 independent Arcana loadouts, including separate configurations in the same layout slot. Native unlocks, card levels, and grasp progression remain shared.
+- Legacy Arcana unlock/max-level recovery switches are disabled after regression testing. Native shared Arcana progression is no longer modified by the co-op extension.
 - Per-player temporary Arcana cards from Judgment and Circe's Crystal Figurine.
 - Independent keepsake changes, one Rest Room rack use per player, and two fountain uses.
 - A surviving player can continue after the other dies; the dead player revives after the layer boss and the following Rest Room.
@@ -28,20 +29,20 @@ Verified:
 
 Still under test:
 
+- Co-op-only hostile-enemy health scaling defaults to `1.5x`; `Hades2CoopEnemyScaler.exe`, installed to `<Hades II>\Ship`, can change the installed mod's multiplier.
 - Hub HP/MP HUD does not always refresh immediately after a run.
 - Zagreus challenge rewards generated in `F_PreBoss` are not yet duplicated.
 - Fields `TalentDrop` and rare NPC/event combinations need external regression coverage.
-- Legacy Arcana unlock/max-level recovery switches must be removed without affecting partial-progress saves.
 
 ## Installation
 
-For external testing, use `release/Hades2Coop-v0.2.2-TestBuild.zip`.
+For external testing, use `release/Hades2Coop-v0.2.3-TestBuild.zip`.
 
-1. Extract the archive without separating `Hades2CoopInstaller.exe` from `TN_CoopMod`.
+1. Read the package-root `README.md`, then extract the archive without separating `Hades2CoopInstaller.exe` from `TN_CoopMod`.
 2. Run `Hades2CoopInstaller.exe`.
 3. Select `<Hades II>\Ship\Hades2.exe`.
 4. Choose Install or Update. The installer deploys the co-op mod and its required loader dependencies.
-5. Use Uninstall in the same installer to remove the `TN_CoopMod` payload; shared loader dependencies are retained to avoid breaking other mods.
+5. Use Uninstall in the same installer to remove the `TN_CoopMod` payload and `Ship\Hades2CoopEnemyScaler.exe`; shared loader dependencies are retained to avoid breaking other mods.
 
 For development:
 

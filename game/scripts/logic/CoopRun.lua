@@ -27,6 +27,10 @@ local UIHooks = ModRequire "../hooks/UIHooks.lua"
 ---@class CoopRun
 local CoopRun = {}
 
+-- Boss-to-Rest revival restores a fallen player at 30% of their retained maximum health.
+-- Boss 后进入 Rest Room 的复活会保留最大生命，并以 30% 当前生命复活。
+local BossRestReviveHealthFraction = 0.30
+
 function CoopRun.Init()
     Events.run:on("newRunStarted", CoopRun.OnRunStarted)
     Events.run:on("mapLoaded", CoopRun.OnMapLoaded)
@@ -111,7 +115,8 @@ end
 
 function CoopRun.ReviveHeroForNextRoom(hero)
     hero.IsDead = false
-    hero.Health = hero.MaxHealth or 50
+    local maxHealth = hero.MaxHealth or 50
+    hero.Health = math.max(1, math.ceil(maxHealth * BossRestReviveHealthFraction))
 
     -- 死亡玩家在战斗中只透明/锁输入，不删除单位。
     -- Dead co-op heroes are made invisible/input-locked during combat instead of deleting their units.
@@ -127,6 +132,16 @@ function CoopRun.ReviveHeroForNextRoom(hero)
     end
     StopCurrentStatusAnimation(hero)
     hero.BlockStatusAnimations = true
+
+    if CoopAppendTraceLog then
+        CoopAppendTraceLog(string.format(
+            "[CoopReviveTrace] player=P%s health=%s/%s fraction=%.2f",
+            tostring(playerId),
+            tostring(hero.Health),
+            tostring(maxHealth),
+            BossRestReviveHealthFraction
+        ))
+    end
 end
 
 ---@private

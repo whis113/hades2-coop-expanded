@@ -20,6 +20,14 @@ local Config = {
     StartingBoonDoubleRewards = true,
     -- 扩展 Elite、无 Encounter 关键奖励、Chaos 和事件房的双奖励。 / Enables expanded double rewards for Elite, encounterless, Chaos, and event rooms.
     ExpandedRoomDoubleRewards = true,
+    EnemyScaling = {
+        -- Apply after native enemy, Elite, and Shrine health calculations.
+        -- 在原版敌人、精英和誓约生命值计算完成后应用。
+        Enabled = true,
+        -- Default co-op balance: all hostile enemy health is multiplied by 1.5.
+        -- 默认双人平衡：所有敌对单位生命值乘以 1.5。
+        HealthMultiplier = 1.5,
+    },
     Player1HasOutline = true;
     Player1Outline = {
         R = 0,
@@ -62,8 +70,11 @@ local Config = {
         RuntimeMonitor = false,
         -- 面板刷新间隔（秒）。 / Monitor refresh interval in seconds.
         RuntimeMonitorInterval = 0.25,
-        ArcanaFullUnlockRepair = true,
-        ArcanaMaxLevelRepair = true,
+        -- Log native and scaled enemy health when validating balance changes.
+        -- 验证平衡改动时记录原版与倍率后的敌人生命值。
+        EnemyScalingTrace = false,
+        ArcanaFullUnlockRepair = false,
+        ArcanaMaxLevelRepair = false,
         -- Audit shared permanent Arcana state and the isolated P2 loadout data.
         -- 审计共享的永久阿卡那状态与隔离的 P2 预设数据。
         ArcanaLoadoutAudit = true,

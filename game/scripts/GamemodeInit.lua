@@ -39,6 +39,7 @@ function Gamemode.RegisterHooks()
     HookStorage.Add "hooks/MenuHooks.lua"
     HookStorage.Add "hooks/SaveHooks.lua"
     HookStorage.Add "hooks/EnemyAiHooks.lua"
+    HookStorage.Add "hooks/EnemyScalingHooks.lua"
     HookStorage.Add "hooks/LootHooks.lua"
     HookStorage.Add "hooks/UpgradeChoiceHooks.lua"
     HookStorage.Add "hooks/UIHooks.lua"
