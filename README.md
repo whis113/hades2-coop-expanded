@@ -54,6 +54,12 @@ Set-Location 'C:\path\to\hades2-coop-expanded'
 
 Use `install_all.ps1` for initial setup and `build_and_deploy.ps1` after every development change, including Lua-only changes.
 
+To remove the development Mod payload while retaining shared loader dependencies and save data:
+
+```powershell
+.\scripts\uninstall_mod.ps1
+```
+
 ## Tester Quick Start
 
 Run the game in co-op mode and keep the mod log open in a separate PowerShell terminal:
