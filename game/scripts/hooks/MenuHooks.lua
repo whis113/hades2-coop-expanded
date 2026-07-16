@@ -26,6 +26,7 @@ local InteractLogicHooks = ModRequire "InteractLogicHooks.lua"
 
 ---@class MenuHooks : SimpleHook
 local MenuHooks = SimpleHook.New()
+local ENABLE_COOP_SPELL_UI_TRACE = false
 
 ---@private
 MenuHooks.ActiveKeepsakeRackPlayerId = nil
@@ -128,7 +129,8 @@ end
 ---Logs menu context only for Selene selection screens.
 ---仅记录月神选择菜单的玩家上下文。
 local function TraceSpellMenu(stage, funName, playerId, args)
-    if funName ~= "OpenSpellScreen" and funName ~= "OpenTalentScreen" then
+    if not ENABLE_COOP_SPELL_UI_TRACE
+        or (funName ~= "OpenSpellScreen" and funName ~= "OpenTalentScreen") then
         return
     end
 

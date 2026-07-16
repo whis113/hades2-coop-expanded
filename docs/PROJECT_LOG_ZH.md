@@ -6,6 +6,15 @@
 
 本日志的英文版本为 [`PROJECT_LOG.md`](PROJECT_LOG.md)。只记录功能开发、问题定位、测试结果和发布；文档同步及路径迁移不记录。历史路径和已废弃方案只在解释技术决策时保留。
 
+## 2026-07-17
+
+### v0.2.4 过门基础 MP 回满：已实机确认
+
+- 已实机确认：任一存活玩家过门时，P1/P2 都会按各自可用 MP 上限执行原版回满；不需要装备阿卡那或道具。
+- `RunHooks.pre.LeaveRoom` 仅截获原版 `LeaveRoom` 中唯一一次 `RefillMana()`，再在每名存活玩家的 `HeroContext` 各执行一次原版函数；死亡 hero 明确不参与。
+- `[CoopDoorManaTrace]` 每次 Transition 仅输出一条 MP 前后对比，且只用于本次诊断；它与 `CheckChamberTraits()` 的房间推进阿卡那效果相互独立。
+- 为集中测试日志，`CoopSpellUiTrace` 和 `CoopArcanaAudit` 已暂时关闭。
+
 ## 2026-07-15
 
 ### 阿卡那进度保护：已验证

@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(MSVC)
+    # 使用 UTF-8 解析源文件并执行字符集，避免中文注释受系统代码页影响。 / Parse source files and use UTF-8 execution charset to avoid system-code-page issues with Chinese comments.
+    add_compile_options(/utf-8)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 

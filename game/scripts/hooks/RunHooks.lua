@@ -464,6 +464,35 @@ end
 
 function RunHooks.pre.LeaveRoom(currentRun, door)
     Events.run:trigger("roomPreLeave", currentRun, door)
+
+    local previousRoomName = currentRun and currentRun.CurrentRoom and currentRun.CurrentRoom.Name
+    local nextRoomName = door and door.Room and door.Room.Name
+    -- 原版 LeaveRoom 只为当前开门英雄调用一次 RefillMana；将这一次基础过门补蓝分发给所有存活英雄。
+    -- Native LeaveRoom calls RefillMana once for only the door owner; fan out this one base door refill to every alive hero.
+    HookUtils.wrapOnce("RefillMana", function(baseFun)
+        local manaBefore = {}
+        local aliveHeroes = CoopPlayers.GetAliveHeroes()
+        for _, hero in ipairs(aliveHeroes) do
+            manaBefore[hero] = hero.Mana
+            HeroContext.RunWithHeroContextAwait(hero, baseFun)
+        end
+
+        if CoopAppendTraceLog then
+            local playerStates = {}
+            for _, hero in ipairs(aliveHeroes) do
+                local playerId = CoopPlayers.GetPlayerByHero(hero)
+                table.insert(playerStates, string.format(
+                    "P%s{%s->%s/%s}",
+                    tostring(playerId),
+                    tostring(manaBefore[hero]),
+                    tostring(hero.Mana),
+                    tostring(hero.MaxMana)
+                ))
+            end
+            CoopAppendTraceLog("[CoopDoorManaTrace] from=" .. tostring(previousRoomName) ..
+                " to=" .. tostring(nextRoomName) .. " " .. table.concat(playerStates, " "))
+        end
+    end)
 end
 
 function RunHooks.post.RestoreUnlockRoomExits()

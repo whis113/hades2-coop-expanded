@@ -4,6 +4,15 @@ Chinese version: [`PROJECT_LOG_ZH.md`](PROJECT_LOG_ZH.md).
 
 > This log records gameplay development, investigations, tests, and releases. Documentation-only changes and workspace path migrations are intentionally excluded. Historical file paths and retired approaches are retained only when needed to explain a technical decision.
 
+## 2026-07-17
+
+### v0.2.4 Door-Transition Base Mana Refill
+
+- Verified in-game: when either living player uses a door, P1 and P2 each refill to their own available mana maximum without requiring an Arcana card or item.
+- `RunHooks.pre.LeaveRoom` intercepts only the native `LeaveRoom` call's single `RefillMana()` invocation, then runs the native function once per living `HeroContext`. Dead heroes are intentionally excluded.
+- `[CoopDoorManaTrace]` emits one before/after mana record per Transition for this fix. It is diagnostic-only and separate from `CheckChamberTraits()` room-progress Arcana behavior.
+- `CoopSpellUiTrace` and `CoopArcanaAudit` are temporarily disabled to keep tester logs focused.
+
 ## 2026-07-15
 
 ### Arcana Progression Safeguard

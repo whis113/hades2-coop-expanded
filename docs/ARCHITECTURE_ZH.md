@@ -65,6 +65,17 @@ Hades II
 - P2 Spell HUD 只能修改 P2 自己的组件，避免销毁被本体复用为 P1 HUD 的 anchor。
 - 当前主要风险是 Hub HP/MP 延迟刷新、`F_PreBoss` 扎格列欧斯奖励、原野 `TalentDrop` 和罕见 NPC/事件组合。
 
+## 过门基础 MP 回满
+
+原版在 `LeaveRoom` 内通过一次 `RefillMana()` 执行过门回蓝；单人语义下它只作用于当前 hero。
+
+- `RunHooks.pre.LeaveRoom` 只对这一次原版过门调用做单次截获，再在每名存活玩家的 `HeroContext` 中各执行一次原版函数。
+- 这会恢复 P1/P2 按各自可用 MP 上限回满的基础行为；不是新增被动回蓝，也不改变其他 `RefillMana()` 调用点。
+- 死亡 hero 不参与；`[CoopDoorManaTrace]` 每次 Transition 只记录一条前后 MP 诊断。
+- 此行为与 `TraitHooks.CheckChamberTraits()` 的房间推进阿卡那处理相互独立。
+
 ## 网络方向
 
 当前优先级是稳定本地双人。网络 co-op 必须等奖励、死亡、过门、UI 与特殊 Boss 流程稳定后再启动。
+
+上述本地 `LeaveRoom` 重放属于同进程 HeroContext 适配，不是跨端同步协议。Network Lab 必须另行定义明确的所有权和可靠的 Transition/状态消息，不能把本地重放直接复用于远程同步。

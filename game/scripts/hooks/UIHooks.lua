@@ -24,6 +24,7 @@ local HeroContextProxySpliterStore = ModRequire "../logic/HeroContextProxySplite
 
 ---@class UIHooks : SimpleHook
 local UIHooks = SimpleHook.New()
+local ENABLE_COOP_SPELL_UI_TRACE = false
 
 ---@private
 ---Returns one player's separated HUD data even when the current hero context belongs to the other player.
@@ -113,7 +114,7 @@ end
 ---Writes a compact snapshot of the P2 spell HUD state without changing UI ownership or layout.
 ---记录 P2 月神 HUD 的紧凑快照，不修改 UI 归属或布局。
 local function TracePlayerSpellUi(stage, playerId, trait)
-    if playerId ~= 2 then
+    if not ENABLE_COOP_SPELL_UI_TRACE or playerId ~= 2 then
         return
     end
 

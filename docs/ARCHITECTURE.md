@@ -193,7 +193,7 @@ This is a current-extension boss compatibility fix, not an original-project co-o
 ### First External Test Delivery
 
 - `tools/TesterInstaller` contains the self-contained Windows installer source.
-- `build_tester_package.ps1` publishes `Hades2CoopInstaller.exe`, packages the current `TN_CoopMod` payload, and creates `release/Hades2Coop-v0.2-TestBuild.zip`.
+- `build_tester_package.ps1` publishes `Hades2CoopInstaller.exe`, packages the current `TN_CoopMod` payload, and creates `release/Hades2Coop-v0.2.4-TestBuild.zip`.
 - The installer receives a selected `Ship/Hades2.exe` path and only manages `Content/Mods/TN_CoopMod`; it does not modify native game scripts or save data.
 
 Issue fixed:
@@ -226,6 +226,15 @@ Awaiting verification:
 
 - Both alive players should gain room-progress effects when one alive player uses a door.
 - Dead players should not gain these effects until revived.
+
+### Door-Transition Base Mana Refill
+
+The game normally refills mana from `LeaveRoom` through one native `RefillMana()` call. In local co-op, that native call otherwise applies only to the active hero.
+
+- `RunHooks.pre.LeaveRoom` uses a one-call interception only for that native door-transition refill, then runs the native function once in every living player's `HeroContext`.
+- This restores base P1/P2 mana refill to each player's available mana maximum. It neither adds a new regeneration mechanic nor changes other `RefillMana()` call sites.
+- Dead heroes are excluded. `[CoopDoorManaTrace]` records one diagnostic before/after line per Transition.
+- This behavior is separate from `TraitHooks.CheckChamberTraits()` room-progress Arcana handling.
 
 ## Known Risks
 
@@ -269,6 +278,8 @@ Likely files to inspect:
 ## Network Direction
 
 Network co-op remains a later-stage goal. Do not start network architecture changes until local two-player behavior is stable.
+
+The local `LeaveRoom` replay above is a same-process HeroContext adaptation, not a cross-client synchronization protocol. Network Lab work must define explicit ownership and reliable transition/state messages rather than reusing this local replay as remote synchronization.
 
 When returning to networking, prefer:
 

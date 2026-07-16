@@ -1,4 +1,4 @@
-# Hades II Co-op Expansion v0.2.3
+# Hades II Co-op Expansion v0.2.4
 
 Local two-player co-op expansion for Hades II. This package extends the upstream `hades2-coop` local co-op framework with gameplay rules, reward handling, and compatibility fixes for a full roguelike run.
 
@@ -27,14 +27,13 @@ The upstream `hades2-coop` project provides the local P1/P2 framework. This expa
 - Per-player temporary Arcana effects from Judgment and Circe's Crystal Figurine.
 - Broad dual-reward support for normal rooms, Elite rooms, Chaos, Fields, ship-wheel rewards, and most NPC/event paths. The second god boon is independently generated; hammer choices use each player's weapon pool.
 - Death, Boss, menu, spell HUD, and Chronos/Prometheus compatibility fixes.
+- Native door-transition base mana refill for both living players, without requiring an Arcana card or item.
 - Co-op-only hostile enemy HP scaling. The default is `1.5x`; use `Ship\Hades2CoopEnemyScaler.exe` while the game is closed to change it.
 
-## Changes Since v0.2.2
+## Changes Since v0.2.3
 
-- Added Co-op-only enemy HP scaling with a default `1.5x` multiplier and the `Hades2CoopEnemyScaler.exe` configuration tool.
-- Changed Boss-to-Rest Room revival from full HP to 30% of the revived player's maximum HP.
-- Disabled the legacy Arcana full-unlock and max-level recovery switches. Native shared Arcana progression is no longer modified by the expansion.
-- Preserved independent P1/P2 Arcana loadouts and verified Judgment and Crystal Figurine temporary cards remain player-specific.
+- Restored the game's normal door-transition mana refill for both living players. The native refill runs once in each living player's context, reaches that player's available mana maximum, and excludes dead players.
+- Added one transition-scoped `[CoopDoorManaTrace]` line for before/after mana diagnostics. It is not a passive regeneration trace and is independent of room-progress Arcana handling.
 
 ## Important Notes
 
@@ -69,7 +68,7 @@ Fully exit Hades II, run `Hades2CoopInstaller.exe`, select the same executable, 
 
 ---
 
-# Hades II Co-op Expansion v0.2.3（中文）
+# Hades II Co-op Expansion v0.2.4（中文）
 
 这是一个 Hades II 本地双人扩展包。在原项目 `hades2-coop` 提供的 P1/P2 本地双人框架基础上，本扩展加入了更适合完整肉鸽流程的玩法规则、奖励处理和兼容性修复。
 
@@ -100,12 +99,10 @@ Fully exit Hades II, run `Hades2CoopInstaller.exe`, select the same executable, 
 - 死亡、Boss、菜单、月神 HUD，以及 Chronos/Prometheus 流程的兼容性修复。
 - 仅 Co-op 生效的敌对单位生命倍率。默认 `1.5x`；游戏关闭时可使用 `Ship\Hades2CoopEnemyScaler.exe` 调整。
 
-## 相较 v0.2.2 的更新
+## 相较 v0.2.3 的更新
 
-- 新增仅 Co-op 生效的敌人生命倍率，默认 `1.5x`，并提供 `Hades2CoopEnemyScaler.exe` 调整工具。
-- 区域守卫后进入 Rest Room 的复活由满血改为恢复至该玩家最大生命的 30%。
-- 关闭旧版阿卡那全解锁/满级救援开关；本扩展不再改写原版共享的阿卡那进度。
-- 保留并验证 P1/P2 独立阿卡那预设，以及审判和水晶雕像临时加卡的玩家隔离。
+- 已恢复原版过门基础 MP 回满：任一存活玩家过门时，P1/P2 都会在各自上下文执行一次原版回满，达到各自可用 MP 上限；不依赖阿卡那或道具，死亡玩家不参与。
+- 每次 Transition 新增一条 `[CoopDoorManaTrace]` MP 前后诊断。它不是被动回蓝监测，并与房间推进阿卡那逻辑独立。
 
 ## 注意事项
 
@@ -131,6 +128,8 @@ Fully exit Hades II, run `Hades2CoopInstaller.exe`, select the same executable, 
 ```powershell
 Get-Content "$env:USERPROFILE\Saved Games\Hades II\TN_CoopMod.log" -Wait
 ```
+
+`CoopDoorManaTrace` 只在过门时输出一次。为保持测试日志聚焦，`CoopSpellUiTrace` 与 `CoopArcanaAudit` 当前暂时关闭。
 
 反馈问题时请提供路线、房间标签、P1/P2 状态、复现步骤、截图或视频，以及相关日志行。
 

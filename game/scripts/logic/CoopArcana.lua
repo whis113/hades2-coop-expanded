@@ -5,6 +5,7 @@
 
 ---@class CoopArcana
 local CoopArcana = {}
+local ENABLE_COOP_ARCANA_AUDIT = false
 
 ---@type CoopModConfig
 local Config = ModRequire "../config.lua"
@@ -83,7 +84,7 @@ local function BuildSavedLayoutsView(playerId, layoutCount)
 end
 
 local function TraceAudit(stage)
-    if not Config.Debug.ArcanaLoadoutAudit then
+    if not ENABLE_COOP_ARCANA_AUDIT or not Config.Debug.ArcanaLoadoutAudit then
         return
     end
 

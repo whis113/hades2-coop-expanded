@@ -9,7 +9,7 @@ $modExtensionRoot = Join-Path $projectRoot "..\..\reference project\hades2-coop-
 $modExtensionBin = Join-Path $modExtensionRoot "bin"
 $coreSource = Join-Path $modExtensionBin "TN_Core"
 $nativeExtensionSource = Join-Path $modExtensionBin "HadesModNativeExtension.asi"
-$releaseDir = Join-Path $projectRoot "release\Hades2Coop-v0.2.3-TestBuild"
+$releaseDir = Join-Path $projectRoot "release\Hades2Coop-v0.2.4-TestBuild"
 $publishDir = Join-Path $projectRoot "tools\TesterInstaller\bin\Release\net8.0-windows\win-x64\publish"
 $enemyScalerOutput = Join-Path $projectRoot "tools\EnemyScalerNative\bin\Hades2CoopEnemyScaler.exe"
 $asiLoaderUrl = "https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases/download/x64-latest/bink2w64-x64.zip"
@@ -64,7 +64,7 @@ Copy-Item -LiteralPath (Join-Path $projectRoot "docs\RELEASE_README.md") -Destin
 Copy-Item -Path (Join-Path $projectRoot "docs\*.txt") -Destination $releaseDir -Force
 Copy-Item -LiteralPath (Join-Path $projectRoot "LICENSE.txt") -Destination $releaseDir -Force
 
-$zipPath = Join-Path $projectRoot "release\Hades2Coop-v0.2.3-TestBuild.zip"
+$zipPath = Join-Path $projectRoot "release\Hades2Coop-v0.2.4-TestBuild.zip"
 if (Test-Path -LiteralPath $zipPath) {
     Remove-Item -LiteralPath $zipPath -Force
 }

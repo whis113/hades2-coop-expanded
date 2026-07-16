@@ -15,7 +15,7 @@ The upstream `hades2-coop` project provides the local P1/P2 framework: player cr
 
 This workspace owns gameplay extensions: boss-to-rest revival, death handling, independent keepsakes and Arcana loadouts, duplicated rewards, special-boss/menu compatibility, and diagnostics. Do not attribute the inherited framework to this extension.
 
-## v0.2.3 Status
+## v0.2.4 Status
 
 Verified:
 
@@ -26,6 +26,7 @@ Verified:
 - A surviving player can continue after the other dies; the dead player revives after the layer boss and the following Rest Room.
 - Chronos clear recovery for P1-only, P2-only, and two-player survival; Prometheus phase-transition deaths preserve the native landing sequence.
 - Broad dual reward coverage for ordinary, Elite, Chaos, Fields, ship-wheel, and most NPC/event paths. The second god boon is independently generated; hammer choices use each player's weapon pool.
+- Door-transition base mana refill is restored for both living players without requiring an Arcana card or item. It reuses the game's native refill once per transition in each living player's context; dead players are excluded.
 
 Still under test:
 
@@ -36,7 +37,7 @@ Still under test:
 
 ## Installation
 
-For external testing, use `release/Hades2Coop-v0.2.3-TestBuild.zip`.
+For external testing, use `release/Hades2Coop-v0.2.4-TestBuild.zip`.
 
 1. Read the package-root `README.md`, then extract the archive without separating `Hades2CoopInstaller.exe` from `TN_CoopMod`.
 2. Run `Hades2CoopInstaller.exe`.

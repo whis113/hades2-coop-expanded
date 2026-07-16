@@ -56,7 +56,9 @@ Set-Location 'C:\path\to\hades2-coop-expanded'
 [Underworld-Layer1-Erebus-CombatRoom-F_Combat12] [CoopRewardTrace] ...
 ```
 
-常用 trace：`CoopRewardTrace`、`CoopFieldsRewardTrace`、`CoopShipsRewardTrace`、`CoopSpellUiTrace`、`CoopDeathTrace`、`CoopBossTrace`。
+常用 trace：`CoopRewardTrace`、`CoopFieldsRewardTrace`、`CoopShipsRewardTrace`、`CoopDoorManaTrace`、`CoopDeathTrace`、`CoopBossTrace`。
+
+`CoopDoorManaTrace` 只在过门时记录一次 P1/P2 的 MP 前后值，用于确认原版基础回满是否在两名存活玩家各自上下文中执行。`CoopSpellUiTrace` 与 `CoopArcanaAudit` 当前暂时关闭。
 
 ## 排障
 
